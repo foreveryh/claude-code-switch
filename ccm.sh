@@ -170,6 +170,12 @@ QWEN_API_KEY=your-qwen-api-key
 # Claude (如果使用API key而非Pro订阅)
 CLAUDE_API_KEY=your-claude-api-key
 
+# Claude Proxy - 支持自定义中转站
+CLAUDE_PROXY_API_KEY=sk-your-claude-proxy-key
+# 自定义中转站BASE URL（可选，默认为 https://api5.ai）
+# CLAUDE_PROXY_BASE_URL="https://your-custom-proxy.com"
+CLAUDE_PROXY_BASE_URL=https://api5.ai
+
 # 备用提供商（仅当且仅当官方密钥未提供时启用）
 PPINFRA_API_KEY=your-ppinfra-api-key
 
@@ -292,6 +298,12 @@ QWEN_API_KEY=your-qwen-api-key
 # Claude (如果使用API key而非Pro订阅)
 CLAUDE_API_KEY=your-claude-api-key
 
+# Claude Proxy - 支持自定义中转站
+CLAUDE_PROXY_API_KEY=sk-your-claude-proxy-key
+# 自定义中转站BASE URL（可选，默认为 https://api5.ai）
+# CLAUDE_PROXY_BASE_URL="https://your-custom-proxy.com"
+CLAUDE_PROXY_BASE_URL=https://api5.ai
+
 # 备用提供商（仅当且仅当官方密钥未提供时启用）
 PPINFRA_API_KEY=your-ppinfra-api-key
 
@@ -318,6 +330,10 @@ MINIMAX_MODEL=MiniMax-M2
 MINIMAX_SMALL_FAST_MODEL=MiniMax-M2
 SEED_MODEL=doubao-seed-code-preview-latest
 SEED_SMALL_FAST_MODEL=doubao-seed-code-preview-latest
+
+# Claude Proxy 模型配置
+CLAUDE_PROXY_MODEL=claude-sonnet-4-5-20250929
+CLAUDE_PROXY_SMALL_FAST_MODEL=claude-haiku-4-5
 
 EOF
     echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -922,7 +938,15 @@ show_status() {
     echo "   DEEPSEEK_API_KEY: $(mask_presence DEEPSEEK_API_KEY)"
     echo "   ARK_API_KEY: $(mask_presence ARK_API_KEY)"
     echo "   QWEN_API_KEY: $(mask_presence QWEN_API_KEY)"
+    echo "   CLAUDE_PROXY_API_KEY: $(mask_presence CLAUDE_PROXY_API_KEY)"
     echo "   PPINFRA_API_KEY: $(mask_presence PPINFRA_API_KEY)"
+    echo ""
+    echo -e "${BLUE}🌐 Claude Proxy Configuration:${NC}"
+    if [[ -n "$CLAUDE_PROXY_BASE_URL" && "$CLAUDE_PROXY_BASE_URL" != "https://api5.ai" ]]; then
+        echo "   BASE_URL: ${CLAUDE_PROXY_BASE_URL} $(t 'custom' '(custom)')"
+    else
+        echo "   BASE_URL: ${CLAUDE_PROXY_BASE_URL:-"https://api5.ai (default)"}"
+    fi
 }
 
 # 清理环境变量
@@ -1381,6 +1405,52 @@ switch_to_ppinfra() {
 
     echo "export API_TIMEOUT_MS='600000'"
     echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
+}
+
+# 切换到 Claude Proxy 服务
+switch_to_proxy() {
+    # 重新加载配置以确保使用最新的值
+    load_config || return 1
+
+    # 获取配置，支持环境变量优先
+    local api_key="${CLAUDE_PROXY_API_KEY:-$CLAUDE_API_KEY}"
+    # 支持配置的BASE URL，默认为 https://api5.ai
+    local base_url="${CLAUDE_PROXY_BASE_URL:-https://api5.ai}"
+    local model="${CLAUDE_PROXY_MODEL:-claude-sonnet-4-5-20250929}"
+    local small_fast_model="${CLAUDE_PROXY_SMALL_FAST_MODEL:-claude-haiku-4-5}"
+
+    # API Key检查与用户提示
+    if ! is_effectively_set "$api_key"; then
+        echo -e "${RED}❌ $(t 'claude_proxy_api_key_not_set' 'Claude Proxy API key not configured')${NC}" >&2
+        echo -e "${YELLOW}💡 $(t 'set_env_var_hint' 'Set environment variable:')${NC}" >&2
+        echo -e "${YELLOW}   export CLAUDE_PROXY_API_KEY=\"your-api-key\"${NC}" >&2
+        echo -e "${YELLOW}🌐 $(t 'set_base_url_hint' 'Set custom base URL (optional):')${NC}" >&2
+        echo -e "${YELLOW}   export CLAUDE_PROXY_BASE_URL=\"https://your-proxy.com\"${NC}" >&2
+        echo -e "${YELLOW}📝 $(t 'or_edit_config' 'Or edit config file:')${NC}" >&2
+        echo -e "${YELLOW}   $(t 'config_file_location' "~/.ccm_config")${NC}" >&2
+        return 1
+    fi
+
+    # 清理旧环境变量
+    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL API_TIMEOUT_MS"
+
+    # 环境变量导出
+    echo "export ANTHROPIC_BASE_URL='$base_url'"
+    echo "export ANTHROPIC_API_URL='$base_url'"
+    echo "export ANTHROPIC_AUTH_TOKEN='$api_key'"
+    echo "export ANTHROPIC_MODEL='$model'"
+    echo "export ANTHROPIC_SMALL_FAST_MODEL='$small_fast_model'"
+    echo "export API_TIMEOUT_MS='300000'"
+
+    # 成功提示（输出到stderr，避免干扰eval）
+    if [[ "$base_url" == "https://api5.ai" ]]; then
+        echo -e "${GREEN}✅ $(t 'switched_to') $(t 'claude_proxy' 'Claude Proxy') ($(t 'official'))${NC}" >&2
+    else
+        echo -e "${GREEN}✅ $(t 'switched_to') $(t 'claude_proxy' 'Claude Proxy') ($(t 'custom_proxy' 'Custom Proxy'))${NC}" >&2
+    fi
+    echo -e "${BLUE}🔗 $(t 'base_url') $base_url${NC}" >&2
+    echo -e "${BLUE}🤖 $(t 'model') $model${NC}" >&2
+    echo -e "${YELLOW}💡 $(t 'base_url_config_note' 'BASE URL can be changed via CLAUDE_PROXY_BASE_URL environment variable or config file')${NC}" >&2
 }
 
 # 显示帮助信息
@@ -1927,6 +1997,9 @@ main() {
             local target="${1:-}"
             local no_color="${2:-false}"
             switch_to_ppinfra "$target" "$no_color"
+            ;;
+        "proxy")
+            switch_to_proxy
             ;;
         "status"|"st")
             show_status

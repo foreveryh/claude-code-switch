@@ -99,5 +99,14 @@
   "file_path": "File path",
   "trying_to_match_accounts": "Trying to match saved accounts...",
   "matched_account": "Matched account",
-  "no_matching_account": "No matching saved accounts"
+  "no_matching_account": "No matching saved accounts",
+  "claude_proxy": "Claude Proxy",
+  "claude_proxy_api_key_not_set": "Claude Proxy API key not configured",
+  "set_env_var_hint": "Set environment variable:",
+  "set_base_url_hint": "Set custom base URL (optional):",
+  "or_edit_config": "Or edit config file:",
+  "config_file_location": "~/.ccm_config",
+  "custom_proxy": "Custom Proxy",
+  "base_url_config_note": "BASE URL can be changed via CLAUDE_PROXY_BASE_URL environment variable or config file",
+  "custom": "(custom)"
 }

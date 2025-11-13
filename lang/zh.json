@@ -99,5 +99,14 @@
   "file_path": "文件路径",
   "trying_to_match_accounts": "尝试匹配保存的账号...",
   "matched_account": "匹配到账号",
-  "no_matching_account": "没有匹配到任何保存的账号"
+  "no_matching_account": "没有匹配到任何保存的账号",
+  "claude_proxy": "Claude 代理",
+  "claude_proxy_api_key_not_set": "Claude Proxy API 密钥未配置",
+  "set_env_var_hint": "设置环境变量：",
+  "set_base_url_hint": "设置自定义BASE URL（可选）：",
+  "or_edit_config": "或编辑配置文件：",
+  "config_file_location": "~/.ccm_config",
+  "custom_proxy": "自定义代理",
+  "base_url_config_note": "BASE URL可通过 CLAUDE_PROXY_BASE_URL 环境变量或配置文件修改",
+  "custom": "（自定义）"
 }
