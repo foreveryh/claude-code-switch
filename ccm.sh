@@ -683,6 +683,7 @@ show_status() {
     echo "   LONGCAT_API_KEY: $(mask_presence LONGCAT_API_KEY)"
     echo "   MINIMAX_API_KEY: $(mask_presence MINIMAX_API_KEY)"
     echo "   DEEPSEEK_API_KEY: $(mask_presence DEEPSEEK_API_KEY)"
+    echo "   ARK_API_KEY: $(mask_presence ARK_API_KEY)"
     echo "   QWEN_API_KEY: $(mask_presence QWEN_API_KEY)"
     echo "   PPINFRA_API_KEY: $(mask_presence PPINFRA_API_KEY)"
 }
