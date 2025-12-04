@@ -156,7 +156,7 @@ GLM_MODEL=glm-4.6
 GLM_SMALL_FAST_MODEL=glm-4.5-air
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
-OPUS_MODEL=claude-opus-4-1-20250805
+OPUS_MODEL=claude-opus-4-5-20251101
 OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 HAIKU_MODEL=claude-haiku-4-5
 HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5
@@ -278,7 +278,7 @@ GLM_MODEL=glm-4.6
 GLM_SMALL_FAST_MODEL=glm-4.5-air
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
-OPUS_MODEL=claude-opus-4-1-20250805
+OPUS_MODEL=claude-opus-4-5-20251101
 OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 HAIKU_MODEL=claude-haiku-4-5
 HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5
@@ -759,7 +759,7 @@ switch_to_claude() {
 switch_to_opus() {
     local account_name="$1"
 
-    echo -e "${YELLOW}🔄 $(t 'switching_to') Claude Opus 4.1...${NC}"
+    echo -e "${YELLOW}🔄 $(t 'switching_to') Claude Opus 4.5...${NC}"
 
     # 如果指定了账号，先切换账号
     if [[ -n "$account_name" ]]; then
@@ -770,9 +770,9 @@ switch_to_opus() {
     fi
 
     clean_env
-    export ANTHROPIC_MODEL="${OPUS_MODEL:-claude-opus-4-1-20250805}"
+    export ANTHROPIC_MODEL="${OPUS_MODEL:-claude-opus-4-5-20251101}"
     export ANTHROPIC_SMALL_FAST_MODEL="${OPUS_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
-    echo -e "${GREEN}✅ 已切换到 Claude Opus 4.1 (使用 Claude Pro 订阅)${NC}"
+    echo -e "${GREEN}✅ 已切换到 Claude Opus 4.5 (使用 Claude Pro 订阅)${NC}"
     if [[ -n "$account_name" ]]; then
         echo "   $(t 'account'): $account_name"
     fi
@@ -1163,7 +1163,7 @@ show_help() {
     echo "  qwen               - env qwen"
     echo "  glm, glm4          - env glm"
     echo "  claude, sonnet, s  - env claude"
-    echo "  opus, o            - env opus"
+    echo "  opus, o            - env opus (Claude Opus 4.5)"
     echo "  haiku, h           - env haiku"
     echo ""
     echo -e "${YELLOW}Claude Pro Account Management:${NC}"
@@ -1201,7 +1201,7 @@ show_help() {
     echo "  🐪 Qwen                - 官方：qwen3-max (阿里云) ｜ 备用：qwen3-next-80b-a3b-thinking (PPINFRA)"
     echo "  🇨🇳 GLM4.6             - 官方：glm-4.6 / glm-4.5-air"
     echo "  🧠 Claude Sonnet 4.5   - claude-sonnet-4-5-20250929"
-    echo "  🚀 Claude Opus 4.1     - claude-opus-4-1-20250805"
+    echo "  🚀 Claude Opus 4.5     - claude-opus-4-5-20251101"
     echo "  🔷 Claude Haiku 4.5    - claude-haiku-4-5"
 }
 
@@ -1229,7 +1229,7 @@ ensure_model_override_defaults() {
         "GLM_SMALL_FAST_MODEL=glm-4.5-air"
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
         "CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929"
-        "OPUS_MODEL=claude-opus-4-1-20250805"
+        "OPUS_MODEL=claude-opus-4-5-20251101"
         "OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929"
         "HAIKU_MODEL=claude-haiku-4-5"
         "HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5"
@@ -1469,7 +1469,7 @@ emit_env_exports() {
             echo "unset ANTHROPIC_BASE_URL"
             echo "unset ANTHROPIC_API_URL"
             echo "unset ANTHROPIC_API_KEY"
-            local opus_model="${OPUS_MODEL:-claude-opus-4-1-20250805}"
+            local opus_model="${OPUS_MODEL:-claude-opus-4-5-20251101}"
             local opus_small="${OPUS_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
             echo "export ANTHROPIC_MODEL='${opus_model}'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='${opus_small}'"

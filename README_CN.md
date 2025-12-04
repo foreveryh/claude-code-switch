@@ -54,7 +54,7 @@ ccc deepseek     # 启动 Claude Code with DeepSeek
 | 🐪 **Qwen** | ✅ qwen3-max（阿里云） | ✅ qwen3-next-80b-a3b-thinking | 阿里云官方 |
 | 🇨🇳 **GLM4.6** | ✅ glm-4.6 | ✅ zai-org/glm-4.6 | 智谱清言 |
 | 🧠 **Claude Sonnet 4.5** | ✅ claude-sonnet-4-5-20250929 | ❌ 仅官方 | 平衡性能 |
-| 🚀 **Claude Opus 4.1** | ✅ claude-opus-4-1-20250805 | ❌ 仅官方 | 最强推理 |
+| 🚀 **Claude Opus 4.5** | ✅ claude-opus-4-5-20251101 | ❌ 仅官方 | 最强推理 |
 | 🔷 **Claude Haiku 4.5** | ✅ claude-haiku-4-5 | ❌ 仅官方 | 快速高效 |
 
 > 🎁 **GLM-4.6 官方注册**
@@ -166,7 +166,7 @@ MINIMAX_MODEL=MiniMax-M2
 QWEN_MODEL=qwen3-max
 GLM_MODEL=glm-4.6
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
-OPUS_MODEL=claude-opus-4-1-20250805
+OPUS_MODEL=claude-opus-4-5-20251101
 
 # 备用服务（仅当官方密钥缺失时启用）
 PPINFRA_API_KEY=your-ppinfra-api-key
@@ -313,7 +313,7 @@ ccm kat           # 切换到StreamLake (KAT)
 ccm glm           # 切换到GLM4.6
 ccm longcat       # 切换到LongCat
 ccm claude        # 切换到Claude Sonnet 4.5
-ccm opus          # 切换到Claude Opus 4.1
+ccm opus          # 切换到Claude Opus 4.5
 ccm haiku         # 切换到Claude Haiku 4.5
 
 # 切换到PPINFRA服务
@@ -344,7 +344,7 @@ ccc               # 显示ccc使用帮助
 ccm ds           # deepseek的简写
 ccm mm           # minimax的简写
 ccm s            # claude sonnet的简写  
-ccm o            # opus的简写
+ccm o            # opus的简写 (Claude Opus 4.5)
 ccm h            # haiku的简写
 ccm st           # status的简写
 
