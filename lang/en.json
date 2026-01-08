@@ -90,5 +90,14 @@
   "account_name": "Account name",
   "token_expires": "Token expires at",
   "access_token": "Access token",
-  "account": "Account"
+  "account": "Account",
+  "credentials_written_to_file": "Credentials written to file",
+  "credentials_source_keychain": "Credentials (from macOS Keychain)",
+  "credentials_source_file": "Credentials (from ~/.claude/.credentials.json)",
+  "credentials_found": "Credentials found",
+  "service_name": "Service name",
+  "file_path": "File path",
+  "trying_to_match_accounts": "Trying to match saved accounts...",
+  "matched_account": "Matched account",
+  "no_matching_account": "No matching saved accounts"
 }

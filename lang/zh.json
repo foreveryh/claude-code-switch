@@ -90,5 +90,14 @@
   "account_name": "账号名称",
   "token_expires": "Token 过期时间",
   "access_token": "Access Token",
-  "account": "账号"
+  "account": "账号",
+  "credentials_written_to_file": "凭证已写入文件",
+  "credentials_source_keychain": "凭证 (来自 macOS Keychain)",
+  "credentials_source_file": "凭证 (来自 ~/.claude/.credentials.json)",
+  "credentials_found": "找到凭证",
+  "service_name": "服务名",
+  "file_path": "文件路径",
+  "trying_to_match_accounts": "尝试匹配保存的账号...",
+  "matched_account": "匹配到账号",
+  "no_matching_account": "没有匹配到任何保存的账号"
 }
