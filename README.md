@@ -20,7 +20,7 @@ curl -fsSL https://raw.githubusercontent.com/foreveryh/claude-code-switch/main/q
 source ~/.zshrc  # or source ~/.bashrc for bash
 
 # 3. Try it (no keys needed!)
-ccm glm          # Switch to GLM-4.6
+ccm glm          # Switch to GLM-4.7
 ccc deepseek     # Launch Claude Code with DeepSeek
 ```
 
@@ -52,18 +52,18 @@ ccc deepseek     # Launch Claude Code with DeepSeek
 | 🎯 **MiniMax M2** | ✅ MiniMax-M2 | ✅ minimax/minimax-m2 | Code & reasoning |
 | 🌊 **StreamLake (KAT)** | ✅ KAT-Coder | ❌ Official only | StreamLake AI |
 | 🐪 **Qwen** | ✅ qwen3-max (Alibaba DashScope) | ✅ qwen3-next-80b-a3b-thinking | Alibaba Cloud official |
-| 🇨🇳 **GLM4.6** | ✅ glm-4.6 | ✅ zai-org/glm-4.6 | Zhipu AI |
+| 🇨🇳 **GLM4.7** | ✅ glm-4.7 | ✅ zai-org/glm-4.7 | Zhipu AI |
 | 🧠 **Claude Sonnet 4.5** | ✅ claude-sonnet-4-5-20250929 | ❌ Official only | Balanced performance |
 | 🚀 **Claude Opus 4.5** | ✅ claude-opus-4-5-20251101 | ❌ Official only | Strongest reasoning |
 | 🔷 **Claude Haiku 4.5** | ✅ claude-haiku-4-5 | ❌ Official only | Fast and efficient |
 
-> 🎁 **GLM-4.6 Official Registration**
+> 🎁 **GLM-4.7 Official Registration**
 >
 > Get started with Zhipu AI's official Claude Code integration:
 > - **Registration Link**: https://www.bigmodel.cn/claude-code?ic=5XMIOZPPXB
 > - **Invitation Code**: `5XMIOZPPXB`
 >
-> GLM-4.6 supports official Claude Code integration with zero-configuration experience. No API key needed to get started!
+> GLM-4.7 supports official Claude Code integration with zero-configuration experience. No API key needed to get started!
 
 > 💰 **PPINFRA Fallback Service Registration**
 >
@@ -164,7 +164,7 @@ KIMI_CN_MODEL=kimi-k2-thinking  # For KIMI CN (domestic version)
 LONGCAT_MODEL=LongCat-Flash-Thinking
 MINIMAX_MODEL=MiniMax-M2
 QWEN_MODEL=qwen3-max
-GLM_MODEL=glm-4.6
+GLM_MODEL=glm-4.7
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-5-20251101
 
@@ -390,7 +390,7 @@ ccc pp glm --dangerously-skip-permissions
 ✅ Environment configured for: GLM (PPINFRA)
 
 🚀 Launching Claude Code...
-   Model: zai-org/glm-4.6
+   Model: zai-org/glm-4.7
    Base URL: https://api.ppinfra.com/anthropic
 ```
 
@@ -418,7 +418,7 @@ CCM implements intelligent fallback:
   - `MiniMax-M2` (MiniMax official)
   - `minimax/minimax-m2` (MiniMax PPINFRA fallback)
   - `qwen3-next-80b-a3b-thinking` (Qwen fallback)
-  - `zai-org/glm-4.6` (GLM fallback)
+  - `zai-org/glm-4.7` (GLM fallback)
 
 ### Security and Privacy
 

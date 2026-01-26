@@ -106,7 +106,7 @@ ccc pp deepseek
 | 命令 | 模型名称 | 说明 |
 |------|---------|-----|
 | `ccc pp deepseek` | deepseek/deepseek-v3.2-exp | DeepSeek V3.2 实验版 |
-| `ccc pp glm` | zai-org/glm-4.6 | 智谱清言 GLM 4.6 |
+| `ccc pp glm` | zai-org/glm-4.7 | 智谱清言 GLM 4.7 |
 | `ccc pp kimi` | kimi-k2-turbo-preview | 月之暗面 KIMI 2 |
 | `ccc pp qwen` | qwen3-next-80b-a3b-thinking | 阿里云通义千问 |
 
