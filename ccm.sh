@@ -3,9 +3,9 @@
 # Claude Code Model Switcher (ccm) - 独立版本
 # ---------------------------------------------------------
 # 功能: 在不同AI模型之间快速切换
-# 支持: Claude, Deepseek, GLM4.6, KIMI2
+# 支持: Claude, Deepseek, GLM4.7, KIMI2
 # 作者: Peng
-# 版本: 2.2.1
+# 版本: 2.3.0
 ############################################################
 
 # 脚本颜色定义
@@ -130,7 +130,7 @@ CCM_LANGUAGE=en
 # Deepseek
 DEEPSEEK_API_KEY=sk-your-deepseek-api-key
 
-# GLM4.6 (智谱清言)
+# GLM4.7 (智谱清言)
 GLM_API_KEY=your-glm-api-key
 
 # KIMI for Coding (月之暗面)
@@ -252,7 +252,7 @@ CCM_LANGUAGE=en
 # Deepseek
 DEEPSEEK_API_KEY=sk-your-deepseek-api-key
 
-# GLM4.6 (智谱清言)
+# GLM4.7 (智谱清言)
 GLM_API_KEY=your-glm-api-key
 
 # KIMI for Coding (月之暗面)
@@ -816,9 +816,9 @@ switch_to_haiku() {
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
-# 切换到GLM4.6
+# 切换到GLM4.7
 switch_to_glm() {
-    echo -e "${YELLOW}🔄 切换到 GLM4.6 模型...${NC}"
+    echo -e "${YELLOW}🔄 切换到 GLM4.7 模型...${NC}"
     clean_env
     if is_effectively_set "$GLM_API_KEY"; then
         export ANTHROPIC_BASE_URL="https://open.bigmodel.cn/api/anthropic"
@@ -827,7 +827,7 @@ switch_to_glm() {
         export ANTHROPIC_API_KEY="$GLM_API_KEY"
         export ANTHROPIC_MODEL="glm-4.7"
         export ANTHROPIC_SMALL_FAST_MODEL="glm-4.7"
-        echo -e "${GREEN}✅ 已切换到 GLM4.6（官方）${NC}"
+        echo -e "${GREEN}✅ 已切换到 GLM4.7（官方）${NC}"
     elif is_effectively_set "$PPINFRA_API_KEY"; then
         # 备用：PPINFRA GLM 支持
         export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
@@ -836,7 +836,7 @@ switch_to_glm() {
         export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
         export ANTHROPIC_MODEL="zai-org/glm-4.7"
         export ANTHROPIC_SMALL_FAST_MODEL="zai-org/glm-4.7"
-        echo -e "${GREEN}✅ 已切换到 GLM4.6（PPINFRA 备用）${NC}"
+        echo -e "${GREEN}✅ 已切换到 GLM4.7（PPINFRA 备用）${NC}"
     else
         echo -e "${RED}❌ Please configure GLM_API_KEY or PPINFRA_API_KEY${NC}"
         return 1
@@ -1083,9 +1083,9 @@ switch_to_ppinfra() {
             ;;
         "glm"|"glm4"|"glm4.6")
             if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') GLM 4.6（PPINFRA）" >&2
+                echo "✅ $(t 'switched_to') GLM 4.7（PPINFRA）" >&2
             else
-                echo -e "${GREEN}✅ $(t 'switched_to') GLM 4.6（PPINFRA）${NC}" >&2
+                echo -e "${GREEN}✅ $(t 'switched_to') GLM 4.7（PPINFRA）${NC}" >&2
             fi
             echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
             echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"

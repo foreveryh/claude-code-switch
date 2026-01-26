@@ -288,7 +288,7 @@ CCM_KEYCHAIN_SERVICE="Claude Code" ccm debug-keychain
 **方式1：`ccm` - 环境管理**
 ```bash
 ccm deepseek      # 切换到 DeepSeek
-ccm glm           # 切换到 GLM4.6
+ccm glm           # 切换到 GLM4.7
 ccm pp kimi       # 切换到 PPINFRA KIMI
 claude            # 然后手动启动 Claude Code
 ```
@@ -310,7 +310,7 @@ ccm deepseek      # 切换到Deepseek
 ccm minimax       # 切换到MiniMax M2
 ccm qwen          # 切换到Qwen
 ccm kat           # 切换到StreamLake (KAT)
-ccm glm           # 切换到GLM4.6
+ccm glm           # 切换到GLM4.7
 ccm longcat       # 切换到LongCat
 ccm claude        # 切换到Claude Sonnet 4.5
 ccm opus          # 切换到Claude Opus 4.5

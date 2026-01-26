@@ -14,7 +14,7 @@ PPINFRA 是一个第三方 AI 模型聚合服务，提供 DeepSeek、GLM、KIMI�
 # 使用 PPINFRA DeepSeek
 ccc pp deepseek
 
-# 使用 PPINFRA GLM 4.6
+# 使用 PPINFRA GLM 4.7
 ccc pp glm
 
 # 使用 PPINFRA KIMI 2
