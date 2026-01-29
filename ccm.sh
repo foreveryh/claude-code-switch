@@ -5,7 +5,7 @@
 # 功能: 在不同AI模型之间快速切换
 # 支持: Claude, Deepseek, GLM4.6, KIMI2
 # 作者: Peng
-# 版本: 2.2.0
+# 版本: 2.2.1
 ############################################################
 
 # 脚本颜色定义
@@ -16,7 +16,13 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 颜色控制（用于账号管理命令的输出）
-NO_COLOR=false
+# 自动检测：如果stdout不是终端（被管道或eval捕获），则禁用颜色
+# 这修复了 issue #8: (eval):1: bad pattern: ^[[1
+if [[ ! -t 1 ]]; then
+    NO_COLOR=true
+else
+    NO_COLOR=false
+fi
 
 # 根据NO_COLOR设置颜色（账号管理函数使用）
 set_no_color() {
@@ -28,6 +34,11 @@ set_no_color() {
         NC=''
     fi
 }
+
+# 如果检测到需要禁用颜色，立即应用
+if [[ "$NO_COLOR" == "true" ]]; then
+    set_no_color
+fi
 
 # 配置文件路径
 CONFIG_FILE="$HOME/.ccm_config"
