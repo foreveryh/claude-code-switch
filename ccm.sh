@@ -1081,7 +1081,7 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_MODEL='deepseek/deepseek-v3.2-exp'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='deepseek/deepseek-v3.2-exp'"
             ;;
-        "glm"|"glm4"|"glm4.6")
+        "glm"|"glm4"|"glm4.6"|"glm4.7")
             if [[ "$no_color" == "true" ]]; then
                 echo "✅ $(t 'switched_to') GLM 4.7（PPINFRA）" >&2
             else
@@ -1434,7 +1434,7 @@ emit_env_exports() {
                 return 1
             fi
             ;;
-        "glm"|"glm4"|"glm4.6")
+        "glm"|"glm4"|"glm4.6"|"glm4.7")
             if is_effectively_set "$GLM_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1680,7 +1680,7 @@ main() {
         "seed"|"doubao")
             emit_env_exports seed
             ;;
-        "glm"|"glm4"|"glm4.6")
+        "glm"|"glm4"|"glm4.6"|"glm4.7")
             emit_env_exports glm
             ;;
         "claude"|"sonnet"|"s")
