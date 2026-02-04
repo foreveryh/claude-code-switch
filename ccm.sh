@@ -376,7 +376,11 @@ base64_encode_nolinebreak() {
     if [[ "$OS_TYPE" == "macos" ]]; then
         base64
     else
-        base64 -w 0
+        if base64 --help 2>&1 | grep -q -- '-w'; then
+            base64 -w 0
+        else
+            base64 | tr -d '\n'
+        fi
     fi
 }
 
@@ -386,6 +390,21 @@ base64_decode() {
         base64 -d
     else
         base64 -d
+    fi
+}
+
+# 跨平台时间格式化（毫秒时间戳 -> 可读时间）
+format_epoch_ms() {
+    local ms="$1"
+    if [[ -z "$ms" ]]; then
+        echo "Unknown"
+        return 0
+    fi
+    local seconds=$((ms / 1000))
+    if [[ "$OS_TYPE" == "macos" ]]; then
+        date -r "$seconds" "+%Y-%m-%d %H:%M" 2>/dev/null || echo "Unknown"
+    else
+        date -d "@$seconds" "+%Y-%m-%d %H:%M" 2>/dev/null || echo "Unknown"
     fi
 }
 
@@ -410,7 +429,7 @@ read_linux_credentials() {
         fi
     fi
 
-    if [[ -z "$credentials" || "$credentials" == "null" ]]; then
+    if [[ -z "$credentials" || "$credentials" == "null" || "$credentials" == "{}" ]]; then
         echo ""
         return 1
     fi
@@ -578,7 +597,7 @@ debug_keychain_credentials() {
     fi
     echo "   $(t 'subscription_type'): ${subscription:-Unknown}"
     if [[ -n "$expires" ]]; then
-        local expires_str=$(date -r $((expires / 1000)) "+%Y-%m-%d %H:%M" 2>/dev/null || echo "Unknown")
+        local expires_str=$(format_epoch_ms "$expires")
         echo "   $(t 'token_expires'): $expires_str"
     fi
     echo "   $(t 'access_token'): ${access_token_preview}..."
@@ -758,7 +777,7 @@ list_accounts() {
             # 格式化过期时间
             local expires_str=""
             if [[ -n "$expires" ]]; then
-                expires_str=$(date -r $((expires / 1000)) "+%Y-%m-%d %H:%M" 2>/dev/null || echo "Unknown")
+                expires_str=$(format_epoch_ms "$expires")
             fi
 
             echo -e "   - ${YELLOW}$name${NC} (${subscription:-Unknown}${expires_str:+, expires: $expires_str})$is_current"
@@ -785,7 +804,7 @@ with open('$ACCOUNTS_FILE') as f:
             # 格式化过期时间
             local expires_str=""
             if [[ -n "$expires" ]]; then
-                expires_str=$(date -r $((expires / 1000)) "+%Y-%m-%d %H:%M" 2>/dev/null || echo "Unknown")
+                expires_str=$(format_epoch_ms "$expires")
             fi
 
             echo -e "   - ${YELLOW}$name${NC} (${subscription:-Unknown}${expires_str:+, expires: $expires_str})$is_current"
@@ -859,7 +878,7 @@ get_current_account() {
     # 格式化过期时间
     local expires_str=""
     if [[ -n "$expires" ]]; then
-        expires_str=$(date -r $((expires / 1000)) "+%Y-%m-%d %H:%M" 2>/dev/null || echo "Unknown")
+        expires_str=$(format_epoch_ms "$expires")
     fi
 
     # 查找账号名称
