@@ -719,11 +719,12 @@ main() {
     fi
 
     if [[ "$MODE" != "project" ]]; then
-      read -r -p "Inject ccm/ccc functions into shell rc? [y/N]: " rc_choice
-      case "$rc_choice" in
-        y|Y|yes|YES) ENABLE_RC=true ;;
-        *) ;;
-      esac
+    read -r -p "Inject ccm/ccc functions into shell rc? [y/N]: " rc_choice
+    rc_choice="${rc_choice:-N}"
+    case "$rc_choice" in
+      y|Y|yes|YES) ENABLE_RC=true ;;
+      *) ;;
+    esac
     fi
   fi
 
