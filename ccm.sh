@@ -160,6 +160,9 @@ LONGCAT_API_KEY=your-longcat-api-key
 
 # MiniMax M2
 MINIMAX_API_KEY=your-minimax-api-key
+# MiniMax Anthropic 兼容 BASE URL（可选）
+# MINIMAX_BASE_URL="https://api.minimax.com/anthropic"
+MINIMAX_BASE_URL=https://api.minimax.io/anthropic
 
 # 豆包 Seed-Code (字节跳动)
 ARK_API_KEY=your-ark-api-key
@@ -288,6 +291,9 @@ LONGCAT_API_KEY=your-longcat-api-key
 
 # MiniMax M2
 MINIMAX_API_KEY=your-minimax-api-key
+# MiniMax Anthropic 兼容 BASE URL（可选）
+# MINIMAX_BASE_URL="https://api.minimax.com/anthropic"
+MINIMAX_BASE_URL=https://api.minimax.io/anthropic
 
 # 豆包 Seed-Code (字节跳动)
 ARK_API_KEY=your-ark-api-key
@@ -1164,8 +1170,9 @@ switch_to_minimax() {
     clean_env
     if is_effectively_set "$MINIMAX_API_KEY"; then
         # 官方 MiniMax 的 Anthropic 兼容端点
-        export ANTHROPIC_BASE_URL="https://api.minimax.io/anthropic"
-        export ANTHROPIC_API_URL="https://api.minimax.io/anthropic"
+        local mm_base_url="${MINIMAX_BASE_URL:-https://api.minimax.io/anthropic}"
+        export ANTHROPIC_BASE_URL="$mm_base_url"
+        export ANTHROPIC_API_URL="$mm_base_url"
         export ANTHROPIC_AUTH_TOKEN="$MINIMAX_API_KEY"
         export ANTHROPIC_API_KEY="$MINIMAX_API_KEY"
         export ANTHROPIC_MODEL="minimax/minimax-m2"
@@ -1820,8 +1827,8 @@ emit_env_exports() {
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
                 echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.minimax.io/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.minimax.io/anthropic'"
+                echo "export ANTHROPIC_BASE_URL=\"\${MINIMAX_BASE_URL:-https://api.minimax.io/anthropic}\""
+                echo "export ANTHROPIC_API_URL=\"\${MINIMAX_BASE_URL:-https://api.minimax.io/anthropic}\""
                 echo "if [ -z \"\${MINIMAX_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
                 echo "export ANTHROPIC_AUTH_TOKEN=\"\${MINIMAX_API_KEY}\""
                 local mm_model="${MINIMAX_MODEL:-minimax/minimax-m2}"

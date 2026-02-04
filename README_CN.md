@@ -154,6 +154,7 @@ DEEPSEEK_API_KEY=sk-your-deepseek-api-key
 KIMI_API_KEY=your-kimi-api-key  # Moonshot AI
 LONGCAT_API_KEY=your-longcat-api-key
 MINIMAX_API_KEY=your-minimax-api-key
+MINIMAX_BASE_URL=https://api.minimax.io/anthropic  # 可选：https://api.minimax.com/anthropic
 GLM_API_KEY=your-glm-api-key
 QWEN_API_KEY=your-qwen-api-key  # 阿里云 DashScope
 
