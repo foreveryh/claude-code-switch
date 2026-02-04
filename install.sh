@@ -28,6 +28,7 @@ ENABLE_RC=false          # add rc function block
 CLEANUP_LEGACY=false     # remove old rc blocks + legacy dirs
 ASSUME_YES=false         # non-interactive confirmations
 PROJECT_DIR=""           # for project mode
+INTERACTIVE=false        # interactive prompts
 
 log_info() {
   echo "==> $*"
@@ -52,6 +53,7 @@ Options:
   --prefix <dir>        Override install bin directory
   --rc                  Inject ccm/ccc functions into shell rc
   --cleanup-legacy      Remove legacy rc blocks and old install dirs
+  --interactive         Force interactive prompts
   -y, --yes             Assume yes for prompts
   -h, --help            Show this help
 
@@ -87,6 +89,9 @@ parse_args() {
         ;;
       --cleanup-legacy|--migrate)
         CLEANUP_LEGACY=true
+        ;;
+      --interactive)
+        INTERACTIVE=true
         ;;
       -y|--yes)
         ASSUME_YES=true
@@ -680,6 +685,7 @@ EOF
 }
 
 main() {
+  local arg_count=$#
   parse_args "$@"
 
   echo ""
@@ -687,7 +693,39 @@ main() {
   echo "Default: user-level PATH install"
   echo "Options: --project (project-local), --system (system-wide), --rc (rc injection)"
   echo "Tip: use --cleanup-legacy if you previously installed the old rc-based version"
+  echo "Interactive: auto-enabled when run without flags in a TTY"
   echo ""
+
+  if [[ "$INTERACTIVE" == "false" && "$arg_count" -eq 0 && -t 0 && "$ASSUME_YES" == "false" ]]; then
+    INTERACTIVE=true
+  fi
+
+  if $INTERACTIVE; then
+    log_info "Interactive setup"
+    echo "Select install mode:"
+    echo "  1) User (recommended)"
+    echo "  2) System (may require sudo)"
+    echo "  3) Project (current directory only)"
+    read -r -p "Choose [1-3] (default 1): " mode_choice
+    case "$mode_choice" in
+      2) MODE="system" ;;
+      3) MODE="project" ;;
+      *) MODE="user" ;;
+    esac
+
+    if [[ "$MODE" == "project" ]]; then
+      read -r -p "Project directory (default: $PWD): " proj_choice
+      PROJECT_DIR="${proj_choice:-$PWD}"
+    fi
+
+    if [[ "$MODE" != "project" ]]; then
+      read -r -p "Inject ccm/ccc functions into shell rc? [y/N]: " rc_choice
+      case "$rc_choice" in
+        y|Y|yes|YES) ENABLE_RC=true ;;
+        *) ;;
+      esac
+    fi
+  fi
 
   if [[ "$MODE" == "project" ]]; then
     PROJECT_DIR="${PROJECT_DIR:-$PWD}"
