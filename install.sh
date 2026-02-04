@@ -437,16 +437,20 @@ fi
 exec "$CCM_SH" "$@"
 EOF
   else
-    cat > "$target" <<EOF
+    local content
+    content="$(cat <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-CCM_SH="${data_dir}/ccm.sh"
+CCM_SH="__DATA_DIR__/ccm.sh"
 if [[ ! -f "\$CCM_SH" ]]; then
   echo "ccm error: missing \$CCM_SH" >&2
   exit 1
 fi
 exec "\$CCM_SH" "\$@"
 EOF
+)"
+    content="${content//__DATA_DIR__/$data_dir}"
+    printf '%s\n' "$content" > "$target"
   fi
 
   run_cmd "$bin_dir" chmod +x "$target"
@@ -558,10 +562,11 @@ else
 fi
 EOF
   else
-    cat > "$target" <<EOF
+    local content
+    content="$(cat <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-CCM="${data_dir}/ccm.sh"
+CCM="__DATA_DIR__/ccm.sh"
 
 usage() {
     cat <<EOF2
@@ -653,6 +658,9 @@ else
     exec claude "${claude_args[@]}"
 fi
 EOF
+)"
+    content="${content//__DATA_DIR__/$data_dir}"
+    printf '%s\n' "$content" > "$target"
   fi
 
   run_cmd "$bin_dir" chmod +x "$target"
