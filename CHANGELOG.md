@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0] - 2026-01-26
+
+### Changed
+- ⬆️ **Model upgrade**: Updated GLM from version 4.6 to 4.7
+  - Official API: `glm-4.7`
+  - PPINFRA fallback: `zai-org/glm-4.7`
+  - Upgraded all references in documentation and configuration
+
 ## [2.2.0] - 2025-10-27
 
 ### Added - Claude Pro Account Management 🔐

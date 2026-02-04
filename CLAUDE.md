@@ -168,7 +168,7 @@ Location: `~/.ccm_config`
 | Claude Haiku 4.5 | claude-haiku-4-5 | N/A | Anthropic default |
 | DeepSeek | deepseek-chat | deepseek/deepseek-v3.2-exp | https://api.deepseek.com/anthropic |
 | KIMI2 | kimi-k2-turbo-preview | kimi-k2-turbo-preview | https://api.moonshot.cn/anthropic |
-| GLM | glm-4.6 | zai-org/glm-4.6 | https://open.bigmodel.cn/api/anthropic |
+| GLM | glm-4.7 | zai-org/glm-4.7 | https://open.bigmodel.cn/api/anthropic |
 | Qwen | qwen3-max | qwen3-next-80b-a3b-thinking | https://dashscope.aliyuncs.com/... |
 | LongCat | LongCat-Flash-Thinking | N/A | https://api.longcat.chat/anthropic |
 

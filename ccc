@@ -63,7 +63,7 @@ claude_args=("$@")
 # Helper: is known model keyword
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|kimi|kimi2|qwen|longcat|lc|minimax|mm|seed|doubao|claude|sonnet|s|opus|o|haiku|h)
+        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|longcat|lc|minimax|mm|seed|doubao|claude|sonnet|s|opus|o|haiku|h)
             return 0 ;;
         *)
             return 1 ;;

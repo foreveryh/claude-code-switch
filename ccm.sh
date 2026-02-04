@@ -3,9 +3,9 @@
 # Claude Code Model Switcher (ccm) - 独立版本
 # ---------------------------------------------------------
 # 功能: 在不同AI模型之间快速切换
-# 支持: Claude, Deepseek, GLM4.6, KIMI2
+# 支持: Claude, Deepseek, GLM4.7, KIMI2
 # 作者: Peng
-# 版本: 2.2.1
+# 版本: 2.3.0
 ############################################################
 
 # 脚本颜色定义
@@ -130,7 +130,7 @@ CCM_LANGUAGE=en
 # Deepseek
 DEEPSEEK_API_KEY=sk-your-deepseek-api-key
 
-# GLM4.6 (智谱清言)
+# GLM4.7 (智谱清言)
 GLM_API_KEY=your-glm-api-key
 
 # KIMI for Coding (月之暗面)
@@ -163,7 +163,7 @@ KIMI_CN_MODEL=kimi-k2-thinking
 KIMI_CN_SMALL_FAST_MODEL=kimi-k2-thinking
 QWEN_MODEL=qwen3-max
 QWEN_SMALL_FAST_MODEL=qwen3-next-80b-a3b-instruct
-GLM_MODEL=glm-4.6
+GLM_MODEL=glm-4.7
 GLM_SMALL_FAST_MODEL=glm-4.5-air
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
@@ -252,7 +252,7 @@ CCM_LANGUAGE=en
 # Deepseek
 DEEPSEEK_API_KEY=sk-your-deepseek-api-key
 
-# GLM4.6 (智谱清言)
+# GLM4.7 (智谱清言)
 GLM_API_KEY=your-glm-api-key
 
 # KIMI for Coding (月之暗面)
@@ -285,7 +285,7 @@ KIMI_CN_MODEL=kimi-k2-thinking
 KIMI_CN_SMALL_FAST_MODEL=kimi-k2-thinking
 QWEN_MODEL=qwen3-max
 QWEN_SMALL_FAST_MODEL=qwen3-next-80b-a3b-instruct
-GLM_MODEL=glm-4.6
+GLM_MODEL=glm-4.7
 GLM_SMALL_FAST_MODEL=glm-4.5-air
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
@@ -816,27 +816,27 @@ switch_to_haiku() {
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
-# 切换到GLM4.6
+# 切换到GLM4.7
 switch_to_glm() {
-    echo -e "${YELLOW}🔄 切换到 GLM4.6 模型...${NC}"
+    echo -e "${YELLOW}🔄 切换到 GLM4.7 模型...${NC}"
     clean_env
     if is_effectively_set "$GLM_API_KEY"; then
         export ANTHROPIC_BASE_URL="https://open.bigmodel.cn/api/anthropic"
         export ANTHROPIC_API_URL="https://open.bigmodel.cn/api/anthropic"
         export ANTHROPIC_AUTH_TOKEN="$GLM_API_KEY"
         export ANTHROPIC_API_KEY="$GLM_API_KEY"
-        export ANTHROPIC_MODEL="glm-4.6"
-        export ANTHROPIC_SMALL_FAST_MODEL="glm-4.6"
-        echo -e "${GREEN}✅ 已切换到 GLM4.6（官方）${NC}"
+        export ANTHROPIC_MODEL="glm-4.7"
+        export ANTHROPIC_SMALL_FAST_MODEL="glm-4.7"
+        echo -e "${GREEN}✅ 已切换到 GLM4.7（官方）${NC}"
     elif is_effectively_set "$PPINFRA_API_KEY"; then
         # 备用：PPINFRA GLM 支持
         export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
         export ANTHROPIC_API_URL="https://api.ppinfra.com/anthropic"
         export ANTHROPIC_AUTH_TOKEN="$PPINFRA_API_KEY"
         export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
-        export ANTHROPIC_MODEL="zai-org/glm-4.6"
-        export ANTHROPIC_SMALL_FAST_MODEL="zai-org/glm-4.6"
-        echo -e "${GREEN}✅ 已切换到 GLM4.6（PPINFRA 备用）${NC}"
+        export ANTHROPIC_MODEL="zai-org/glm-4.7"
+        export ANTHROPIC_SMALL_FAST_MODEL="zai-org/glm-4.7"
+        echo -e "${GREEN}✅ 已切换到 GLM4.7（PPINFRA 备用）${NC}"
     else
         echo -e "${RED}❌ Please configure GLM_API_KEY or PPINFRA_API_KEY${NC}"
         return 1
@@ -1081,17 +1081,17 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_MODEL='deepseek/deepseek-v3.2-exp'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='deepseek/deepseek-v3.2-exp'"
             ;;
-        "glm"|"glm4"|"glm4.6")
+        "glm"|"glm4"|"glm4.6"|"glm4.7")
             if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') GLM 4.6（PPINFRA）" >&2
+                echo "✅ $(t 'switched_to') GLM 4.7（PPINFRA）" >&2
             else
-                echo -e "${GREEN}✅ $(t 'switched_to') GLM 4.6（PPINFRA）${NC}" >&2
+                echo -e "${GREEN}✅ $(t 'switched_to') GLM 4.7（PPINFRA）${NC}" >&2
             fi
             echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
             echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
             echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
-            echo "export ANTHROPIC_MODEL='zai-org/glm-4.6'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='zai-org/glm-4.6'"
+            echo "export ANTHROPIC_MODEL='zai-org/glm-4.7'"
+            echo "export ANTHROPIC_SMALL_FAST_MODEL='zai-org/glm-4.7'"
             ;;
         "kimi"|"kimi2")
             if [[ "$no_color" == "true" ]]; then
@@ -1210,7 +1210,7 @@ show_help() {
     echo "  🐱 LongCat             - 官方：LongCat-Flash-Thinking / LongCat-Flash-Chat"
     echo "  🎯 MiniMax M2          - 官方：MiniMax-M2 ｜ 备用：MiniMax-M2 (PPINFRA)"
     echo "  🐪 Qwen                - 官方：qwen3-max (阿里云) ｜ 备用：qwen3-next-80b-a3b-thinking (PPINFRA)"
-    echo "  🇨🇳 GLM4.6             - 官方：glm-4.6 / glm-4.5-air"
+    echo "  🇨🇳 GLM4.7             - 官方：glm-4.7 / glm-4.5-air"
     echo "  🧠 Claude Sonnet 4.5   - claude-sonnet-4-5-20250929"
     echo "  🚀 Claude Opus 4.5     - claude-opus-4-5-20251101"
     echo "  🔷 Claude Haiku 4.5    - claude-haiku-4-5"
@@ -1236,7 +1236,7 @@ ensure_model_override_defaults() {
         "SEED_SMALL_FAST_MODEL=doubao-seed-code-preview-latest"
         "QWEN_MODEL=qwen3-max"
         "QWEN_SMALL_FAST_MODEL=qwen3-next-80b-a3b-instruct"
-        "GLM_MODEL=glm-4.6"
+        "GLM_MODEL=glm-4.7"
         "GLM_SMALL_FAST_MODEL=glm-4.5-air"
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
         "CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929"
@@ -1434,7 +1434,7 @@ emit_env_exports() {
                 return 1
             fi
             ;;
-        "glm"|"glm4"|"glm4.6")
+        "glm"|"glm4"|"glm4.6"|"glm4.7")
             if is_effectively_set "$GLM_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1443,7 +1443,7 @@ emit_env_exports() {
                 echo "export ANTHROPIC_API_URL='https://open.bigmodel.cn/api/anthropic'"
                 echo "if [ -z \"\${GLM_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
                 echo "export ANTHROPIC_AUTH_TOKEN=\"\${GLM_API_KEY}\""
-                local glm_model="${GLM_MODEL:-glm-4.6}"
+                local glm_model="${GLM_MODEL:-glm-4.7}"
                 local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.5-air}"
                 echo "export ANTHROPIC_MODEL='${glm_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
@@ -1455,8 +1455,8 @@ emit_env_exports() {
                 echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
                 echo "if [ -z \"\${PPINFRA_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
                 echo "export ANTHROPIC_AUTH_TOKEN=\"\${PPINFRA_API_KEY}\""
-                local glm_model="${GLM_MODEL:-zai-org/glm-4.6}"
-                local glm_small="${GLM_SMALL_FAST_MODEL:-zai-org/glm-4.6}"
+                local glm_model="${GLM_MODEL:-zai-org/glm-4.7}"
+                local glm_small="${GLM_SMALL_FAST_MODEL:-zai-org/glm-4.7}"
                 echo "export ANTHROPIC_MODEL='${glm_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
             else
@@ -1680,7 +1680,7 @@ main() {
         "seed"|"doubao")
             emit_env_exports seed
             ;;
-        "glm"|"glm4"|"glm4.6")
+        "glm"|"glm4"|"glm4.6"|"glm4.7")
             emit_env_exports glm
             ;;
         "claude"|"sonnet"|"s")

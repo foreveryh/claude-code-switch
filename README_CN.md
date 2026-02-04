@@ -20,7 +20,7 @@ curl -fsSL https://raw.githubusercontent.com/foreveryh/claude-code-switch/main/q
 source ~/.zshrc  # 或 source ~/.bashrc for bash
 
 # 3. 立即尝试（无需密钥！）
-ccm glm          # 切换到 GLM-4.6
+ccm glm          # 切换到 GLM-4.7
 ccc deepseek     # 启动 Claude Code with DeepSeek
 ```
 
@@ -52,18 +52,18 @@ ccc deepseek     # 启动 Claude Code with DeepSeek
 | 🎯 **MiniMax M2** | ✅ MiniMax-M2 | ✅ minimax/minimax-m2 | 代码和推理 |
 | 🌊 **StreamLake (KAT)** | ✅ KAT-Coder | ❌ 仅官方 | StreamLake AI |
 | 🐪 **Qwen** | ✅ qwen3-max（阿里云） | ✅ qwen3-next-80b-a3b-thinking | 阿里云官方 |
-| 🇨🇳 **GLM4.6** | ✅ glm-4.6 | ✅ zai-org/glm-4.6 | 智谱清言 |
+| 🇨🇳 **GLM4.7** | ✅ glm-4.7 | ✅ zai-org/glm-4.7 | 智谱清言 |
 | 🧠 **Claude Sonnet 4.5** | ✅ claude-sonnet-4-5-20250929 | ❌ 仅官方 | 平衡性能 |
 | 🚀 **Claude Opus 4.5** | ✅ claude-opus-4-5-20251101 | ❌ 仅官方 | 最强推理 |
 | 🔷 **Claude Haiku 4.5** | ✅ claude-haiku-4-5 | ❌ 仅官方 | 快速高效 |
 
-> 🎁 **GLM-4.6 官方注册**
+> 🎁 **GLM-4.7 官方注册**
 >
 > 使用智谱AI官方Claude Code集成：
 > - **注册链接**：https://www.bigmodel.cn/claude-code?ic=5XMIOZPPXB
 > - **邀请码**：`5XMIOZPPXB`
 >
-> GLM-4.6 支持官方 Claude Code 集成，零配置体验，无需 API key 即可开始使用！
+> GLM-4.7 支持官方 Claude Code 集成，零配置体验，无需 API key 即可开始使用！
 
 > 💰 **PPINFRA 备用服务注册**
 >
@@ -164,7 +164,7 @@ KIMI_CN_MODEL=kimi-k2-thinking  # 用于 KIMI CN（国内版本）
 LONGCAT_MODEL=LongCat-Flash-Thinking
 MINIMAX_MODEL=MiniMax-M2
 QWEN_MODEL=qwen3-max
-GLM_MODEL=glm-4.6
+GLM_MODEL=glm-4.7
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-5-20251101
 
@@ -288,7 +288,7 @@ CCM_KEYCHAIN_SERVICE="Claude Code" ccm debug-keychain
 **方式1：`ccm` - 环境管理**
 ```bash
 ccm deepseek      # 切换到 DeepSeek
-ccm glm           # 切换到 GLM4.6
+ccm glm           # 切换到 GLM4.7
 ccm pp kimi       # 切换到 PPINFRA KIMI
 claude            # 然后手动启动 Claude Code
 ```
@@ -310,7 +310,7 @@ ccm deepseek      # 切换到Deepseek
 ccm minimax       # 切换到MiniMax M2
 ccm qwen          # 切换到Qwen
 ccm kat           # 切换到StreamLake (KAT)
-ccm glm           # 切换到GLM4.6
+ccm glm           # 切换到GLM4.7
 ccm longcat       # 切换到LongCat
 ccm claude        # 切换到Claude Sonnet 4.5
 ccm opus          # 切换到Claude Opus 4.5
@@ -388,7 +388,7 @@ ccc pp glm --dangerously-skip-permissions
 ✅ 已配置环境: GLM (PPINFRA)
 
 🚀 启动 Claude Code...
-   Model: zai-org/glm-4.6
+   Model: zai-org/glm-4.7
    Base URL: https://api.ppinfra.com/anthropic
 ```
 
@@ -416,7 +416,7 @@ CCM实现智能备用：
   - `MiniMax-M2` (MiniMax官方)
   - `minimax/minimax-m2` (MiniMax PPINFRA备用)
   - `qwen3-next-80b-a3b-thinking` (Qwen备用)
-  - `zai-org/glm-4.6` (GLM备用)
+  - `zai-org/glm-4.7` (GLM备用)
 
 ### 安全和隐私
 
