@@ -457,11 +457,11 @@ EOF
 #!/usr/bin/env bash
 set -euo pipefail
 CCM_SH="__DATA_DIR__/ccm.sh"
-if [[ ! -f "\$CCM_SH" ]]; then
-  echo "ccm error: missing \$CCM_SH" >&2
+if [[ ! -f "$CCM_SH" ]]; then
+  echo "ccm error: missing $CCM_SH" >&2
   exit 1
 fi
-exec "\$CCM_SH" "\$@"
+exec "$CCM_SH" "$@"
 EOF
 )"
     content="${content//__DATA_DIR__/$data_dir}"
