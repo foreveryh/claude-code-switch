@@ -30,16 +30,26 @@ ASSUME_YES=false         # non-interactive confirmations
 PROJECT_DIR=""           # for project mode
 INTERACTIVE=false        # interactive prompts
 
+t() {
+  local en="$1"
+  local zh="$2"
+  if [[ "${CCM_LANGUAGE:-${LANG:-}}" =~ ^zh ]]; then
+    echo "$zh"
+  else
+    echo "$en"
+  fi
+}
+
 log_info() {
   echo "==> $*"
 }
 
 log_warn() {
-  echo "Warning: $*" >&2
+  echo "$(t "Warning" "警告"): $*" >&2
 }
 
 log_error() {
-  echo "Error: $*" >&2
+  echo "$(t "Error" "错误"): $*" >&2
 }
 
 usage() {
@@ -689,11 +699,11 @@ main() {
   parse_args "$@"
 
   echo ""
-  log_info "CCM Installer"
-  echo "Default: user-level PATH install"
-  echo "Options: --project (project-local), --system (system-wide), --rc (rc injection)"
-  echo "Tip: use --cleanup-legacy if you previously installed the old rc-based version"
-  echo "Interactive: auto-enabled when run without flags in a TTY"
+  log_info "$(t "CCM Installer" "CCM 安装器")"
+  echo "$(t "Default: user-level PATH install" "默认：用户级 PATH 安装")"
+  echo "$(t "Options: --project (project-local), --system (system-wide), --rc (rc injection)" "可选项：--project（项目内）、--system（系统级）、--rc（写入 rc）")"
+  echo "$(t "Tip: use --cleanup-legacy if you previously installed the old rc-based version" "提示：如果以前使用过旧版 rc 安装，请用 --cleanup-legacy 清理")"
+  echo "$(t "Interactive: auto-enabled when run without flags in a TTY" "交互模式：在 TTY 且不带参数运行时自动启用")"
   echo ""
 
   if [[ "$INTERACTIVE" == "false" && "$arg_count" -eq 0 && -t 0 && "$ASSUME_YES" == "false" ]]; then
@@ -701,12 +711,12 @@ main() {
   fi
 
   if $INTERACTIVE; then
-    log_info "Interactive setup"
-    echo "Select install mode:"
-    echo "  1) User (recommended)"
-    echo "  2) System (may require sudo)"
-    echo "  3) Project (current directory only)"
-    read -r -p "Choose [1-3] (default 1): " mode_choice
+    log_info "$(t "Interactive setup" "交互式安装")"
+    echo "$(t "Select install mode:" "选择安装模式：")"
+    echo "  1) $(t "User (recommended)" "用户级（推荐）")"
+    echo "  2) $(t "System (may require sudo)" "系统级（可能需要 sudo）")"
+    echo "  3) $(t "Project (current directory only)" "项目级（仅当前目录）")"
+    read -r -p "$(t "Choose [1-3] (default 1): " "请选择 [1-3]（默认 1）：")" mode_choice
     case "$mode_choice" in
       2) MODE="system" ;;
       3) MODE="project" ;;
@@ -714,17 +724,17 @@ main() {
     esac
 
     if [[ "$MODE" == "project" ]]; then
-      read -r -p "Project directory (default: $PWD): " proj_choice
+      read -r -p "$(t "Project directory (default: $PWD): " "项目目录（默认：$PWD）：")" proj_choice
       PROJECT_DIR="${proj_choice:-$PWD}"
     fi
 
     if [[ "$MODE" != "project" ]]; then
-    read -r -p "Inject ccm/ccc functions into shell rc? [y/N]: " rc_choice
-    rc_choice="${rc_choice:-N}"
-    case "$rc_choice" in
-      y|Y|yes|YES) ENABLE_RC=true ;;
-      *) ;;
-    esac
+      read -r -p "$(t "Inject ccm/ccc functions into shell rc? [y/N]: " "是否写入 shell rc（ccm/ccc 函数）？[y/N]：")" rc_choice
+      rc_choice="${rc_choice:-N}"
+      case "$rc_choice" in
+        y|Y|yes|YES) ENABLE_RC=true ;;
+        *) ;;
+      esac
     fi
   fi
 
@@ -747,37 +757,37 @@ main() {
     data_dir="$(select_data_dir)"
   fi
 
-  log_info "Install plan"
-  echo "  Mode: $MODE"
+  log_info "$(t "Install plan" "安装计划")"
+  echo "  $(t "Mode" "模式"): $MODE"
   if [[ "$MODE" == "project" ]]; then
-    echo "  Project: $PROJECT_DIR"
+    echo "  $(t "Project" "项目"): $PROJECT_DIR"
   fi
-  echo "  Bin:  $bin_dir"
-  echo "  Data: $data_dir"
+  echo "  $(t "Bin" "可执行目录"):  $bin_dir"
+  echo "  $(t "Data" "数据目录"): $data_dir"
   if $ENABLE_RC; then
-    echo "  RC injection: enabled"
+    echo "  $(t "RC injection" "写入 rc"): $(t "enabled" "开启")"
   else
-    echo "  RC injection: disabled"
+    echo "  $(t "RC injection" "写入 rc"): $(t "disabled" "关闭")"
   fi
   if $CLEANUP_LEGACY; then
-    echo "  Legacy cleanup: enabled"
+    echo "  $(t "Legacy cleanup" "旧版清理"): $(t "enabled" "开启")"
   else
-    echo "  Legacy cleanup: prompt if detected"
+    echo "  $(t "Legacy cleanup" "旧版清理"): $(t "prompt if detected" "检测到则询问")"
   fi
 
   # Legacy detection and guidance
   local legacy_info=""
   if legacy_info=$(legacy_detect "$data_dir"); then
     echo ""
-    log_warn "Legacy installation detected:"
+    log_warn "$(t "Legacy installation detected:" "检测到旧版安装：")"
     echo "$legacy_info"
     echo ""
-    echo "This can override the new PATH-based install."
-    echo "- To clean automatically, run: ./install.sh --cleanup-legacy"
+    echo "$(t "This can override the new PATH-based install." "旧版可能会覆盖新的 PATH 安装。")"
+    echo "$(t "- To clean automatically, run: ./install.sh --cleanup-legacy" "- 要自动清理，请运行：./install.sh --cleanup-legacy")"
     echo ""
     if ! $CLEANUP_LEGACY; then
       if [[ -t 0 && "$ASSUME_YES" == "false" ]]; then
-        read -r -p "Clean legacy install now? [y/N] " reply
+        read -r -p "$(t "Clean legacy install now? [y/N] " "现在清理旧版安装？[y/N]：")" reply
         case "$reply" in
           y|Y|yes|YES)
             CLEANUP_LEGACY=true
@@ -807,7 +817,7 @@ main() {
     local rc_target="${rc_files[0]:-$HOME/.zshrc}"
     remove_existing_block "$rc_target"
     append_function_block "$rc_target" "$data_dir/ccm.sh"
-    log_info "Injected ccm/ccc functions into: $rc_target"
+    log_info "$(t "Injected ccm/ccc functions into:" "已写入 ccm/ccc 函数到：") $rc_target"
   fi
 
   if [[ "$MODE" == "project" ]]; then
@@ -815,31 +825,31 @@ main() {
   fi
 
   echo ""
-  log_info "✅ Installation complete"
-  echo "   Mode: $MODE"
-  echo "   Bin:  $bin_dir"
-  echo "   Data: $data_dir"
+  log_info "$(t "✅ Installation complete" "✅ 安装完成")"
+  echo "   $(t "Mode" "模式"): $MODE"
+  echo "   $(t "Bin" "可执行目录"):  $bin_dir"
+  echo "   $(t "Data" "数据目录"): $data_dir"
 
   if ! in_path "$bin_dir"; then
     echo ""
-    log_warn "$bin_dir is not in your PATH"
-    echo "Add this to your shell rc (~/.zshrc or ~/.bashrc):"
+    log_warn "$(t "$bin_dir is not in your PATH" "$bin_dir 不在你的 PATH 中")"
+    echo "$(t "Add this to your shell rc (~/.zshrc or ~/.bashrc):" "把以下内容加入你的 shell rc（~/.zshrc 或 ~/.bashrc）：")"
     echo "  export PATH=\"$bin_dir:\$PATH\""
   fi
 
   echo ""
   if [[ "$MODE" == "project" ]]; then
-    echo "Next steps:"
+    echo "$(t "Next steps:" "下一步：")"
     echo "  source .ccm/activate"
     echo "  ccm status"
   else
-    echo "Next steps:"
+    echo "$(t "Next steps:" "下一步：")"
     if $ENABLE_RC; then
-      echo "  source ~/.zshrc (or ~/.bashrc)"
+      echo "  source ~/.zshrc $(t "(or ~/.bashrc)" "（或 ~/.bashrc）")"
       echo "  ccm status"
     else
-      echo "  eval \"\$(ccm deepseek)\"   # Apply env to current shell"
-      echo "  ccc deepseek              # Switch + launch Claude Code"
+      echo "  eval \"\$(ccm deepseek)\"   # $(t "Apply env to current shell" "在当前 shell 生效")"
+      echo "  ccc deepseek              # $(t "Switch + launch Claude Code" "切换并启动 Claude Code")"
     fi
   fi
 }
