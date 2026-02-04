@@ -682,6 +682,13 @@ EOF
 main() {
   parse_args "$@"
 
+  echo ""
+  log_info "CCM Installer"
+  echo "Default: user-level PATH install"
+  echo "Options: --project (project-local), --system (system-wide), --rc (rc injection)"
+  echo "Tip: use --cleanup-legacy if you previously installed the old rc-based version"
+  echo ""
+
   if [[ "$MODE" == "project" ]]; then
     PROJECT_DIR="${PROJECT_DIR:-$PWD}"
   fi
@@ -699,6 +706,24 @@ main() {
   else
     bin_dir="$(select_bin_dir)"
     data_dir="$(select_data_dir)"
+  fi
+
+  log_info "Install plan"
+  echo "  Mode: $MODE"
+  if [[ "$MODE" == "project" ]]; then
+    echo "  Project: $PROJECT_DIR"
+  fi
+  echo "  Bin:  $bin_dir"
+  echo "  Data: $data_dir"
+  if $ENABLE_RC; then
+    echo "  RC injection: enabled"
+  else
+    echo "  RC injection: disabled"
+  fi
+  if $CLEANUP_LEGACY; then
+    echo "  Legacy cleanup: enabled"
+  else
+    echo "  Legacy cleanup: prompt if detected"
   fi
 
   # Legacy detection and guidance
