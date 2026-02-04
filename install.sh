@@ -24,7 +24,7 @@ END_MARK="# <<< ccm function end <<<"
 
 MODE="user"              # user | system | project
 PREFIX=""               # explicit bin dir
-ENABLE_RC=false          # add rc function block
+ENABLE_RC=true           # add rc function block (default on for convenience)
 CLEANUP_LEGACY=false     # remove old rc blocks + legacy dirs
 ASSUME_YES=false         # non-interactive confirmations
 PROJECT_DIR=""           # for project mode
@@ -61,7 +61,8 @@ Options:
   --system              System-level install (may require sudo)
   --project             Project-level install into .ccm/ (current dir)
   --prefix <dir>        Override install bin directory
-  --rc                  Inject ccm/ccc functions into shell rc
+  --rc                  Inject ccm/ccc functions into shell rc (default)
+  --no-rc               Do not inject ccm/ccc functions into shell rc
   --cleanup-legacy      Remove legacy rc blocks and old install dirs
   --interactive         Force interactive prompts
   -y, --yes             Assume yes for prompts
@@ -96,6 +97,9 @@ parse_args() {
         ;;
       --rc)
         ENABLE_RC=true
+        ;;
+      --no-rc)
+        ENABLE_RC=false
         ;;
       --cleanup-legacy|--migrate)
         CLEANUP_LEGACY=true
@@ -700,8 +704,8 @@ main() {
 
   echo ""
   log_info "$(t "CCM Installer" "CCM 安装器")"
-  echo "$(t "Default: user-level PATH install" "默认：用户级 PATH 安装")"
-  echo "$(t "Options: --project (project-local), --system (system-wide), --rc (rc injection)" "可选项：--project（项目内）、--system（系统级）、--rc（写入 rc）")"
+  echo "$(t "Default: user-level PATH install + rc injection" "默认：用户级 PATH 安装 + 写入 rc")"
+  echo "$(t "Options: --project (project-local), --system (system-wide), --no-rc (disable rc)" "可选项：--project（项目内）、--system（系统级）、--no-rc（不写入 rc）")"
   echo "$(t "Tip: use --cleanup-legacy if you previously installed the old rc-based version" "提示：如果以前使用过旧版 rc 安装，请用 --cleanup-legacy 清理")"
   echo "$(t "Interactive: auto-enabled when run without flags in a TTY" "交互模式：在 TTY 且不带参数运行时自动启用")"
   echo ""
@@ -729,17 +733,18 @@ main() {
     fi
 
     if [[ "$MODE" != "project" ]]; then
-      read -r -p "$(t "Inject ccm/ccc functions into shell rc? [y/N]: " "是否写入 shell rc（ccm/ccc 函数）？[y/N]：")" rc_choice
-      rc_choice="${rc_choice:-N}"
+      read -r -p "$(t "Inject ccm/ccc functions into shell rc? [Y/n]: " "是否写入 shell rc（ccm/ccc 函数）？[Y/n]：")" rc_choice
+      rc_choice="${rc_choice:-Y}"
       case "$rc_choice" in
-        y|Y|yes|YES) ENABLE_RC=true ;;
-        *) ;;
+        n|N|no|NO) ENABLE_RC=false ;;
+        *) ENABLE_RC=true ;;
       esac
     fi
   fi
 
   if [[ "$MODE" == "project" ]]; then
     PROJECT_DIR="${PROJECT_DIR:-$PWD}"
+    ENABLE_RC=false
   fi
 
   if [[ "$MODE" == "project" && -n "$PREFIX" ]]; then
