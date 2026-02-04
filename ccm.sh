@@ -945,7 +945,7 @@ show_status() {
     if [[ -n "$CLAUDE_PROXY_BASE_URL" && "$CLAUDE_PROXY_BASE_URL" != "https://api5.ai" ]]; then
         echo "   BASE_URL: ${CLAUDE_PROXY_BASE_URL} $(t 'custom' '(custom)')"
     else
-        echo "   BASE_URL: ${CLAUDE_PROXY_BASE_URL:-"https://api5.ai (default)"}"
+        echo "   BASE_URL: ${CLAUDE_PROXY_BASE_URL:-https://api5.ai} (default)"
     fi
 }
 
@@ -1432,12 +1432,13 @@ switch_to_proxy() {
     fi
 
     # 清理旧环境变量
-    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL API_TIMEOUT_MS"
+    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
 
     # 环境变量导出
     echo "export ANTHROPIC_BASE_URL='$base_url'"
     echo "export ANTHROPIC_API_URL='$base_url'"
     echo "export ANTHROPIC_AUTH_TOKEN='$api_key'"
+    echo "export ANTHROPIC_API_KEY='$api_key'"
     echo "export ANTHROPIC_MODEL='$model'"
     echo "export ANTHROPIC_SMALL_FAST_MODEL='$small_fast_model'"
     echo "export API_TIMEOUT_MS='300000'"
@@ -1468,6 +1469,7 @@ show_help() {
     echo "  longcat, lc        - env longcat"
     echo "  minimax, mm        - env minimax"
     echo "  qwen               - env qwen"
+    echo "  proxy              - env Claude Proxy"
     echo "  glm, glm4          - env glm"
     echo "  claude, sonnet, s  - env claude"
     echo "  opus, o            - env opus (Claude Opus 4.5)"
