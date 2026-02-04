@@ -24,7 +24,7 @@ Examples:
   ./ccc opus:work                    # Switch to 'work' account and use Opus
 
 Available models:
-  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, opus, haiku, longcat, minimax
+  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, opus, haiku, longcat, minimax, proxy
   PPINFRA:  pp deepseek | pp glm | pp kimi | pp qwen
   Account:  <account> | claude:<account> | opus:<account> | haiku:<account>
 EOF
@@ -63,7 +63,7 @@ claude_args=("$@")
 # Helper: is known model keyword
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|longcat|lc|minimax|mm|seed|doubao|claude|sonnet|s|opus|o|haiku|h)
+        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|longcat|lc|minimax|mm|seed|doubao|claude|sonnet|s|opus|o|haiku|h|proxy)
             return 0 ;;
         *)
             return 1 ;;
