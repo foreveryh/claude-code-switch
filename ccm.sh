@@ -423,13 +423,12 @@ project_write_glm_settings() {
     fi
 
     mkdir -p "$settings_dir"
-    cat > "$settings_path" <<EOF
+  cat > "$settings_path" <<EOF
 {
   "ccmManaged": true,
   "env": {
     "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic",
     "ANTHROPIC_API_URL": "https://open.bigmodel.cn/api/anthropic",
-    "ANTHROPIC_AUTH_TOKEN": "${GLM_API_KEY}",
     "ANTHROPIC_API_KEY": "${GLM_API_KEY}",
     "ANTHROPIC_MODEL": "${glm_model}",
     "ANTHROPIC_SMALL_FAST_MODEL": "${glm_small}"
