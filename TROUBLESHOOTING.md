@@ -40,9 +40,6 @@
    
    # 使用 ccc 启动（会自动设置环境变量）
    ccc deepseek
-   
-   # 或使用 PPINFRA
-   ccc pp glm
    ```
 
 3. **验证**：启动后不应该再看到认证冲突警告。
@@ -94,8 +91,8 @@ ccm h
 zsh: parse error near `:1:'
 
 # 错误示例 2：新功能无法使用
-ccm haiku
-zsh: command not found: haiku
+ccm open kimi
+ccm: unknown option: open
 
 # 错误示例 3：旧版本行为
 ccm status  # 显示的是旧配置，没有新添加的模型
@@ -182,9 +179,6 @@ Claude Code 继承的是**启动时**的环境变量，不是当前 shell 的环
 ```bash
 # 一步到位：切换模型并启动 Claude Code
 ccc deepseek
-
-# 使用 PPINFRA
-ccc pp glm
 ```
 
 **或者两步走**：
@@ -198,38 +192,6 @@ claude
 ```
 
 ⚠️ **注意**：不要先启动 Claude Code，然后再切换环境变量，这样不会生效。
-
----
-
-## 问题 4：PPINFRA API Key 未配置
-
-### 症状
-```
-❌ PPINFRA_API_KEY not configured
-```
-
-### 解决方案
-
-编辑配置文件：
-
-```bash
-# 打开配置文件
-ccm config
-
-# 或直接编辑
-vim ~/.ccm_config
-```
-
-添加您的 PPINFRA API Key：
-```bash
-PPINFRA_API_KEY=your-actual-api-key-here
-```
-
-保存后重新切换：
-```bash
-ccm pp deepseek
-ccm status  # 验证配置
-```
 
 ---
 
@@ -257,7 +219,6 @@ ccc deepseek
 
 **可能原因**：
 - 模型名称拼写错误
-- PPINFRA 服务不支持该模型
 - API Key 无效
 
 **解决**：
@@ -325,11 +286,6 @@ $ ccc deepseek
 # 测试官方 API
 ccc deepseek
 # 输入: 你好
-# 应该得到正常回复
-
-# 测试 PPINFRA
-ccc pp glm
-# 输入: 你好  
 # 应该得到正常回复
 ```
 

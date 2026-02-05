@@ -250,7 +250,7 @@ ccm() {
       "\$script" "\$@"
       ;;
     *)
-      # All other commands (including pp, model switching) use eval to set environment variables
+      # All other commands (model switching) use eval to set environment variables
       eval "\$("\$script" "\$@")"
       ;;
   esac
@@ -262,46 +262,48 @@ unalias ccc 2>/dev/null || true
 unset -f ccc 2>/dev/null || true
 ccc() {
   if [[ \$# -eq 0 ]]; then
-    echo "Usage: ccc <model> [claude-options]"
+    echo "Usage: ccc <model> [region|variant] [claude-options]"
+    echo "       ccc open <provider> [claude-options]"
     echo "       ccc <account> [claude-options]            # Switch account then launch"
     echo "       ccc <model>:<account> [claude-options]"
     echo ""
     echo "Examples:"
     echo "  ccc deepseek                              # Launch with DeepSeek"
-    echo "  ccc pp deepseek                           # Launch with PPINFRA DeepSeek"
+    echo "  ccc open kimi                             # Launch with OpenRouter (kimi)"
     echo "  ccc woohelps                              # Switch to 'woohelps' account and launch"
-    echo "  ccc opus:work                             # Switch to 'work' account and launch Opus"
+    echo "  ccc claude:work                           # Switch to 'work' account and use Claude"
     echo "  ccc glm --dangerously-skip-permissions    # Launch GLM with options"
     echo ""
     echo "Available models:"
-    echo "  Official: deepseek, glm, kimi, qwen, claude, opus, haiku, longcat"
-    echo "  PPINFRA:  pp deepseek, pp glm, pp kimi, pp qwen"
-    echo "  Account:  <account> | claude:<account> | opus:<account> | haiku:<account>"
+    echo "  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax"
+    echo "  OpenRouter: open <provider>"
+    echo "  Account:  <account> | claude:<account>"
     return 1
   fi
 
-  # Check for pp prefix
-  local use_pp=false
   local model=""
-  local claude_args=()
-  
-  if [[ "\$1" == "pp" ]]; then
-    use_pp=true
-    shift
-    model="\$1"
-    shift
+  local open_provider=""
+  local region_arg=""
+  local seed_variant=""
+
+  if [[ "\$1" == "open" ]]; then
+    shift || true
+    if [[ \$# -lt 1 ]]; then
+      echo "Usage: ccc open <provider> [claude-options]"
+      return 1
+    fi
+    model="open"
+    open_provider="\$1"
+    shift || true
   else
     model="\$1"
-    shift
+    shift || true
   fi
-  
-  # Collect additional Claude Code arguments
-  claude_args=("\$@")
   
   # Helper: known model keyword
   _is_known_model() {
     case "\$1" in
-      deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|longcat|lc|minimax|mm|claude|sonnet|s|opus|o|haiku|h|proxy)
+      deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
         return 0 ;;
       *)
         return 1 ;;
@@ -309,26 +311,48 @@ ccc() {
   }
 
   # Configure environment via ccm
-  if \$use_pp; then
-    echo "🔄 Switching to PPINFRA \$model..."
-    ccm pp "\$model" || return 1
+  if [[ "\$model" != "open" ]] && [[ "\$model" != *:* ]] && ! _is_known_model "\$model" && [[ ! "\$model" =~ ^- ]]; then
+    # Treat as account name
+    local account="\$model"
+    echo "🔄 Switching account to \$account..."
+    ccm switch-account "\$account" || return 1
+    ccm current-account || true
+    ccm claude || return 1
   else
-    if [[ "\$model" == *:* ]]; then
-      # model:account form handled by ccm
-      echo "🔄 Switching to \$model..."
-      ccm "\$model" || return 1
-    elif _is_known_model "\$model"; then
-      echo "🔄 Switching to \$model..."
-      ccm "\$model" || return 1
+    if [[ "\$model" == "open" ]]; then
+      echo "🔄 Switching to OpenRouter (\$open_provider)..."
+      ccm open "\$open_provider" || return 1
     else
-      # Treat as account name
-      local account="\$model"
-      echo "🔄 Switching account to \$account..."
-      ccm switch-account "\$account" || return 1
-      # Set default model (Claude Sonnet)
-      ccm claude || return 1
+      case "\$model" in
+        kimi|kimi2|qwen|glm|glm4|glm4.6|glm4.7|minimax|mm)
+          if [[ "\${1:-}" =~ ^(global|china|cn)$ ]]; then
+            region_arg="\$1"
+            shift || true
+          fi
+          ;;
+        seed|doubao)
+          if [[ "\${1:-}" =~ ^(doubao|glm|glm4|glm4.7|deepseek|ds|kimi|kimi2)$ ]]; then
+            seed_variant="\$1"
+            shift || true
+          fi
+          ;;
+      esac
+
+      if [[ -n "\$seed_variant" ]]; then
+        echo "🔄 Switching to \$model (\$seed_variant)..."
+        ccm "\$model" "\$seed_variant" || return 1
+      elif [[ -n "\$region_arg" ]]; then
+        echo "🔄 Switching to \$model (\$region_arg)..."
+        ccm "\$model" "\$region_arg" || return 1
+      else
+        echo "🔄 Switching to \$model..."
+        ccm "\$model" || return 1
+      fi
     fi
   fi
+
+  # Collect additional Claude Code arguments
+  local claude_args=("\$@")
 
   echo ""
   echo "🚀 Launching Claude Code..."
@@ -492,22 +516,22 @@ CCM="$SCRIPT_DIR/../ccm.sh"
 
 usage() {
     cat <<EOF2
-Usage: ccc <model> [claude-options]
+Usage: ccc <model> [region|variant] [claude-options]
+       ccc open <provider> [claude-options]
        ccc <account> [claude-options]        # Switch account then launch (default model)
        ccc <model>:<account> [claude-options]
-       ccc pp <model> [claude-options]
 
 Examples:
   ccc deepseek                     # Launch Claude Code with DeepSeek
-  ccc pp glm                       # Launch with PPINFRA GLM
+  ccc open kimi                    # Launch with OpenRouter (kimi)
   ccc kimi --dangerously-skip-permissions  # Pass options to Claude Code
   ccc woohelps                     # Switch to 'woohelps' account and launch
-  ccc opus:work                    # Switch to 'work' account and use Opus
+  ccc claude:work                  # Switch to 'work' account and use Claude
 
 Available models:
-  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, opus, haiku, longcat, minimax, proxy
-  PPINFRA:  pp deepseek | pp glm | pp kimi | pp qwen
-  Account:  <account> | claude:<account> | opus:<account> | haiku:<account>
+  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax
+  OpenRouter: open <provider>
+  Account:  <account> | claude:<account>
 EOF2
 }
 
@@ -521,34 +545,35 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
-use_pp=false
 model=""
+open_provider=""
+region_arg=""
+seed_variant=""
 
-if [[ "${1:-}" == "pp" ]]; then
-    use_pp=true
+if [[ "${1:-}" == "open" ]]; then
+    shift || true
+    if [[ $# -lt 1 ]]; then
+        usage
+        exit 1
+    fi
+    model="open"
+    open_provider="$1"
+    shift || true
+else
+    model="$1"
     shift || true
 fi
 
-if [[ $# -lt 1 ]]; then
-    usage
-    exit 1
-fi
-
-model="$1"
-shift || true
-
-claude_args=("$@")
-
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|longcat|lc|minimax|mm|seed|doubao|claude|sonnet|s|opus|o|haiku|h|proxy)
+        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
             return 0 ;;
         *)
             return 1 ;;
     esac
 }
 
-if ! $use_pp && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
+if [[ "$model" != "open" ]] && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
     account="$model"
     if ! "$CCM" switch-account "$account"; then
         echo "❌ Failed to switch account: $account" >&2
@@ -557,12 +582,35 @@ if ! $use_pp && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$mod
     "$CCM" current-account || true
     eval "$("$CCM" claude)"
 else
-    if $use_pp; then
-        eval "$("$CCM" pp "$model" true)"
+    if [[ "$model" == "open" ]]; then
+        eval "$("$CCM" open "$open_provider")"
     else
-        eval "$("$CCM" "$model")"
+        case "$model" in
+            kimi|kimi2|qwen|glm|glm4|glm4.6|glm4.7|minimax|mm)
+                if [[ "${1:-}" =~ ^(global|china|cn)$ ]]; then
+                    region_arg="$1"
+                    shift || true
+                fi
+                ;;
+            seed|doubao)
+                if [[ "${1:-}" =~ ^(doubao|glm|glm4|glm4.7|deepseek|ds|kimi|kimi2)$ ]]; then
+                    seed_variant="$1"
+                    shift || true
+                fi
+                ;;
+        esac
+
+        if [[ -n "$seed_variant" ]]; then
+            eval "$("$CCM" "$model" "$seed_variant")"
+        elif [[ -n "$region_arg" ]]; then
+            eval "$("$CCM" "$model" "$region_arg")"
+        else
+            eval "$("$CCM" "$model")"
+        fi
     fi
 fi
+
+claude_args=("$@")
 
 echo ""
 echo "🚀 Launching Claude Code..."
@@ -589,22 +637,22 @@ CCM="__DATA_DIR__/ccm.sh"
 
 usage() {
     cat <<EOF2
-Usage: ccc <model> [claude-options]
+Usage: ccc <model> [region|variant] [claude-options]
+       ccc open <provider> [claude-options]
        ccc <account> [claude-options]        # Switch account then launch (default model)
        ccc <model>:<account> [claude-options]
-       ccc pp <model> [claude-options]
 
 Examples:
   ccc deepseek                     # Launch Claude Code with DeepSeek
-  ccc pp glm                       # Launch with PPINFRA GLM
+  ccc open kimi                    # Launch with OpenRouter (kimi)
   ccc kimi --dangerously-skip-permissions  # Pass options to Claude Code
   ccc woohelps                     # Switch to 'woohelps' account and launch
-  ccc opus:work                    # Switch to 'work' account and use Opus
+  ccc claude:work                  # Switch to 'work' account and use Claude
 
 Available models:
-  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, opus, haiku, longcat, minimax, proxy
-  PPINFRA:  pp deepseek | pp glm | pp kimi | pp qwen
-  Account:  <account> | claude:<account> | opus:<account> | haiku:<account>
+  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax
+  OpenRouter: open <provider>
+  Account:  <account> | claude:<account>
 EOF2
 }
 
@@ -618,34 +666,35 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
-use_pp=false
 model=""
+open_provider=""
+region_arg=""
+seed_variant=""
 
-if [[ "${1:-}" == "pp" ]]; then
-    use_pp=true
+if [[ "${1:-}" == "open" ]]; then
+    shift || true
+    if [[ $# -lt 1 ]]; then
+        usage
+        exit 1
+    fi
+    model="open"
+    open_provider="$1"
+    shift || true
+else
+    model="$1"
     shift || true
 fi
 
-if [[ $# -lt 1 ]]; then
-    usage
-    exit 1
-fi
-
-model="$1"
-shift || true
-
-claude_args=("$@")
-
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|longcat|lc|minimax|mm|seed|doubao|claude|sonnet|s|opus|o|haiku|h|proxy)
+        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
             return 0 ;;
         *)
             return 1 ;;
     esac
 }
 
-if ! $use_pp && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
+if [[ "$model" != "open" ]] && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
     account="$model"
     if ! "$CCM" switch-account "$account"; then
         echo "❌ Failed to switch account: $account" >&2
@@ -654,12 +703,35 @@ if ! $use_pp && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$mod
     "$CCM" current-account || true
     eval "$("$CCM" claude)"
 else
-    if $use_pp; then
-        eval "$("$CCM" pp "$model" true)"
+    if [[ "$model" == "open" ]]; then
+        eval "$("$CCM" open "$open_provider")"
     else
-        eval "$("$CCM" "$model")"
+        case "$model" in
+            kimi|kimi2|qwen|glm|glm4|glm4.6|glm4.7|minimax|mm)
+                if [[ "${1:-}" =~ ^(global|china|cn)$ ]]; then
+                    region_arg="$1"
+                    shift || true
+                fi
+                ;;
+            seed|doubao)
+                if [[ "${1:-}" =~ ^(doubao|glm|glm4|glm4.7|deepseek|ds|kimi|kimi2)$ ]]; then
+                    seed_variant="$1"
+                    shift || true
+                fi
+                ;;
+        esac
+
+        if [[ -n "$seed_variant" ]]; then
+            eval "$("$CCM" "$model" "$seed_variant")"
+        elif [[ -n "$region_arg" ]]; then
+            eval "$("$CCM" "$model" "$region_arg")"
+        else
+            eval "$("$CCM" "$model")"
+        fi
     fi
 fi
+
+claude_args=("$@")
 
 echo ""
 echo "🚀 Launching Claude Code..."

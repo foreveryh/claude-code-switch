@@ -11,22 +11,22 @@ CCM="${CCM_CMD:-$CCM_CMD_DEFAULT}"
 
 usage() {
     cat <<EOF
-Usage: ./ccc <model> [claude-options]
+Usage: ./ccc <model> [region|variant] [claude-options]
+       ./ccc open <provider> [claude-options]
        ./ccc <account> [claude-options]        # Switch account then launch (default model)
        ./ccc <model>:<account> [claude-options]
-       ./ccc pp <model> [claude-options]
 
 Examples:
   ./ccc deepseek                     # Launch Claude Code with DeepSeek
-  ./ccc pp glm                       # Launch with PPINFRA GLM
+  ./ccc open kimi                    # Launch with OpenRouter (kimi)
   ./ccc kimi --dangerously-skip-permissions  # Pass options to Claude Code
   ./ccc woohelps                     # Switch to 'woohelps' account and launch
-  ./ccc opus:work                    # Switch to 'work' account and use Opus
+  ./ccc claude:work                  # Switch to 'work' account and use Claude
 
 Available models:
-  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, opus, haiku, longcat, minimax, proxy
-  PPINFRA:  pp deepseek | pp glm | pp kimi | pp qwen
-  Account:  <account> | claude:<account> | opus:<account> | haiku:<account>
+  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax
+  OpenRouter: open <provider>
+  Account:  <account> | claude:<account>
 EOF
 }
 
@@ -41,37 +41,42 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
-use_pp=false
 model=""
-
-if [[ "${1:-}" == "pp" ]]; then
-    use_pp=true
-    shift || true
-fi
+open_provider=""
+region_arg=""
+seed_variant=""
 
 if [[ $# -lt 1 ]]; then
     usage
     exit 1
 fi
 
-model="$1"
-shift || true
-
-# Remaining args are passed through to `claude`
-claude_args=("$@")
+if [[ "${1:-}" == "open" ]]; then
+    shift || true
+    if [[ $# -lt 1 ]]; then
+        usage
+        exit 1
+    fi
+    model="open"
+    open_provider="$1"
+    shift || true
+else
+    model="$1"
+    shift || true
+fi
 
 # Helper: is known model keyword
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|longcat|lc|minimax|mm|seed|doubao|claude|sonnet|s|opus|o|haiku|h|proxy)
+        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
             return 0 ;;
         *)
             return 1 ;;
     esac
 }
 
-# Account-only mode: `ccc <account>` (not pp, not known model, no colon)
-if ! $use_pp && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
+# Account-only mode: `ccc <account>` (not open, not known model, no colon)
+if [[ "$model" != "open" ]] && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
     account="$model"
     # 1) Switch account directly (no eval)
     if ! "$CCM" switch-account "$account"; then
@@ -84,13 +89,36 @@ if ! $use_pp && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$mod
     eval "$("$CCM" claude)"
 else
     # Configure environment for this process using repo-local ccm
-    if $use_pp; then
-        # pass no_color=true so status messages go to stderr and exports are clean on stdout
-        eval "$("$CCM" pp "$model" true)"
+    if [[ "$model" == "open" ]]; then
+        eval "$("$CCM" open "$open_provider")"
     else
-        eval "$("$CCM" "$model")"
+        case "$model" in
+            kimi|kimi2|qwen|glm|glm4|glm4.6|glm4.7|minimax|mm)
+                if [[ "${1:-}" =~ ^(global|china|cn)$ ]]; then
+                    region_arg="$1"
+                    shift || true
+                fi
+                ;;
+            seed|doubao)
+                if [[ "${1:-}" =~ ^(doubao|glm|glm4|glm4.7|deepseek|ds|kimi|kimi2)$ ]]; then
+                    seed_variant="$1"
+                    shift || true
+                fi
+                ;;
+        esac
+
+        if [[ -n "$seed_variant" ]]; then
+            eval "$("$CCM" "$model" "$seed_variant")"
+        elif [[ -n "$region_arg" ]]; then
+            eval "$("$CCM" "$model" "$region_arg")"
+        else
+            eval "$("$CCM" "$model")"
+        fi
     fi
 fi
+
+# Remaining args are passed through to `claude`
+claude_args=("$@")
 
 # Friendly status
 echo ""

@@ -149,20 +149,14 @@ CCM_LANGUAGE=en
 # Deepseek
 DEEPSEEK_API_KEY=sk-your-deepseek-api-key
 
-# GLM4.7 (智谱清言)
+# GLM (智谱清言)
 GLM_API_KEY=your-glm-api-key
 
-# KIMI for Coding (月之暗面)
+# KIMI (月之暗面)
 KIMI_API_KEY=your-kimi-api-key
 
-# LongCat（美团）
-LONGCAT_API_KEY=your-longcat-api-key
-
-# MiniMax M2
+# MiniMax
 MINIMAX_API_KEY=your-minimax-api-key
-# MiniMax Anthropic 兼容 BASE URL（可选）
-# MINIMAX_BASE_URL="https://api.minimax.com/anthropic"
-MINIMAX_BASE_URL=https://api.minimax.io/anthropic
 
 # 豆包 Seed-Code (字节跳动)
 ARK_API_KEY=your-ark-api-key
@@ -173,37 +167,30 @@ QWEN_API_KEY=your-qwen-api-key
 # Claude (如果使用API key而非Pro订阅)
 CLAUDE_API_KEY=your-claude-api-key
 
-# Claude Proxy - 支持自定义中转站
-CLAUDE_PROXY_API_KEY=sk-your-claude-proxy-key
-# 自定义中转站 BASE URL（可选）
-# CLAUDE_PROXY_BASE_URL="https://your-proxy.com"
-
-# 备用提供商（仅当且仅当官方密钥未提供时启用）
-PPINFRA_API_KEY=your-ppinfra-api-key
+# OpenRouter
+OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
 DEEPSEEK_SMALL_FAST_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_SMALL_FAST_MODEL=kimi-for-coding
-KIMI_CN_MODEL=kimi-k2-thinking
-KIMI_CN_SMALL_FAST_MODEL=kimi-k2-thinking
-QWEN_MODEL=qwen3-max
-QWEN_SMALL_FAST_MODEL=qwen3-next-80b-a3b-instruct
+KIMI_CN_MODEL=kimi-k2.5
+KIMI_CN_SMALL_FAST_MODEL=kimi-k2.5
+QWEN_MODEL=qwen3-max-2026-01-23
+QWEN_SMALL_FAST_MODEL=qwen3-coder-plus
 GLM_MODEL=glm-4.7
-GLM_SMALL_FAST_MODEL=glm-4.5-air
+GLM_SMALL_FAST_MODEL=glm-4.7
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-5-20251101
 OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
-HAIKU_MODEL=claude-haiku-4-5
-HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5
-LONGCAT_MODEL=LongCat-Flash-Thinking
-LONGCAT_SMALL_FAST_MODEL=LongCat-Flash-Chat
-MINIMAX_MODEL=MiniMax-M2
-MINIMAX_SMALL_FAST_MODEL=MiniMax-M2
-SEED_MODEL=doubao-seed-code-preview-latest
-SEED_SMALL_FAST_MODEL=doubao-seed-code-preview-latest
+HAIKU_MODEL=claude-haiku-4-5-20251001
+HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5-20251001
+MINIMAX_MODEL=MiniMax-M2.1
+MINIMAX_SMALL_FAST_MODEL=MiniMax-M2.1
+SEED_MODEL=ark-code-latest
+SEED_SMALL_FAST_MODEL=ark-code-latest
 
 EOF
         echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -279,20 +266,14 @@ CCM_LANGUAGE=en
 # Deepseek
 DEEPSEEK_API_KEY=sk-your-deepseek-api-key
 
-# GLM4.7 (智谱清言)
+# GLM (智谱清言)
 GLM_API_KEY=your-glm-api-key
 
-# KIMI for Coding (月之暗面)
+# KIMI (月之暗面)
 KIMI_API_KEY=your-kimi-api-key
 
-# LongCat（美团）
-LONGCAT_API_KEY=your-longcat-api-key
-
-# MiniMax M2
+# MiniMax
 MINIMAX_API_KEY=your-minimax-api-key
-# MiniMax Anthropic 兼容 BASE URL（可选）
-# MINIMAX_BASE_URL="https://api.minimax.com/anthropic"
-MINIMAX_BASE_URL=https://api.minimax.io/anthropic
 
 # 豆包 Seed-Code (字节跳动)
 ARK_API_KEY=your-ark-api-key
@@ -303,41 +284,30 @@ QWEN_API_KEY=your-qwen-api-key
 # Claude (如果使用API key而非Pro订阅)
 CLAUDE_API_KEY=your-claude-api-key
 
-# Claude Proxy - 支持自定义中转站
-CLAUDE_PROXY_API_KEY=sk-your-claude-proxy-key
-# 自定义中转站 BASE URL（可选）
-# CLAUDE_PROXY_BASE_URL="https://your-proxy.com"
-
-# 备用提供商（仅当且仅当官方密钥未提供时启用）
-PPINFRA_API_KEY=your-ppinfra-api-key
+# OpenRouter
+OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
 DEEPSEEK_SMALL_FAST_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_SMALL_FAST_MODEL=kimi-for-coding
-KIMI_CN_MODEL=kimi-k2-thinking
-KIMI_CN_SMALL_FAST_MODEL=kimi-k2-thinking
-QWEN_MODEL=qwen3-max
-QWEN_SMALL_FAST_MODEL=qwen3-next-80b-a3b-instruct
+KIMI_CN_MODEL=kimi-k2.5
+KIMI_CN_SMALL_FAST_MODEL=kimi-k2.5
+QWEN_MODEL=qwen3-max-2026-01-23
+QWEN_SMALL_FAST_MODEL=qwen3-coder-plus
 GLM_MODEL=glm-4.7
-GLM_SMALL_FAST_MODEL=glm-4.5-air
+GLM_SMALL_FAST_MODEL=glm-4.7
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-5-20251101
 OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
-HAIKU_MODEL=claude-haiku-4-5
-HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5
-LONGCAT_MODEL=LongCat-Flash-Thinking
-LONGCAT_SMALL_FAST_MODEL=LongCat-Flash-Chat
-MINIMAX_MODEL=MiniMax-M2
-MINIMAX_SMALL_FAST_MODEL=MiniMax-M2
-SEED_MODEL=doubao-seed-code-preview-latest
-SEED_SMALL_FAST_MODEL=doubao-seed-code-preview-latest
-
-# Claude Proxy 模型配置
-CLAUDE_PROXY_MODEL=claude-sonnet-4-5-20250929
-CLAUDE_PROXY_SMALL_FAST_MODEL=claude-haiku-4-5
+HAIKU_MODEL=claude-haiku-4-5-20251001
+HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5-20251001
+MINIMAX_MODEL=MiniMax-M2.1
+MINIMAX_SMALL_FAST_MODEL=MiniMax-M2.1
+SEED_MODEL=ark-code-latest
+SEED_SMALL_FAST_MODEL=ark-code-latest
 
 EOF
     echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -404,6 +374,22 @@ emit_default_models_from_pair() {
     emit_default_models "$primary" "$primary" "$haiku"
 }
 
+# Normalize region input to "global" or "china"
+normalize_region() {
+    local region="${1:-global}"
+    case "$region" in
+        ""|"global"|"g"|"intl"|"international"|"overseas")
+            echo "global"
+            ;;
+        "china"|"cn"|"zh"|"domestic")
+            echo "china"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
 # ============================================
 # Claude Pro 账号管理功能
 # ============================================
@@ -420,6 +406,13 @@ backup_project_settings() {
 }
 
 project_write_glm_settings() {
+    local region_input="${1:-global}"
+    local region
+    if ! region="$(normalize_region "$region_input")"; then
+        echo -e "${RED}❌ $(t 'unknown_option'): $region_input${NC}" >&2
+        echo -e "${YELLOW}💡 Usage: ccm project glm [global|china]${NC}" >&2
+        return 1
+    fi
     local settings_path
     settings_path="$(project_settings_path)"
     local settings_dir
@@ -431,7 +424,16 @@ project_write_glm_settings() {
     fi
 
     local glm_model="${GLM_MODEL:-glm-4.7}"
-    local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.5-air}"
+    local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.7}"
+    local base_url=""
+    case "$region" in
+        "global")
+            base_url="https://api.z.ai/api/anthropic"
+            ;;
+        "china")
+            base_url="https://open.bigmodel.cn/api/anthropic"
+            ;;
+    esac
 
     if [[ -f "$settings_path" ]]; then
         if ! grep -q '"ccmManaged"[[:space:]]*:[[:space:]]*true' "$settings_path"; then
@@ -444,19 +446,19 @@ project_write_glm_settings() {
 {
   "ccmManaged": true,
   "env": {
-    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic",
-    "ANTHROPIC_API_URL": "https://open.bigmodel.cn/api/anthropic",
+    "ANTHROPIC_BASE_URL": "${base_url}",
+    "ANTHROPIC_API_URL": "${base_url}",
     "ANTHROPIC_API_KEY": "${GLM_API_KEY}",
     "ANTHROPIC_MODEL": "${glm_model}",
     "ANTHROPIC_SMALL_FAST_MODEL": "${glm_small}",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "${glm_model}",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "${glm_model}",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${glm_small}"
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${glm_model}"
   }
 }
 EOF
     chmod 600 "$settings_path"
-    echo -e "${GREEN}✅ Wrote project settings for GLM at:${NC} $settings_path" >&2
+    echo -e "${GREEN}✅ Wrote project settings for GLM (${region}) at:${NC} $settings_path" >&2
     echo -e "${YELLOW}💡 This overrides user settings (e.g. Quotio) for this project only.${NC}" >&2
 }
 
@@ -1021,18 +1023,12 @@ show_status() {
     echo -e "${BLUE}🔧 $(t 'env_vars_status'):${NC}"
     echo "   GLM_API_KEY: $(mask_presence GLM_API_KEY)"
     echo "   KIMI_API_KEY: $(mask_presence KIMI_API_KEY)"
-    echo "   LONGCAT_API_KEY: $(mask_presence LONGCAT_API_KEY)"
     echo "   MINIMAX_API_KEY: $(mask_presence MINIMAX_API_KEY)"
     echo "   DEEPSEEK_API_KEY: $(mask_presence DEEPSEEK_API_KEY)"
     echo "   ARK_API_KEY: $(mask_presence ARK_API_KEY)"
     echo "   QWEN_API_KEY: $(mask_presence QWEN_API_KEY)"
-    echo "   CLAUDE_PROXY_API_KEY: $(mask_presence CLAUDE_PROXY_API_KEY)"
-    echo "   PPINFRA_API_KEY: $(mask_presence PPINFRA_API_KEY)"
+    echo "   OPENROUTER_API_KEY: $(mask_presence OPENROUTER_API_KEY)"
     echo ""
-    if is_effectively_set "$CLAUDE_PROXY_API_KEY" || is_effectively_set "$CLAUDE_PROXY_BASE_URL"; then
-        echo -e "${BLUE}🌐 Claude Proxy Configuration:${NC}"
-        echo "   BASE_URL: ${CLAUDE_PROXY_BASE_URL:-'(not set)'}"
-    fi
 }
 
 # 清理环境变量
@@ -1059,21 +1055,14 @@ switch_to_deepseek() {
         export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
         export ANTHROPIC_API_URL="https://api.deepseek.com/anthropic"
         export ANTHROPIC_AUTH_TOKEN="$DEEPSEEK_API_KEY"
-        export ANTHROPIC_API_KEY="$DEEPSEEK_API_KEY"
         export ANTHROPIC_MODEL="deepseek-chat"
-        export ANTHROPIC_SMALL_FAST_MODEL="deepseek-coder"
+        export ANTHROPIC_SMALL_FAST_MODEL="deepseek-chat"
+        export ANTHROPIC_DEFAULT_SONNET_MODEL="deepseek/deepseek-v3.2"
+        export ANTHROPIC_DEFAULT_OPUS_MODEL="deepseek/deepseek-v3.2"
+        export ANTHROPIC_DEFAULT_HAIKU_MODEL="deepseek/deepseek-v3.2"
         echo -e "${GREEN}✅ $(t 'switched_to') Deepseek（$(t 'official')）${NC}"
-    elif is_effectively_set "$PPINFRA_API_KEY"; then
-        # 备用：PPINFRA Anthropic 兼容
-        export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_API_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$PPINFRA_API_KEY"
-        export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
-        export ANTHROPIC_MODEL="deepseek/deepseek-v3.2-exp"
-        export ANTHROPIC_SMALL_FAST_MODEL="deepseek/deepseek-v3.2-exp"
-        echo -e "${GREEN}✅ $(t 'switched_to') Deepseek（$(t 'ppinfra_backup')）${NC}"
     else
-        echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY or PPINFRA_API_KEY${NC}"
+        echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY${NC}"
         return 1
     fi
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
@@ -1105,112 +1094,65 @@ switch_to_claude() {
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
-# 切换到Claude Opus
-switch_to_opus() {
-    local account_name="$1"
 
-    echo -e "${YELLOW}🔄 $(t 'switching_to') Claude Opus 4.5...${NC}"
-
-    # 如果指定了账号，先切换账号
-    if [[ -n "$account_name" ]]; then
-        echo -e "${BLUE}📝 切换到账号: $account_name${NC}"
-        if ! switch_account "$account_name"; then
-            return 1
-        fi
-    fi
-
-    clean_env
-    export ANTHROPIC_MODEL="${OPUS_MODEL:-claude-opus-4-5-20251101}"
-    export ANTHROPIC_SMALL_FAST_MODEL="${OPUS_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
-    echo -e "${GREEN}✅ 已切换到 Claude Opus 4.5 (使用 Claude Pro 订阅)${NC}"
-    if [[ -n "$account_name" ]]; then
-        echo "   $(t 'account'): $account_name"
-    fi
-    echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
-}
-
-# 切换到Claude Haiku
-switch_to_haiku() {
-    local account_name="$1"
-
-    echo -e "${YELLOW}🔄 $(t 'switching_to') Claude Haiku 4.5...${NC}"
-
-    # 如果指定了账号，先切换账号
-    if [[ -n "$account_name" ]]; then
-        echo -e "${BLUE}📝 切换到账号: $account_name${NC}"
-        if ! switch_account "$account_name"; then
-            return 1
-        fi
-    fi
-
-    clean_env
-    export ANTHROPIC_MODEL="${HAIKU_MODEL:-claude-haiku-4-5}"
-    export ANTHROPIC_SMALL_FAST_MODEL="${HAIKU_SMALL_FAST_MODEL:-claude-haiku-4-5}"
-    echo -e "${GREEN}✅ 已切换到 Claude Haiku 4.5 (使用 Claude Pro 订阅)${NC}"
-    if [[ -n "$account_name" ]]; then
-        echo "   $(t 'account'): $account_name"
-    fi
-    echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
-}
-
-# 切换到GLM4.7
+# 切换到GLM
 switch_to_glm() {
-    echo -e "${YELLOW}🔄 切换到 GLM4.7 模型...${NC}"
-    clean_env
-    if is_effectively_set "$GLM_API_KEY"; then
-        export ANTHROPIC_BASE_URL="https://open.bigmodel.cn/api/anthropic"
-        export ANTHROPIC_API_URL="https://open.bigmodel.cn/api/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$GLM_API_KEY"
-        export ANTHROPIC_API_KEY="$GLM_API_KEY"
-        export ANTHROPIC_MODEL="glm-4.7"
-        export ANTHROPIC_SMALL_FAST_MODEL="glm-4.7"
-        echo -e "${GREEN}✅ 已切换到 GLM4.7（官方）${NC}"
-    elif is_effectively_set "$PPINFRA_API_KEY"; then
-        # 备用：PPINFRA GLM 支持
-        export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_API_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$PPINFRA_API_KEY"
-        export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
-        export ANTHROPIC_MODEL="zai-org/glm-4.7"
-        export ANTHROPIC_SMALL_FAST_MODEL="zai-org/glm-4.7"
-        echo -e "${GREEN}✅ 已切换到 GLM4.7（PPINFRA 备用）${NC}"
-    else
-        echo -e "${RED}❌ Please configure GLM_API_KEY or PPINFRA_API_KEY${NC}"
+    local region_input="${1:-global}"
+    local region
+    if ! region="$(normalize_region "$region_input")"; then
+        echo -e "${RED}❌ $(t 'unknown_option'): $region_input${NC}"
+        echo -e "${YELLOW}💡 Usage: ccm glm [global|china]${NC}"
         return 1
     fi
+    echo -e "${YELLOW}🔄 切换到 GLM（${region}）...${NC}"
+    clean_env
+    if ! is_effectively_set "$GLM_API_KEY"; then
+        echo -e "${RED}❌ Please configure GLM_API_KEY${NC}"
+        return 1
+    fi
+    local base_url=""
+    case "$region" in
+        "global")
+            base_url="https://api.z.ai/api/anthropic"
+            ;;
+        "china")
+            base_url="https://open.bigmodel.cn/api/anthropic"
+            ;;
+    esac
+    local glm_model="${GLM_MODEL:-glm-4.7}"
+    local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.7}"
+    export ANTHROPIC_BASE_URL="$base_url"
+    export ANTHROPIC_API_URL="$base_url"
+    export ANTHROPIC_AUTH_TOKEN="$GLM_API_KEY"
+    export ANTHROPIC_MODEL="$glm_model"
+    export ANTHROPIC_SMALL_FAST_MODEL="$glm_small"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="$glm_model"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="$glm_model"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$glm_model"
+    echo -e "${GREEN}✅ 已切换到 GLM（${region}）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
-# 切换到KIMI for Coding
+# 切换到KIMI（全球）
 switch_to_kimi() {
-    echo -e "${YELLOW}🔄 $(t 'switching_to') KIMI for Coding $(t 'model')...${NC}"
+    echo -e "${YELLOW}🔄 $(t 'switching_to') KIMI $(t 'model')...${NC}"
     clean_env
-    if is_effectively_set "$KIMI_API_KEY"; then
-        # 官方 Kimi 编程专用端点
-        export ANTHROPIC_BASE_URL="https://api.kimi.com/coding/"
-        export ANTHROPIC_API_URL="https://api.kimi.com/coding/"
-        export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
-        export ANTHROPIC_API_KEY="$KIMI_API_KEY"
-        export ANTHROPIC_MODEL="kimi-for-coding"
-        export ANTHROPIC_SMALL_FAST_MODEL="kimi-for-coding"
-        echo -e "${GREEN}✅ $(t 'switched_to') KIMI（$(t 'official')）${NC}"
-    elif is_effectively_set "$PPINFRA_API_KEY"; then
-        # 备用：PPINFRA Anthropic 兼容
-        export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_API_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$PPINFRA_API_KEY"
-        export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
-        export ANTHROPIC_MODEL="moonshotai/kimi-k2-thinking"
-        export ANTHROPIC_SMALL_FAST_MODEL="moonshotai/kimi-k2-thinking"
-        echo -e "${GREEN}✅ $(t 'switched_to') KIMI2（$(t 'ppinfra_backup')）${NC}"
-    else
-        echo -e "${RED}❌ Please configure KIMI_API_KEY or PPINFRA_API_KEY${NC}"
+    if ! is_effectively_set "$KIMI_API_KEY"; then
+        echo -e "${RED}❌ Please configure KIMI_API_KEY${NC}"
         return 1
     fi
+    # 海外 Kimi 端点
+    export ANTHROPIC_BASE_URL="https://api.moonshot.ai/anthropic"
+    export ANTHROPIC_API_URL="https://api.moonshot.ai/anthropic"
+    export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
+    export ANTHROPIC_MODEL="kimi-for-coding"
+    export ANTHROPIC_SMALL_FAST_MODEL="kimi-for-coding"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-for-coding"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="kimi-for-coding"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="kimi-for-coding"
+    echo -e "${GREEN}✅ $(t 'switched_to') KIMI（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
@@ -1220,93 +1162,102 @@ switch_to_kimi() {
 switch_to_kimi_cn() {
     echo -e "${YELLOW}🔄 $(t 'switching_to') KIMI CN $(t 'model')...${NC}"
     clean_env
-    if is_effectively_set "$KIMI_API_KEY"; then
-        # 国内 Kimi 端点
-        export ANTHROPIC_BASE_URL="https://api.moonshot.cn/anthropic"
-        export ANTHROPIC_API_URL="https://api.moonshot.cn/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
-        export ANTHROPIC_API_KEY="$KIMI_API_KEY"
-        export ANTHROPIC_MODEL="kimi-k2-thinking"
-        export ANTHROPIC_SMALL_FAST_MODEL="kimi-k2-thinking"
-        echo -e "${GREEN}✅ $(t 'switched_to') KIMI CN（$(t 'official')）${NC}"
-    elif is_effectively_set "$PPINFRA_API_KEY"; then
-        # 备用：PPINFRA Anthropic 兼容
-        export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_API_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$PPINFRA_API_KEY"
-        export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
-        export ANTHROPIC_MODEL="moonshotai/kimi-k2-thinking"
-        export ANTHROPIC_SMALL_FAST_MODEL="moonshotai/kimi-k2-thinking"
-        echo -e "${GREEN}✅ $(t 'switched_to') KIMI CN（$(t 'ppinfra_backup')）${NC}"
-    else
-        echo -e "${RED}❌ Please configure KIMI_CN_API_KEY or PPINFRA_API_KEY${NC}"
+    if ! is_effectively_set "$KIMI_API_KEY"; then
+        echo -e "${RED}❌ Please configure KIMI_API_KEY${NC}"
         return 1
     fi
+    # 国内 Kimi 端点
+    export ANTHROPIC_BASE_URL="https://api.moonshot.cn/anthropic"
+    export ANTHROPIC_API_URL="https://api.moonshot.cn/anthropic"
+    export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
+    export ANTHROPIC_MODEL="kimi-k2.5"
+    export ANTHROPIC_SMALL_FAST_MODEL="kimi-k2.5"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-k2.5"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="kimi-k2.5"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="kimi-k2.5"
+    echo -e "${GREEN}✅ $(t 'switched_to') KIMI CN（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
-# 切换到 MiniMax M2
+# 切换到 MiniMax
 switch_to_minimax() {
-    echo -e "${YELLOW}🔄 $(t 'switching_to') MiniMax M2 $(t 'model')...${NC}"
-    clean_env
-    if is_effectively_set "$MINIMAX_API_KEY"; then
-        # 官方 MiniMax 的 Anthropic 兼容端点
-        local mm_base_url="${MINIMAX_BASE_URL:-https://api.minimax.io/anthropic}"
-        export ANTHROPIC_BASE_URL="$mm_base_url"
-        export ANTHROPIC_API_URL="$mm_base_url"
-        export ANTHROPIC_AUTH_TOKEN="$MINIMAX_API_KEY"
-        export ANTHROPIC_API_KEY="$MINIMAX_API_KEY"
-        export ANTHROPIC_MODEL="minimax/minimax-m2"
-        export ANTHROPIC_SMALL_FAST_MODEL="minimax/minimax-m2"
-        echo -e "${GREEN}✅ $(t 'switched_to') MiniMax M2（$(t 'official')）${NC}"
-    elif is_effectively_set "$PPINFRA_API_KEY"; then
-        # 备用：PPINFRA Anthropic 兼容
-        export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_API_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$PPINFRA_API_KEY"
-        export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
-        export ANTHROPIC_MODEL="minimax/minimax-m2"
-        export ANTHROPIC_SMALL_FAST_MODEL="minimax/minimax-m2"
-        echo -e "${GREEN}✅ $(t 'switched_to') MiniMax M2（$(t 'ppinfra_backup')）${NC}"
-    else
-        echo -e "${RED}❌ Please configure MINIMAX_API_KEY or PPINFRA_API_KEY${NC}"
+    local region_input="${1:-global}"
+    local region
+    if ! region="$(normalize_region "$region_input")"; then
+        echo -e "${RED}❌ $(t 'unknown_option'): $region_input${NC}"
+        echo -e "${YELLOW}💡 Usage: ccm minimax [global|china]${NC}"
         return 1
     fi
+    echo -e "${YELLOW}🔄 $(t 'switching_to') MiniMax (${region}) $(t 'model')...${NC}"
+    clean_env
+    if ! is_effectively_set "$MINIMAX_API_KEY"; then
+        echo -e "${RED}❌ Please configure MINIMAX_API_KEY${NC}"
+        return 1
+    fi
+    local base_url=""
+    case "$region" in
+        "global")
+            base_url="https://api.minimax.io/anthropic"
+            ;;
+        "china")
+            base_url="https://api.minimaxi.com/anthropic"
+            ;;
+    esac
+    local mm_model="${MINIMAX_MODEL:-MiniMax-M2.1}"
+    local mm_small="${MINIMAX_SMALL_FAST_MODEL:-MiniMax-M2.1}"
+    export ANTHROPIC_BASE_URL="$base_url"
+    export ANTHROPIC_API_URL="$base_url"
+    export ANTHROPIC_AUTH_TOKEN="$MINIMAX_API_KEY"
+    export ANTHROPIC_MODEL="$mm_model"
+    export ANTHROPIC_SMALL_FAST_MODEL="$mm_small"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="$mm_model"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="$mm_model"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$mm_model"
+    export API_TIMEOUT_MS="3000000"
+    export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1"
+    echo -e "${GREEN}✅ $(t 'switched_to') MiniMax (${region})（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
-# 切换到 Qwen（阿里云官方优先，缺省走 PPINFRA）
+# 切换到 Qwen（Coding Plan）
 switch_to_qwen() {
-    echo -e "${YELLOW}🔄 $(t 'switching_to') Qwen $(t 'model')...${NC}"
-    clean_env
-    if is_effectively_set "$QWEN_API_KEY"; then
-        # 阿里云 DashScope 官方 Claude 代理端点
-        export ANTHROPIC_BASE_URL="https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
-        export ANTHROPIC_API_URL="https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
-        export ANTHROPIC_AUTH_TOKEN="$QWEN_API_KEY"
-        export ANTHROPIC_API_KEY="$QWEN_API_KEY"
-        # 阿里云 DashScope 支持的模型
-        local qwen_model="${QWEN_MODEL:-qwen3-max}"
-        local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-next-80b-a3b-instruct}"
-        export ANTHROPIC_MODEL="$qwen_model"
-        export ANTHROPIC_SMALL_FAST_MODEL="$qwen_small"
-        echo -e "${GREEN}✅ $(t 'switched_to') Qwen（$(t 'alibaba_dashscope_official')）${NC}"
-    elif is_effectively_set "$PPINFRA_API_KEY"; then
-        export ANTHROPIC_BASE_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_API_URL="https://api.ppinfra.com/anthropic"
-        export ANTHROPIC_AUTH_TOKEN="$PPINFRA_API_KEY"
-        export ANTHROPIC_API_KEY="$PPINFRA_API_KEY"
-        export ANTHROPIC_MODEL="qwen3-next-80b-a3b-thinking"
-        export ANTHROPIC_SMALL_FAST_MODEL="qwen3-next-80b-a3b-thinking"
-        echo -e "${GREEN}✅ $(t 'switched_to') Qwen（$(t 'ppinfra_backup')）${NC}"
-    else
-        echo -e "${RED}❌ Please configure QWEN_API_KEY or PPINFRA_API_KEY${NC}"
+    local region_input="${1:-global}"
+    local region
+    if ! region="$(normalize_region "$region_input")"; then
+        echo -e "${RED}❌ $(t 'unknown_option'): $region_input${NC}"
+        echo -e "${YELLOW}💡 Usage: ccm qwen [global|china]${NC}"
         return 1
     fi
+    echo -e "${YELLOW}🔄 $(t 'switching_to') Qwen (${region}) $(t 'model')...${NC}"
+    clean_env
+    if ! is_effectively_set "$QWEN_API_KEY"; then
+        echo -e "${RED}❌ Please configure QWEN_API_KEY${NC}"
+        return 1
+    fi
+    local base_url=""
+    case "$region" in
+        "global")
+            base_url="https://coding-intl.dashscope.aliyuncs.com/apps/anthropic"
+            ;;
+        "china")
+            base_url="https://coding.dashscope.aliyuncs.com/apps/anthropic"
+            ;;
+    esac
+    local qwen_model="${QWEN_MODEL:-qwen3-max-2026-01-23}"
+    local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-coder-plus}"
+    export ANTHROPIC_BASE_URL="$base_url"
+    export ANTHROPIC_API_URL="$base_url"
+    export ANTHROPIC_AUTH_TOKEN="$QWEN_API_KEY"
+    export ANTHROPIC_MODEL="$qwen_model"
+    export ANTHROPIC_SMALL_FAST_MODEL="$qwen_small"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="$qwen_model"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="$qwen_model"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$qwen_small"
+    echo -e "${GREEN}✅ $(t 'switched_to') Qwen (${region})（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
     echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
@@ -1314,243 +1265,52 @@ switch_to_qwen() {
 
 # 切换到豆包 Seed-Code (Doubao)
 switch_to_seed() {
+    local variant="${1:-}"
     echo -e "${YELLOW}🔄 $(t 'switching_to') 豆包 Seed-Code $(t 'model')...${NC}"
     clean_env
-    if is_effectively_set "$ARK_API_KEY"; then
-        # 官方豆包 Seed-Code
-        export ANTHROPIC_BASE_URL="https://ark.cn-beijing.volces.com/api/coding"
-        export ANTHROPIC_API_URL="https://ark.cn-beijing.volces.com/api/coding"
-        export ANTHROPIC_AUTH_TOKEN="$ARK_API_KEY"
-        export ANTHROPIC_API_KEY="$ARK_API_KEY"
-        export API_TIMEOUT_MS="3000000"
-        export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1"
-        # 豆包 Seed-Code 模型
-        local seed_model="${SEED_MODEL:-doubao-seed-code-preview-latest}"
-        local seed_small="${SEED_SMALL_FAST_MODEL:-doubao-seed-code-preview-latest}"
-        export ANTHROPIC_MODEL="$seed_model"
-        export ANTHROPIC_SMALL_FAST_MODEL="$seed_small"
-        echo -e "${GREEN}✅ $(t 'switched_to') Seed-Code（$(t 'official')）${NC}"
-    else
+    if ! is_effectively_set "$ARK_API_KEY"; then
         echo -e "${RED}❌ Please configure ARK_API_KEY${NC}"
         return 1
     fi
-    echo "   BASE_URL: $ANTHROPIC_BASE_URL"
-    echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   TIMEOUT: $API_TIMEOUT_MS"
-}
+    # 官方豆包 Seed-Code
+    export ANTHROPIC_BASE_URL="https://ark.cn-beijing.volces.com/api/coding"
+    export ANTHROPIC_API_URL="https://ark.cn-beijing.volces.com/api/coding"
+    export ANTHROPIC_AUTH_TOKEN="$ARK_API_KEY"
+    export API_TIMEOUT_MS="3000000"
+    export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1"
 
-# 切换到StreamLake AI (KAT)
-switch_to_kat() {
-    echo -e "${YELLOW}🔄 $(t 'switching_to') StreamLake AI (KAT) $(t 'model')...${NC}"
-    clean_env
-    if is_effectively_set "$KAT_API_KEY"; then
-        # 获取用户的endpoint ID，默认为配置中的值或环境变量
-        local endpoint_id="${KAT_ENDPOINT_ID:-ep-default}"
-        # StreamLake AI KAT 端点格式：https://vanchin.streamlake.ai/api/gateway/v1/endpoints/{endpoint_id}/claude-code-proxy
-        export ANTHROPIC_BASE_URL="https://vanchin.streamlake.ai/api/gateway/v1/endpoints/${endpoint_id}/claude-code-proxy"
-        export ANTHROPIC_API_URL="https://vanchin.streamlake.ai/api/gateway/v1/endpoints/${endpoint_id}/claude-code-proxy"
-        export ANTHROPIC_AUTH_TOKEN="$KAT_API_KEY"
-        export ANTHROPIC_API_KEY="$KAT_API_KEY"
-        # 使用 KAT-Coder 模型
-        local kat_model="${KAT_MODEL:-KAT-Coder}"
-        local kat_small="${KAT_SMALL_FAST_MODEL:-KAT-Coder}"
-        export ANTHROPIC_MODEL="$kat_model"
-        export ANTHROPIC_SMALL_FAST_MODEL="$kat_small"
-        echo -e "${GREEN}✅ $(t 'switched_to') StreamLake AI (KAT)（$(t 'official')）${NC}"
-    else
-        echo -e "${RED}❌ $(t 'missing_api_key'): KAT_API_KEY${NC}"
-        echo "$(t 'please_set_in_config'): KAT_API_KEY"
-        echo ""
-        echo "$(t 'example_config'):"
-        echo "  export KAT_API_KEY='YOUR_API_KEY'"
-        echo "  export KAT_ENDPOINT_ID='ep-xxx-xxx'"
-        echo ""
-        echo "$(t 'get_endpoint_id_from'): https://www.streamlake.ai/document/DOC/mg6k6nlp8j6qxicx4c9"
-        return 1
-    fi
-    echo "   BASE_URL: $ANTHROPIC_BASE_URL"
-    echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
-}
-
-# 切换到PPINFRA服务
-switch_to_ppinfra() {
-    local target="${1:-}"
-    local no_color="${2:-false}"
-
-    # 重新加载配置以确保使用最新的值
-    load_config || return 1
-
-    # 检查PPINFRA_API_KEY是否配置
-    local ppinfra_key="$PPINFRA_API_KEY"
-    if ! is_effectively_set "$ppinfra_key"; then
-        echo -e "${RED}❌ PPINFRA_API_KEY not configured${NC}" >&2
-        echo -e "${YELLOW}Please configure PPINFRA_API_KEY in ~/.ccm_config or as environment variable${NC}" >&2
-        return 1
-    fi
-
-    # 如果没有指定目标模型，显示选择菜单
-    if [[ -z "$target" ]]; then
-        if [[ "$no_color" == "true" ]]; then
-            echo "❌ $(t 'model_not_specified')"
-            echo "💡 $(t 'usage_example'): ccm pp glm"
-            echo "💡 $(t 'available_ppinfra_models'): deepseek, glm, kimi, qwen, minimax"
-        else
-            echo -e "${RED}❌ $(t 'model_not_specified')${NC}"
-            echo -e "${YELLOW}💡 $(t 'usage_example'): ccm pp glm${NC}"
-            echo -e "${YELLOW}💡 $(t 'available_ppinfra_models'): deepseek, glm, kimi, qwen, minimax${NC}"
-        fi
-        return 1
-    fi
-
-    # 清理旧环境变量（关键：避免认证冲突）
-    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
-    
-    # 根据目标模型输出PPINFRA配置的export语句
-    case "$target" in
+    local seed_model=""
+    case "$variant" in
+        ""|"default")
+            seed_model="${SEED_MODEL:-ark-code-latest}"
+            ;;
+        "doubao"|"seed")
+            seed_model="doubao-seed-code"
+            ;;
+        "glm"|"glm4"|"glm4.7")
+            seed_model="glm-4.7"
+            ;;
         "deepseek"|"ds")
-            # 输出信息到 stderr，避免干扰 eval
-            if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') DeepSeek v3.2-exp（PPINFRA）" >&2
-            else
-                echo -e "${GREEN}✅ $(t 'switched_to') DeepSeek v3.2-exp（PPINFRA）${NC}" >&2
-            fi
-            echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
-            echo "export ANTHROPIC_MODEL='deepseek/deepseek-v3.2-exp'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='deepseek/deepseek-v3.2-exp'"
-            emit_default_models_from_pair "deepseek/deepseek-v3.2-exp" "deepseek/deepseek-v3.2-exp"
+            seed_model="deepseek-v3.2"
             ;;
-        "glm"|"glm4"|"glm4.6"|"glm4.7")
-            if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') GLM 4.7（PPINFRA）" >&2
-            else
-                echo -e "${GREEN}✅ $(t 'switched_to') GLM 4.7（PPINFRA）${NC}" >&2
-            fi
-            echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
-            echo "export ANTHROPIC_MODEL='zai-org/glm-4.7'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='zai-org/glm-4.7'"
-            emit_default_models_from_pair "zai-org/glm-4.7" "zai-org/glm-4.7"
-            ;;
-        "kimi"|"kimi2")
-            if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') KIMI 2（PPINFRA）" >&2
-            else
-                echo -e "${GREEN}✅ $(t 'switched_to') KIMI 2（PPINFRA）${NC}" >&2
-            fi
-            echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
-            echo "export ANTHROPIC_MODEL='moonshotai/kimi-k2-thinking'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='moonshotai/kimi-k2-thinking'"
-            emit_default_models_from_pair "moonshotai/kimi-k2-thinking" "moonshotai/kimi-k2-thinking"
-            ;;
-        "kimi-cn")
-            if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') KIMI CN（PPINFRA）" >&2
-            else
-                echo -e "${GREEN}✅ $(t 'switched_to') KIMI CN（PPINFRA）${NC}" >&2
-            fi
-            echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
-            echo "export ANTHROPIC_MODEL='moonshotai/kimi-k2-thinking'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='moonshotai/kimi-k2-thinking'"
-            emit_default_models_from_pair "moonshotai/kimi-k2-thinking" "moonshotai/kimi-k2-thinking"
-            ;;
-        "qwen")
-            if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') Qwen（PPINFRA）" >&2
-            else
-                echo -e "${GREEN}✅ $(t 'switched_to') Qwen（PPINFRA）${NC}" >&2
-            fi
-            echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
-            echo "export ANTHROPIC_MODEL='qwen3-next-80b-a3b-thinking'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='qwen3-next-80b-a3b-thinking'"
-            emit_default_models_from_pair "qwen3-next-80b-a3b-thinking" "qwen3-next-80b-a3b-thinking"
-            ;;
-        "minimax"|"mm")
-            if [[ "$no_color" == "true" ]]; then
-                echo "✅ $(t 'switched_to') MiniMax M2（PPINFRA）" >&2
-            else
-                echo -e "${GREEN}✅ $(t 'switched_to') MiniMax M2（PPINFRA）${NC}" >&2
-            fi
-            echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-            echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
-            echo "export ANTHROPIC_MODEL='minimax/minimax-m2'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='minimax/minimax-m2'"
-            emit_default_models_from_pair "minimax/minimax-m2" "minimax/minimax-m2"
+        "kimi"|"kimi2"|"kimi-k2.5")
+            seed_model="kimi-k2.5"
             ;;
         *)
-            if [[ "$no_color" == "true" ]]; then
-                echo "❌ $(t 'unknown_ppinfra_model'): $target"
-                echo "💡 $(t 'available_ppinfra_models'): deepseek, glm, kimi, qwen, minimax"
-            else
-                echo -e "${RED}❌ $(t 'unknown_ppinfra_model'): $target${NC}"
-                echo -e "${YELLOW}💡 $(t 'available_ppinfra_models'): deepseek, glm, kimi, qwen, minimax${NC}"
-            fi
+            echo -e "${RED}❌ $(t 'unknown_option'): seed $variant${NC}"
+            echo -e "${YELLOW}💡 Usage: ccm seed [doubao|glm|deepseek|kimi]${NC}"
             return 1
             ;;
     esac
-
-    echo "export API_TIMEOUT_MS='600000'"
-    echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-}
-
-# 切换到 Claude Proxy 服务
-switch_to_proxy() {
-    # 重新加载配置以确保使用最新的值
-    load_config || return 1
-
-    # 获取配置，支持环境变量优先
-    local api_key="${CLAUDE_PROXY_API_KEY:-$CLAUDE_API_KEY}"
-    # 支持配置的 BASE URL（必填）
-    local base_url="${CLAUDE_PROXY_BASE_URL:-}"
-    local model="${CLAUDE_PROXY_MODEL:-claude-sonnet-4-5-20250929}"
-    local small_fast_model="${CLAUDE_PROXY_SMALL_FAST_MODEL:-claude-haiku-4-5}"
-
-    # API Key检查与用户提示
-    if ! is_effectively_set "$api_key"; then
-        echo -e "${RED}❌ $(t 'claude_proxy_api_key_not_set' 'Claude Proxy API key not configured')${NC}" >&2
-        echo -e "${YELLOW}💡 $(t 'set_env_var_hint' 'Set environment variable:')${NC}" >&2
-        echo -e "${YELLOW}   export CLAUDE_PROXY_API_KEY=\"your-api-key\"${NC}" >&2
-        echo -e "${YELLOW}🌐 $(t 'set_base_url_hint' 'Set custom base URL (optional):')${NC}" >&2
-        echo -e "${YELLOW}   export CLAUDE_PROXY_BASE_URL=\"https://your-proxy.com\"${NC}" >&2
-        echo -e "${YELLOW}📝 $(t 'or_edit_config' 'Or edit config file:')${NC}" >&2
-        echo -e "${YELLOW}   $(t 'config_file_location' "~/.ccm_config")${NC}" >&2
-        return 1
-    fi
-    if ! is_effectively_set "$base_url"; then
-        echo -e "${RED}❌ $(t 'base_url' 'BASE URL') $(t 'not_set' 'not set')${NC}" >&2
-        echo -e "${YELLOW}💡 $(t 'set_base_url_hint' 'Set custom base URL (optional):')${NC}" >&2
-        echo -e "${YELLOW}   export CLAUDE_PROXY_BASE_URL=\"https://your-proxy.com\"${NC}" >&2
-        return 1
-    fi
-
-    # 清理旧环境变量
-    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
-
-    # 环境变量导出
-    echo "export ANTHROPIC_BASE_URL='$base_url'"
-    echo "export ANTHROPIC_API_URL='$base_url'"
-    echo "export ANTHROPIC_AUTH_TOKEN='$api_key'"
-    echo "export ANTHROPIC_API_KEY='$api_key'"
-    echo "export ANTHROPIC_MODEL='$model'"
-    echo "export ANTHROPIC_SMALL_FAST_MODEL='$small_fast_model'"
-    emit_default_models_from_pair "$model" "$small_fast_model"
-    echo "export API_TIMEOUT_MS='300000'"
-
-    # 成功提示（输出到stderr，避免干扰eval）
-    echo -e "${GREEN}✅ $(t 'switched_to') $(t 'claude_proxy' 'Claude Proxy')${NC}" >&2
-    echo -e "${BLUE}🔗 $(t 'base_url') $base_url${NC}" >&2
-    echo -e "${BLUE}🤖 $(t 'model') $model${NC}" >&2
-    echo -e "${YELLOW}💡 $(t 'base_url_config_note' 'BASE URL can be changed via CLAUDE_PROXY_BASE_URL environment variable or config file')${NC}" >&2
+    export ANTHROPIC_MODEL="$seed_model"
+    export ANTHROPIC_SMALL_FAST_MODEL="$seed_model"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="$seed_model"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="$seed_model"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$seed_model"
+    echo -e "${GREEN}✅ $(t 'switched_to') Seed-Code（$(t 'official')）${NC}"
+    echo "   BASE_URL: $ANTHROPIC_BASE_URL"
+    echo "   MODEL: $ANTHROPIC_MODEL"
+    echo "   TIMEOUT: $API_TIMEOUT_MS"
 }
 
 # 显示帮助信息
@@ -1560,19 +1320,14 @@ show_help() {
     echo -e "${YELLOW}$(t 'usage'):${NC} $(basename "$0") [options]"
     echo ""
     echo -e "${YELLOW}$(t 'model_options'):${NC}"
-    echo "  deepseek, ds       - env deepseek"
-    echo "  kimi, kimi2        - env kimi for coding"
-    echo "  kimi-cn            - env kimi cn (国内版本)"
-    echo "  seed, doubao       - env 豆包 Seed-Code"
-    echo "  kat                - env kat"
-    echo "  longcat, lc        - env longcat"
-    echo "  minimax, mm        - env minimax"
-    echo "  qwen               - env qwen"
-    echo "  proxy              - env Claude Proxy"
-    echo "  glm, glm4          - env glm"
-    echo "  claude, sonnet, s  - env claude"
-    echo "  opus, o            - env opus (Claude Opus 4.5)"
-    echo "  haiku, h           - env haiku"
+    echo "  deepseek, ds            - env deepseek"
+    echo "  kimi [global|china]     - env kimi (default: global)"
+    echo "  qwen [global|china]     - env qwen (default: global)"
+    echo "  glm [global|china]      - env glm (default: global)"
+    echo "  minimax [global|china]  - env minimax (default: global)"
+    echo "  seed [doubao|glm|deepseek|kimi] - env 豆包 Seed-Code"
+    echo "  claude, sonnet, s       - env claude (official)"
+    echo "  open <provider>         - env OpenRouter (run 'ccm open' for help)"
     echo ""
     echo -e "${YELLOW}Claude Pro Account Management:${NC}"
     echo "  save-account <name>     - Save current Claude Pro account"
@@ -1581,39 +1336,34 @@ show_help() {
     echo "  delete-account <name>   - Delete saved account"
     echo "  current-account         - Show current account info"
     echo "  claude:account         - Switch account and use Claude (Sonnet)"
-    echo "  opus:account           - Switch account and use Opus model"
-    echo "  haiku:account          - Switch account and use Haiku model"
     echo ""
     echo -e "${YELLOW}$(t 'tool_options'):${NC}"
     echo "  status, st       - $(t 'show_current_config')"
     echo "  env [model]      - $(t 'output_export_only')"
-    echo "  pp [model]       - Switch to PPINFRA service (deepseek/glm/kimi/qwen/minimax)"
     echo "  config, cfg      - $(t 'edit_config_file')"
     echo "  help, h          - $(t 'show_help')"
     echo ""
     echo -e "${YELLOW}$(t 'examples'):${NC}"
     echo "  eval \"\$(ccm deepseek)\"                   # Apply in current shell (recommended)"
-    echo "  eval \"\$(ccm seed)\"                     # Switch to 豆包 Seed-Code with ARK_API_KEY"
+    echo "  eval \"\$(ccm kimi china)\"              # Kimi CN"
+    echo "  eval \"\$(ccm qwen global)\"             # Qwen global (Coding Plan)"
+    echo "  eval \"\$(ccm seed kimi)\"               # 豆包 Seed-Code (kimi)"
+    echo "  eval \"\$(ccm open kimi)\"               # OpenRouter kimi"
     echo ""
-    echo "  project glm        - write .claude/settings.local.json for GLM (project-only)"
+    echo "  project glm [global|china] - write .claude/settings.local.json for GLM (project-only)"
     echo "  project reset      - remove project override (use user settings)"
     echo "  $(basename "$0") status                      # Check current status (masked)"
     echo "  $(basename "$0") save-account work           # Save current account as 'work'"
-    echo "  $(basename "$0") opus:personal               # Switch to 'personal' account with Opus"
     echo ""
     echo -e "${YELLOW}支持的模型:${NC}"
-    echo "  🌙 KIMI for Coding     - 官方：kimi-for-coding (api.kimi.com/coding)"
-    echo "  🌕 KIMI CN              - 官方：kimi-k2-thinking (api.moonshot.cn/anthropic)"
-    echo "  🤖 Deepseek            - 官方：deepseek-chat ｜ 备用：deepseek/deepseek-v3.1 (PPINFRA)"
-    echo "  🌊 StreamLake (KAT)    - 官方：KAT-Coder"
-    echo "  🌰 豆包 Seed-Code      - 官方：doubao-seed-code-preview-latest (火山引擎方舟)"
-    echo "  🐱 LongCat             - 官方：LongCat-Flash-Thinking / LongCat-Flash-Chat"
-    echo "  🎯 MiniMax M2          - 官方：MiniMax-M2 ｜ 备用：MiniMax-M2 (PPINFRA)"
-    echo "  🐪 Qwen                - 官方：qwen3-max (阿里云) ｜ 备用：qwen3-next-80b-a3b-thinking (PPINFRA)"
-    echo "  🇨🇳 GLM4.7             - 官方：glm-4.7 / glm-4.5-air"
-    echo "  🧠 Claude Sonnet 4.5   - claude-sonnet-4-5-20250929"
-    echo "  🚀 Claude Opus 4.5     - claude-opus-4-5-20251101"
-    echo "  🔷 Claude Haiku 4.5    - claude-haiku-4-5"
+    echo "  🌙 KIMI Global          - kimi-for-coding (api.moonshot.ai/anthropic)"
+    echo "  🌕 KIMI China           - kimi-k2.5 (api.moonshot.cn/anthropic)"
+    echo "  🤖 Deepseek             - deepseek-chat (api.deepseek.com/anthropic)"
+    echo "  🌰 豆包 Seed-Code       - ark-code-latest (ark.cn-beijing.volces.com/api/coding)"
+    echo "  🎯 MiniMax              - MiniMax-M2.1 (api.minimax.io / api.minimaxi.com)"
+    echo "  🐪 Qwen                 - qwen3-max-2026-01-23 / qwen3-coder-plus (Coding Plan)"
+    echo "  🇨🇳 GLM                 - glm-4.7 (api.z.ai / open.bigmodel.cn)"
+    echo "  🧠 Claude Sonnet 4.5    - claude-sonnet-4-5-20250929"
 }
 
 # 将缺失的模型ID覆盖项追加到配置文件（仅追加缺失项，不覆盖已存在的配置）
@@ -1623,27 +1373,22 @@ ensure_model_override_defaults() {
         "DEEPSEEK_SMALL_FAST_MODEL=deepseek-chat"
         "KIMI_MODEL=kimi-for-coding"
         "KIMI_SMALL_FAST_MODEL=kimi-for-coding"
-        "KIMI_CN_MODEL=kimi-k2-thinking"
-        "KIMI_CN_SMALL_FAST_MODEL=kimi-k2-thinking"
-        "KAT_MODEL=KAT-Coder"
-        "KAT_SMALL_FAST_MODEL=KAT-Coder"
-        "KAT_ENDPOINT_ID=ep-default"
-        "LONGCAT_MODEL=LongCat-Flash-Thinking"
-        "LONGCAT_SMALL_FAST_MODEL=LongCat-Flash-Chat"
-        "MINIMAX_MODEL=MiniMax-M2"
-        "MINIMAX_SMALL_FAST_MODEL=MiniMax-M2"
-        "SEED_MODEL=doubao-seed-code-preview-latest"
-        "SEED_SMALL_FAST_MODEL=doubao-seed-code-preview-latest"
-        "QWEN_MODEL=qwen3-max"
-        "QWEN_SMALL_FAST_MODEL=qwen3-next-80b-a3b-instruct"
+        "KIMI_CN_MODEL=kimi-k2.5"
+        "KIMI_CN_SMALL_FAST_MODEL=kimi-k2.5"
+        "MINIMAX_MODEL=MiniMax-M2.1"
+        "MINIMAX_SMALL_FAST_MODEL=MiniMax-M2.1"
+        "SEED_MODEL=ark-code-latest"
+        "SEED_SMALL_FAST_MODEL=ark-code-latest"
+        "QWEN_MODEL=qwen3-max-2026-01-23"
+        "QWEN_SMALL_FAST_MODEL=qwen3-coder-plus"
         "GLM_MODEL=glm-4.7"
-        "GLM_SMALL_FAST_MODEL=glm-4.5-air"
+        "GLM_SMALL_FAST_MODEL=glm-4.7"
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
         "CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929"
         "OPUS_MODEL=claude-opus-4-5-20251101"
         "OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929"
-        "HAIKU_MODEL=claude-haiku-4-5"
-        "HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5"
+        "HAIKU_MODEL=claude-haiku-4-5-20251001"
+        "HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5-20251001"
     )
     local added_header=0
     for pair in "${pairs[@]}"; do
@@ -1704,8 +1449,103 @@ edit_config() {
 }
 
 # 仅输出 export 语句的环境设置（用于 eval）
+show_open_help() {
+    echo -e "${YELLOW}OpenRouter:${NC}"
+    echo "  ccm open <provider>"
+    echo ""
+    echo -e "${YELLOW}Supported providers:${NC}"
+    echo "  claude (default), deepseek, kimi, glm, qwen, minimax"
+    echo ""
+    echo -e "${YELLOW}Examples:${NC}"
+    echo "  eval \"\$(ccm open claude)\""
+    echo "  eval \"\$(ccm open kimi)\""
+}
+
+emit_openrouter_exports() {
+    local provider="${1:-}"
+    # 加载配置以便进行存在性判断（环境变量优先，不打印密钥）
+    load_config || return 1
+
+    if ! is_effectively_set "$OPENROUTER_API_KEY"; then
+        echo -e "${RED}❌ Please configure OPENROUTER_API_KEY${NC}" >&2
+        return 1
+    fi
+    if [[ -z "$provider" ]]; then
+        show_open_help >&2
+        return 1
+    fi
+
+    local model=""
+    local small=""
+    local default_sonnet=""
+    local default_opus=""
+    local default_haiku=""
+
+    case "$provider" in
+        "claude"|"anthropic"|"default")
+            model="anthropic/claude-sonnet-4.5"
+            small="anthropic/claude-haiku-4.5"
+            default_sonnet="anthropic/claude-sonnet-4.5"
+            default_opus="anthropic/claude-opus-4.5"
+            default_haiku="anthropic/claude-haiku-4.5"
+            ;;
+        "kimi")
+            model="moonshotai/kimi-k2.5"
+            small="moonshotai/kimi-k2.5"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        "deepseek"|"ds")
+            model="deepseek/deepseek-v3.2"
+            small="deepseek/deepseek-v3.2"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        "glm"|"glm4"|"glm4.7")
+            model="z-ai/glm-4.7"
+            small="z-ai/glm-4.7"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        "qwen")
+            model="qwen/qwen3-coder-next"
+            small="qwen/qwen3-coder-next"
+            default_sonnet="qwen/qwen3-coder-next"
+            default_opus="qwen/qwen3-coder-plus"
+            default_haiku="qwen/qwen3-coder-next"
+            ;;
+        "minimax"|"mm")
+            model="minimax/minimax-m2.1"
+            small="minimax/minimax-m2.1"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        *)
+            echo -e "${RED}❌ $(t 'unknown_option'): open $provider${NC}" >&2
+            show_open_help >&2
+            return 1
+            ;;
+    esac
+
+    local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+    echo "$prelude"
+    echo "export ANTHROPIC_BASE_URL='https://openrouter.ai/api'"
+    echo "export ANTHROPIC_API_URL='https://openrouter.ai/api'"
+    echo "if [ -z \"\${OPENROUTER_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+    echo "export ANTHROPIC_AUTH_TOKEN=\"\${OPENROUTER_API_KEY}\""
+    echo "export ANTHROPIC_API_KEY=''"
+    echo "export ANTHROPIC_MODEL='${model}'"
+    echo "export ANTHROPIC_SMALL_FAST_MODEL='${small}'"
+    emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
+}
+
 emit_env_exports() {
     local target="$1"
+    local arg="${2:-}"
     # 加载配置以便进行存在性判断（环境变量优先，不打印密钥）
     load_config || return 1
 
@@ -1713,6 +1553,9 @@ emit_env_exports() {
     local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
 
     case "$target" in
+        "open")
+            emit_openrouter_exports "$arg"
+            ;;
         "deepseek"|"ds")
             if is_effectively_set "$DEEPSEEK_API_KEY"; then
                 echo "$prelude"
@@ -1720,159 +1563,194 @@ emit_env_exports() {
                 echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
                 echo "export ANTHROPIC_BASE_URL='https://api.deepseek.com/anthropic'"
                 echo "export ANTHROPIC_API_URL='https://api.deepseek.com/anthropic'"
-                echo "# $(t 'export_if_env_not_set')"
                 echo "if [ -z \"\${DEEPSEEK_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
                 echo "export ANTHROPIC_AUTH_TOKEN=\"\${DEEPSEEK_API_KEY}\""
                 local ds_model="${DEEPSEEK_MODEL:-deepseek-chat}"
                 local ds_small="${DEEPSEEK_SMALL_FAST_MODEL:-deepseek-chat}"
                 echo "export ANTHROPIC_MODEL='${ds_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${ds_small}'"
-                emit_default_models_from_pair "$ds_model" "$ds_small"
-            elif is_effectively_set "$PPINFRA_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-                echo "if [ -z \"\${PPINFRA_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${PPINFRA_API_KEY}\""
-                local ds_model="${DEEPSEEK_MODEL:-deepseek/deepseek-v3.2-exp}"
-                local ds_small="${DEEPSEEK_SMALL_FAST_MODEL:-deepseek/deepseek-v3.2-exp}"
-                echo "export ANTHROPIC_MODEL='${ds_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${ds_small}'"
-                emit_default_models_from_pair "$ds_model" "$ds_small"
+                emit_default_models "deepseek/deepseek-v3.2" "deepseek/deepseek-v3.2" "deepseek/deepseek-v3.2"
             else
-                echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY or PPINFRA_API_KEY${NC}" >&2
+                echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY${NC}" >&2
                 return 1
             fi
             ;;
-        "kimi"|"kimi2")
-            if is_effectively_set "$KIMI_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.kimi.com/coding/'"
-                echo "export ANTHROPIC_API_URL='https://api.kimi.com/coding/'"
-                echo "if [ -z \"\${KIMI_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${KIMI_API_KEY}\""
-                local kimi_model="${KIMI_MODEL:-kimi-for-coding}"
-                local kimi_small="${KIMI_SMALL_FAST_MODEL:-kimi-for-coding}"
-                echo "export ANTHROPIC_MODEL='${kimi_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_small}'"
-                emit_default_models_from_pair "$kimi_model" "$kimi_small"
-            elif is_effectively_set "$PPINFRA_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-                echo "if [ -z \"\${KIMI_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${PPINFRA_API_KEY}\""
-                local kimi_model="${KIMI_MODEL:-moonshotai/kimi-k2-thinking}"
-                local kimi_small="${KIMI_SMALL_FAST_MODEL:-moonshotai/kimi-k2-thinking}"
-                echo "export ANTHROPIC_MODEL='${kimi_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_small}'"
-                emit_default_models_from_pair "$kimi_model" "$kimi_small"
-            else
-                echo -e "${RED}❌ Please configure KIMI_API_KEY or PPINFRA_API_KEY${NC}" >&2
+        "kimi"|"kimi2"|"kimi-cn")
+            if ! is_effectively_set "$KIMI_API_KEY"; then
+                echo -e "${RED}❌ Please configure KIMI_API_KEY${NC}" >&2
                 return 1
             fi
-            ;;
-        "kimi-cn")
-            if is_effectively_set "$KIMI_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.moonshot.cn/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.moonshot.cn/anthropic'"
-                echo "if [ -z \"\${KIMI_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${KIMI_API_KEY}\""
-                local kimi_cn_model="${KIMI_CN_MODEL:-kimi-k2-thinking}"
-                local kimi_cn_small="${KIMI_CN_SMALL_FAST_MODEL:-kimi-k2-thinking}"
-                echo "export ANTHROPIC_MODEL='${kimi_cn_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_cn_small}'"
-                emit_default_models_from_pair "$kimi_cn_model" "$kimi_cn_small"
-            elif is_effectively_set "$PPINFRA_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-                echo "if [ -z \"\${KIMI_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${PPINFRA_API_KEY}\""
-                local kimi_cn_model="${KIMI_CN_MODEL:-moonshotai/kimi-k2-thinking}"
-                local kimi_cn_small="${KIMI_CN_SMALL_FAST_MODEL:-moonshotai/kimi-k2-thinking}"
-                echo "export ANTHROPIC_MODEL='${kimi_cn_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_cn_small}'"
-                emit_default_models_from_pair "$kimi_cn_model" "$kimi_cn_small"
-            else
-                echo -e "${RED}❌ Please configure KIMI_CN_API_KEY or PPINFRA_API_KEY${NC}" >&2
+            local region_input="$arg"
+            if [[ "$target" == "kimi-cn" ]]; then
+                region_input="china"
+            fi
+            local region
+            if ! region="$(normalize_region "$region_input")"; then
+                echo -e "${RED}❌ $(t 'unknown_option'): $region_input${NC}" >&2
+                echo -e "${YELLOW}💡 Usage: ccm kimi [global|china]${NC}" >&2
                 return 1
             fi
+            local kimi_base_url=""
+            local kimi_model=""
+            local kimi_small=""
+            if [[ "$region" == "global" ]]; then
+                kimi_base_url="https://api.moonshot.ai/anthropic"
+                kimi_model="${KIMI_MODEL:-kimi-for-coding}"
+                kimi_small="${KIMI_SMALL_FAST_MODEL:-kimi-for-coding}"
+            else
+                kimi_base_url="https://api.moonshot.cn/anthropic"
+                kimi_model="${KIMI_CN_MODEL:-kimi-k2.5}"
+                kimi_small="${KIMI_CN_SMALL_FAST_MODEL:-kimi-k2.5}"
+            fi
+            echo "$prelude"
+            echo "export API_TIMEOUT_MS='600000'"
+            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
+            echo "export ANTHROPIC_BASE_URL='${kimi_base_url}'"
+            echo "export ANTHROPIC_API_URL='${kimi_base_url}'"
+            echo "if [ -z \"\${KIMI_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${KIMI_API_KEY}\""
+            echo "export ANTHROPIC_MODEL='${kimi_model}'"
+            echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_small}'"
+            emit_default_models "$kimi_model" "$kimi_model" "$kimi_model"
             ;;
         "qwen")
-            if is_effectively_set "$QWEN_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy'"
-                echo "export ANTHROPIC_API_URL='https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy'"
-                echo "if [ -z \"\${QWEN_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${QWEN_API_KEY}\""
-                local qwen_model="${QWEN_MODEL:-qwen3-max}"
-                local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-next-80b-a3b-instruct}"
-                echo "export ANTHROPIC_MODEL='${qwen_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${qwen_small}'"
-                emit_default_models_from_pair "$qwen_model" "$qwen_small"
-            elif is_effectively_set "$PPINFRA_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-                echo "if [ -z \"\${QWEN_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${PPINFRA_API_KEY}\""
-                local qwen_model="${QWEN_MODEL:-qwen3-next-80b-a3b-thinking}"
-                local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-next-80b-a3b-thinking}"
-                echo "export ANTHROPIC_MODEL='${qwen_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${qwen_small}'"
-                emit_default_models_from_pair "$qwen_model" "$qwen_small"
-            else
-                echo -e "${RED}❌ Please configure QWEN_API_KEY or PPINFRA_API_KEY${NC}" >&2
+            if ! is_effectively_set "$QWEN_API_KEY"; then
+                echo -e "${RED}❌ Please configure QWEN_API_KEY${NC}" >&2
                 return 1
             fi
+            local qwen_region
+            if ! qwen_region="$(normalize_region "$arg")"; then
+                echo -e "${RED}❌ $(t 'unknown_option'): $arg${NC}" >&2
+                echo -e "${YELLOW}💡 Usage: ccm qwen [global|china]${NC}" >&2
+                return 1
+            fi
+            local qwen_base_url=""
+            case "$qwen_region" in
+                "global")
+                    qwen_base_url="https://coding-intl.dashscope.aliyuncs.com/apps/anthropic"
+                    ;;
+                "china")
+                    qwen_base_url="https://coding.dashscope.aliyuncs.com/apps/anthropic"
+                    ;;
+            esac
+            local qwen_model="${QWEN_MODEL:-qwen3-max-2026-01-23}"
+            local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-coder-plus}"
+            echo "$prelude"
+            echo "export API_TIMEOUT_MS='600000'"
+            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
+            echo "export ANTHROPIC_BASE_URL='${qwen_base_url}'"
+            echo "export ANTHROPIC_API_URL='${qwen_base_url}'"
+            echo "if [ -z \"\${QWEN_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${QWEN_API_KEY}\""
+            echo "export ANTHROPIC_MODEL='${qwen_model}'"
+            echo "export ANTHROPIC_SMALL_FAST_MODEL='${qwen_small}'"
+            emit_default_models "$qwen_model" "$qwen_model" "$qwen_small"
             ;;
         "glm"|"glm4"|"glm4.6"|"glm4.7")
-            if is_effectively_set "$GLM_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://open.bigmodel.cn/api/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://open.bigmodel.cn/api/anthropic'"
-                echo "if [ -z \"\${GLM_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${GLM_API_KEY}\""
-                local glm_model="${GLM_MODEL:-glm-4.7}"
-                local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.5-air}"
-                echo "export ANTHROPIC_MODEL='${glm_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
-                emit_default_models_from_pair "$glm_model" "$glm_small"
-            elif is_effectively_set "$PPINFRA_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-                echo "if [ -z \"\${PPINFRA_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${PPINFRA_API_KEY}\""
-                local glm_model="${GLM_MODEL:-zai-org/glm-4.7}"
-                local glm_small="${GLM_SMALL_FAST_MODEL:-zai-org/glm-4.7}"
-                echo "export ANTHROPIC_MODEL='${glm_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
-                emit_default_models_from_pair "$glm_model" "$glm_small"
-            else
-                echo -e "${RED}❌ Please configure GLM_API_KEY or PPINFRA_API_KEY${NC}" >&2
+            if ! is_effectively_set "$GLM_API_KEY"; then
+                echo -e "${RED}❌ Please configure GLM_API_KEY${NC}" >&2
                 return 1
             fi
+            local glm_region
+            if ! glm_region="$(normalize_region "$arg")"; then
+                echo -e "${RED}❌ $(t 'unknown_option'): $arg${NC}" >&2
+                echo -e "${YELLOW}💡 Usage: ccm glm [global|china]${NC}" >&2
+                return 1
+            fi
+            local glm_base_url=""
+            case "$glm_region" in
+                "global")
+                    glm_base_url="https://api.z.ai/api/anthropic"
+                    ;;
+                "china")
+                    glm_base_url="https://open.bigmodel.cn/api/anthropic"
+                    ;;
+            esac
+            local glm_model="${GLM_MODEL:-glm-4.7}"
+            local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.7}"
+            echo "$prelude"
+            echo "export API_TIMEOUT_MS='600000'"
+            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
+            echo "export ANTHROPIC_BASE_URL='${glm_base_url}'"
+            echo "export ANTHROPIC_API_URL='${glm_base_url}'"
+            echo "if [ -z \"\${GLM_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${GLM_API_KEY}\""
+            echo "export ANTHROPIC_MODEL='${glm_model}'"
+            echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
+            emit_default_models "$glm_model" "$glm_model" "$glm_model"
+            ;;
+        "minimax"|"mm")
+            if ! is_effectively_set "$MINIMAX_API_KEY"; then
+                echo -e "${RED}❌ Please configure MINIMAX_API_KEY${NC}" >&2
+                return 1
+            fi
+            local mm_region
+            if ! mm_region="$(normalize_region "$arg")"; then
+                echo -e "${RED}❌ $(t 'unknown_option'): $arg${NC}" >&2
+                echo -e "${YELLOW}💡 Usage: ccm minimax [global|china]${NC}" >&2
+                return 1
+            fi
+            local mm_base_url=""
+            case "$mm_region" in
+                "global")
+                    mm_base_url="https://api.minimax.io/anthropic"
+                    ;;
+                "china")
+                    mm_base_url="https://api.minimaxi.com/anthropic"
+                    ;;
+            esac
+            local mm_model="${MINIMAX_MODEL:-MiniMax-M2.1}"
+            local mm_small="${MINIMAX_SMALL_FAST_MODEL:-MiniMax-M2.1}"
+            echo "$prelude"
+            echo "export API_TIMEOUT_MS='3000000'"
+            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
+            echo "export ANTHROPIC_BASE_URL='${mm_base_url}'"
+            echo "export ANTHROPIC_API_URL='${mm_base_url}'"
+            echo "if [ -z \"\${MINIMAX_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${MINIMAX_API_KEY}\""
+            echo "export ANTHROPIC_MODEL='${mm_model}'"
+            echo "export ANTHROPIC_SMALL_FAST_MODEL='${mm_small}'"
+            emit_default_models "$mm_model" "$mm_model" "$mm_model"
+            ;;
+        "seed"|"doubao")
+            if ! is_effectively_set "$ARK_API_KEY"; then
+                echo -e "${RED}❌ Please configure ARK_API_KEY${NC}" >&2
+                return 1
+            fi
+            local seed_variant="$arg"
+            local seed_model=""
+            case "$seed_variant" in
+                ""|"default")
+                    seed_model="${SEED_MODEL:-ark-code-latest}"
+                    ;;
+                "doubao"|"seed")
+                    seed_model="doubao-seed-code"
+                    ;;
+                "glm"|"glm4"|"glm4.7")
+                    seed_model="glm-4.7"
+                    ;;
+                "deepseek"|"ds")
+                    seed_model="deepseek-v3.2"
+                    ;;
+                "kimi"|"kimi2"|"kimi-k2.5")
+                    seed_model="kimi-k2.5"
+                    ;;
+                *)
+                    echo -e "${RED}❌ $(t 'unknown_option'): seed $seed_variant${NC}" >&2
+                    echo -e "${YELLOW}💡 Usage: ccm seed [doubao|glm|deepseek|kimi]${NC}" >&2
+                    return 1
+                    ;;
+            esac
+            echo "$prelude"
+            echo "export API_TIMEOUT_MS='3000000'"
+            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
+            echo "export ANTHROPIC_BASE_URL='https://ark.cn-beijing.volces.com/api/coding'"
+            echo "export ANTHROPIC_API_URL='https://ark.cn-beijing.volces.com/api/coding'"
+            echo "if [ -z \"\${ARK_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${ARK_API_KEY}\""
+            echo "export ANTHROPIC_MODEL='${seed_model}'"
+            echo "export ANTHROPIC_SMALL_FAST_MODEL='${seed_model}'"
+            emit_default_models "$seed_model" "$seed_model" "$seed_model"
             ;;
         "claude"|"sonnet"|"s")
             echo "$prelude"
@@ -1884,142 +1762,13 @@ emit_env_exports() {
             local claude_small="${CLAUDE_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
             local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
             local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
-            local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5}"
+            local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5-20251001}"
             echo "export ANTHROPIC_MODEL='${claude_model}'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='${claude_small}'"
             emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
             ;;
-        "opus"|"o")
-            echo "$prelude"
-            echo "unset ANTHROPIC_BASE_URL"
-            echo "unset ANTHROPIC_API_URL"
-            echo "unset ANTHROPIC_API_KEY"
-            local opus_model="${OPUS_MODEL:-claude-opus-4-5-20251101}"
-            local opus_small="${OPUS_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
-            local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
-            local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
-            local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5}"
-            echo "export ANTHROPIC_MODEL='${opus_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${opus_small}'"
-            emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
-            ;;
-        "haiku"|"h")
-            echo "$prelude"
-            echo "unset ANTHROPIC_BASE_URL"
-            echo "unset ANTHROPIC_API_URL"
-            echo "unset ANTHROPIC_API_KEY"
-            local haiku_model="${HAIKU_MODEL:-claude-haiku-4-5}"
-            local haiku_small="${HAIKU_SMALL_FAST_MODEL:-claude-haiku-4-5}"
-            local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
-            local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
-            local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5}"
-            echo "export ANTHROPIC_MODEL='${haiku_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${haiku_small}'"
-            emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
-            ;;
-        "longcat")
-            if ! is_effectively_set "$LONGCAT_API_KEY"; then
-                # 兜底：直接 source 配置文件一次（修复某些行格式导致的加载失败）
-                if [ -f "$HOME/.ccm_config" ]; then . "$HOME/.ccm_config" >/dev/null 2>&1; fi
-            fi
-            if is_effectively_set "$LONGCAT_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.longcat.chat/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.longcat.chat/anthropic'"
-                echo "if [ -z \"\${LONGCAT_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${LONGCAT_API_KEY}\""
-                local lc_model="${LONGCAT_MODEL:-LongCat-Flash-Thinking}"
-                local lc_small="${LONGCAT_SMALL_FAST_MODEL:-LongCat-Flash-Chat}"
-                echo "export ANTHROPIC_MODEL='${lc_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${lc_small}'"
-                emit_default_models_from_pair "$lc_model" "$lc_small"
-            else
-                echo "# ❌ $(t 'not_detected') LONGCAT_API_KEY" 1>&2
-                return 1
-            fi
-            ;;
-        "minimax"|"mm")
-            if is_effectively_set "$MINIMAX_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL=\"\${MINIMAX_BASE_URL:-https://api.minimax.io/anthropic}\""
-                echo "export ANTHROPIC_API_URL=\"\${MINIMAX_BASE_URL:-https://api.minimax.io/anthropic}\""
-                echo "if [ -z \"\${MINIMAX_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${MINIMAX_API_KEY}\""
-                local mm_model="${MINIMAX_MODEL:-minimax/minimax-m2}"
-                local mm_small="${MINIMAX_SMALL_FAST_MODEL:-minimax/minimax-m2}"
-                echo "export ANTHROPIC_MODEL='${mm_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${mm_small}'"
-                emit_default_models_from_pair "$mm_model" "$mm_small"
-            elif is_effectively_set "$PPINFRA_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://api.ppinfra.com/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.ppinfra.com/anthropic'"
-                echo "if [ -z \"\${MINIMAX_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${PPINFRA_API_KEY}\""
-                local mm_model="${MINIMAX_MODEL:-minimax/minimax-m2}"
-                local mm_small="${MINIMAX_SMALL_FAST_MODEL:-minimax/minimax-m2}"
-                echo "export ANTHROPIC_MODEL='${mm_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${mm_small}'"
-                emit_default_models_from_pair "$mm_model" "$mm_small"
-            else
-                echo -e "${RED}❌ Please configure MINIMAX_API_KEY or PPINFRA_API_KEY${NC}" >&2
-                return 1
-            fi
-            ;;
-        "seed"|"doubao")
-            if is_effectively_set "$ARK_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='3000000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                echo "export ANTHROPIC_BASE_URL='https://ark.cn-beijing.volces.com/api/coding'"
-                echo "export ANTHROPIC_API_URL='https://ark.cn-beijing.volces.com/api/coding'"
-                echo "if [ -z \"\${ARK_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${ARK_API_KEY}\""
-                local seed_model="${SEED_MODEL:-doubao-seed-code-preview-latest}"
-                local seed_small="${SEED_SMALL_FAST_MODEL:-doubao-seed-code-preview-latest}"
-                echo "export ANTHROPIC_MODEL='${seed_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${seed_small}'"
-                emit_default_models_from_pair "$seed_model" "$seed_small"
-            else
-                echo -e "${RED}❌ Please configure ARK_API_KEY${NC}" >&2
-                return 1
-            fi
-            ;;
-        "kat")
-            if ! is_effectively_set "$KAT_API_KEY"; then
-                # 兜底：直接 source 配置文件一次
-                if [ -f "$HOME/.ccm_config" ]; then . "$HOME/.ccm_config" >/dev/null 2>&1; fi
-            fi
-            if is_effectively_set "$KAT_API_KEY"; then
-                echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
-                # 使用用户的 endpoint ID，默认为 ep-default
-                local kat_endpoint="${KAT_ENDPOINT_ID:-ep-default}"
-                echo "export ANTHROPIC_BASE_URL='https://vanchin.streamlake.ai/api/gateway/v1/endpoints/${kat_endpoint}/claude-code-proxy'"
-                echo "export ANTHROPIC_API_URL='https://vanchin.streamlake.ai/api/gateway/v1/endpoints/${kat_endpoint}/claude-code-proxy'"
-                echo "if [ -z \"\${KAT_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
-                echo "export ANTHROPIC_AUTH_TOKEN=\"\${KAT_API_KEY}\""
-                local kat_model="${KAT_MODEL:-KAT-Coder}"
-                local kat_small="${KAT_SMALL_FAST_MODEL:-KAT-Coder}"
-                echo "export ANTHROPIC_MODEL='${kat_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${kat_small}'"
-                emit_default_models_from_pair "$kat_model" "$kat_small"
-            else
-                echo "# ❌ $(t 'missing_api_key'): KAT_API_KEY" 1>&2
-                echo "# $(t 'please_set_in_config'): KAT_API_KEY" 1>&2
-                echo "# $(t 'get_endpoint_id_from'): https://www.streamlake.ai/document/DOC/mg6k6nlp8j6qxicx4c9" 1>&2
-                return 1
-            fi
-            ;;
         *)
-            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|claude|opus|minimax|kat]" 1>&2
+            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|claude|open]" 1>&2
             return 1
             ;;
     esac
@@ -2037,7 +1786,7 @@ main() {
     local cmd="${1:-help}"
 
     # 检查是否是 model:account 格式
-    if [[ "$cmd" =~ ^(claude|sonnet|opus|haiku|s|o|h):(.+)$ ]]; then
+    if [[ "$cmd" =~ ^(claude|sonnet|s):(.+)$ ]]; then
         local model_type="${BASH_REMATCH[1]}"
         local account_name="${BASH_REMATCH[2]}"
 
@@ -2048,12 +1797,6 @@ main() {
         case "$model_type" in
             "claude"|"sonnet"|"s")
                 emit_env_exports claude
-                ;;
-            "opus"|"o")
-                emit_env_exports opus
-                ;;
-            "haiku"|"h")
-                emit_env_exports haiku
                 ;;
         esac
         return $?
@@ -2087,67 +1830,49 @@ main() {
             emit_env_exports deepseek
             ;;
         "kimi"|"kimi2")
-            emit_env_exports kimi
+            emit_env_exports kimi "${2:-}"
             ;;
         "kimi-cn")
             emit_env_exports kimi-cn
             ;;
         "qwen")
-            emit_env_exports qwen
-            ;;
-        "kat")
-            emit_env_exports kat
-            ;;
-        "longcat"|"lc")
-            emit_env_exports longcat
+            emit_env_exports qwen "${2:-}"
             ;;
         "minimax"|"mm")
-            emit_env_exports minimax
+            emit_env_exports minimax "${2:-}"
             ;;
         "seed"|"doubao")
-            emit_env_exports seed
+            emit_env_exports seed "${2:-}"
             ;;
         "glm"|"glm4"|"glm4.6"|"glm4.7")
-            emit_env_exports glm
+            emit_env_exports glm "${2:-}"
             ;;
         "claude"|"sonnet"|"s")
             emit_env_exports claude
             ;;
-        "opus"|"o")
-            emit_env_exports opus
-            ;;
-        "haiku"|"h")
-            emit_env_exports haiku
+        "open")
+            emit_env_exports open "${2:-}"
             ;;
         "env")
             shift
-            emit_env_exports "${1:-}"
-            ;;
-        "pp")
-            shift
-            local target="${1:-}"
-            local no_color="${2:-false}"
-            switch_to_ppinfra "$target" "$no_color"
+            emit_env_exports "${1:-}" "${2:-}"
             ;;
         "project")
             shift
             local action="${1:-}"
             case "$action" in
                 "glm")
-                    project_write_glm_settings
+                    project_write_glm_settings "${2:-}"
                     ;;
                 "reset")
                     project_reset_settings
                     ;;
                 *)
                     echo -e "${RED}❌ $(t 'unknown_option'): project $action${NC}" >&2
-                    echo -e "${YELLOW}💡 Usage: ccm project [glm|reset]${NC}" >&2
+                    echo -e "${YELLOW}💡 Usage: ccm project [glm|reset] [global|china]${NC}" >&2
                     return 1
                     ;;
             esac
-            ;;
-        "proxy")
-            switch_to_proxy
             ;;
         "status"|"st")
             show_status
