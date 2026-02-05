@@ -172,25 +172,15 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
-DEEPSEEK_SMALL_FAST_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
-KIMI_SMALL_FAST_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
-KIMI_CN_SMALL_FAST_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
-QWEN_SMALL_FAST_MODEL=qwen3-coder-plus
 GLM_MODEL=glm-4.7
-GLM_SMALL_FAST_MODEL=glm-4.7
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
-CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-5-20251101
-OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 HAIKU_MODEL=claude-haiku-4-5-20251001
-HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.1
-MINIMAX_SMALL_FAST_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
-SEED_SMALL_FAST_MODEL=ark-code-latest
 
 EOF
         echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -289,25 +279,15 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
-DEEPSEEK_SMALL_FAST_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
-KIMI_SMALL_FAST_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
-KIMI_CN_SMALL_FAST_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
-QWEN_SMALL_FAST_MODEL=qwen3-coder-plus
 GLM_MODEL=glm-4.7
-GLM_SMALL_FAST_MODEL=glm-4.7
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
-CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-5-20251101
-OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929
 HAIKU_MODEL=claude-haiku-4-5-20251001
-HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.1
-MINIMAX_SMALL_FAST_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
-SEED_SMALL_FAST_MODEL=ark-code-latest
 
 EOF
     echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -367,6 +347,11 @@ emit_default_models() {
     echo "export ANTHROPIC_DEFAULT_HAIKU_MODEL='${haiku}'"
 }
 
+emit_subagent_model() {
+    local model="$1"
+    echo "export CLAUDE_CODE_SUBAGENT_MODEL='${model}'"
+}
+
 emit_default_models_from_pair() {
     local primary="$1"
     local small="$2"
@@ -424,7 +409,6 @@ project_write_glm_settings() {
     fi
 
     local glm_model="${GLM_MODEL:-glm-4.7}"
-    local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.7}"
     local base_url=""
     case "$region" in
         "global")
@@ -447,13 +431,12 @@ project_write_glm_settings() {
   "ccmManaged": true,
   "env": {
     "ANTHROPIC_BASE_URL": "${base_url}",
-    "ANTHROPIC_API_URL": "${base_url}",
-    "ANTHROPIC_API_KEY": "${GLM_API_KEY}",
+    "ANTHROPIC_AUTH_TOKEN": "${GLM_API_KEY}",
     "ANTHROPIC_MODEL": "${glm_model}",
-    "ANTHROPIC_SMALL_FAST_MODEL": "${glm_small}",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "${glm_model}",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "${glm_model}",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${glm_model}"
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${glm_model}",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "${glm_model}"
   }
 }
 EOF
@@ -1018,7 +1001,7 @@ show_status() {
     echo -n "   AUTH_TOKEN: "
     mask_token "${ANTHROPIC_AUTH_TOKEN}"
     echo "   MODEL: ${ANTHROPIC_MODEL:-'$(t "not_set")'}"
-    echo "   SMALL_MODEL: ${ANTHROPIC_SMALL_FAST_MODEL:-'$(t "not_set")'}"
+    echo "   SUBAGENT_MODEL: ${CLAUDE_CODE_SUBAGENT_MODEL:-'$(t "not_set")'}"
     echo ""
     echo -e "${BLUE}🔧 $(t 'env_vars_status'):${NC}"
     echo "   GLM_API_KEY: $(mask_presence GLM_API_KEY)"
@@ -1042,6 +1025,7 @@ clean_env() {
     unset ANTHROPIC_DEFAULT_SONNET_MODEL
     unset ANTHROPIC_DEFAULT_OPUS_MODEL
     unset ANTHROPIC_DEFAULT_HAIKU_MODEL
+    unset CLAUDE_CODE_SUBAGENT_MODEL
     unset API_TIMEOUT_MS
     unset CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC
 }
@@ -1053,13 +1037,12 @@ switch_to_deepseek() {
     if is_effectively_set "$DEEPSEEK_API_KEY"; then
         # 官方 Deepseek 的 Anthropic 兼容端点
         export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
-        export ANTHROPIC_API_URL="https://api.deepseek.com/anthropic"
         export ANTHROPIC_AUTH_TOKEN="$DEEPSEEK_API_KEY"
         export ANTHROPIC_MODEL="deepseek-chat"
-        export ANTHROPIC_SMALL_FAST_MODEL="deepseek-chat"
         export ANTHROPIC_DEFAULT_SONNET_MODEL="deepseek/deepseek-v3.2"
         export ANTHROPIC_DEFAULT_OPUS_MODEL="deepseek/deepseek-v3.2"
         export ANTHROPIC_DEFAULT_HAIKU_MODEL="deepseek/deepseek-v3.2"
+        export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
         echo -e "${GREEN}✅ $(t 'switched_to') Deepseek（$(t 'official')）${NC}"
     else
         echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY${NC}"
@@ -1084,14 +1067,20 @@ switch_to_claude() {
     fi
 
     clean_env
+    export ANTHROPIC_BASE_URL="https://api.anthropic.com/"
+    if is_effectively_set "$CLAUDE_API_KEY"; then
+        export ANTHROPIC_AUTH_TOKEN="$CLAUDE_API_KEY"
+    fi
     export ANTHROPIC_MODEL="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
-    export ANTHROPIC_SMALL_FAST_MODEL="${CLAUDE_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="${OPUS_MODEL:-claude-opus-4-5-20251101}"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="${HAIKU_MODEL:-claude-haiku-4-5-20251001}"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ 已切换到 Claude Sonnet 4.5 (使用 Claude Pro 订阅)${NC}"
     if [[ -n "$account_name" ]]; then
         echo "   $(t 'account'): $account_name"
     fi
     echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
 
@@ -1120,19 +1109,16 @@ switch_to_glm() {
             ;;
     esac
     local glm_model="${GLM_MODEL:-glm-4.7}"
-    local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.7}"
     export ANTHROPIC_BASE_URL="$base_url"
-    export ANTHROPIC_API_URL="$base_url"
     export ANTHROPIC_AUTH_TOKEN="$GLM_API_KEY"
     export ANTHROPIC_MODEL="$glm_model"
-    export ANTHROPIC_SMALL_FAST_MODEL="$glm_small"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="$glm_model"
     export ANTHROPIC_DEFAULT_OPUS_MODEL="$glm_model"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="$glm_model"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ 已切换到 GLM（${region}）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
 # 切换到KIMI（全球）
@@ -1145,17 +1131,15 @@ switch_to_kimi() {
     fi
     # 海外 Kimi 端点
     export ANTHROPIC_BASE_URL="https://api.moonshot.ai/anthropic"
-    export ANTHROPIC_API_URL="https://api.moonshot.ai/anthropic"
     export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
     export ANTHROPIC_MODEL="kimi-for-coding"
-    export ANTHROPIC_SMALL_FAST_MODEL="kimi-for-coding"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-for-coding"
     export ANTHROPIC_DEFAULT_OPUS_MODEL="kimi-for-coding"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="kimi-for-coding"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ $(t 'switched_to') KIMI（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
 # 切换到KIMI CN (国内版本)
@@ -1168,17 +1152,15 @@ switch_to_kimi_cn() {
     fi
     # 国内 Kimi 端点
     export ANTHROPIC_BASE_URL="https://api.moonshot.cn/anthropic"
-    export ANTHROPIC_API_URL="https://api.moonshot.cn/anthropic"
     export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
     export ANTHROPIC_MODEL="kimi-k2.5"
-    export ANTHROPIC_SMALL_FAST_MODEL="kimi-k2.5"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-k2.5"
     export ANTHROPIC_DEFAULT_OPUS_MODEL="kimi-k2.5"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="kimi-k2.5"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ $(t 'switched_to') KIMI CN（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
 # 切换到 MiniMax
@@ -1206,21 +1188,16 @@ switch_to_minimax() {
             ;;
     esac
     local mm_model="${MINIMAX_MODEL:-MiniMax-M2.1}"
-    local mm_small="${MINIMAX_SMALL_FAST_MODEL:-MiniMax-M2.1}"
     export ANTHROPIC_BASE_URL="$base_url"
-    export ANTHROPIC_API_URL="$base_url"
     export ANTHROPIC_AUTH_TOKEN="$MINIMAX_API_KEY"
     export ANTHROPIC_MODEL="$mm_model"
-    export ANTHROPIC_SMALL_FAST_MODEL="$mm_small"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="$mm_model"
     export ANTHROPIC_DEFAULT_OPUS_MODEL="$mm_model"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="$mm_model"
-    export API_TIMEOUT_MS="3000000"
-    export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ $(t 'switched_to') MiniMax (${region})（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
 # 切换到 Qwen（Coding Plan）
@@ -1248,19 +1225,16 @@ switch_to_qwen() {
             ;;
     esac
     local qwen_model="${QWEN_MODEL:-qwen3-max-2026-01-23}"
-    local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-coder-plus}"
     export ANTHROPIC_BASE_URL="$base_url"
-    export ANTHROPIC_API_URL="$base_url"
     export ANTHROPIC_AUTH_TOKEN="$QWEN_API_KEY"
     export ANTHROPIC_MODEL="$qwen_model"
-    export ANTHROPIC_SMALL_FAST_MODEL="$qwen_small"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="$qwen_model"
     export ANTHROPIC_DEFAULT_OPUS_MODEL="$qwen_model"
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="$qwen_small"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="qwen3-coder-plus"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ $(t 'switched_to') Qwen (${region})（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   SMALL_MODEL: $ANTHROPIC_SMALL_FAST_MODEL"
 }
 
 # 切换到豆包 Seed-Code (Doubao)
@@ -1274,10 +1248,7 @@ switch_to_seed() {
     fi
     # 官方豆包 Seed-Code
     export ANTHROPIC_BASE_URL="https://ark.cn-beijing.volces.com/api/coding"
-    export ANTHROPIC_API_URL="https://ark.cn-beijing.volces.com/api/coding"
     export ANTHROPIC_AUTH_TOKEN="$ARK_API_KEY"
-    export API_TIMEOUT_MS="3000000"
-    export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="1"
 
     local seed_model=""
     case "$variant" in
@@ -1303,14 +1274,13 @@ switch_to_seed() {
             ;;
     esac
     export ANTHROPIC_MODEL="$seed_model"
-    export ANTHROPIC_SMALL_FAST_MODEL="$seed_model"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="$seed_model"
     export ANTHROPIC_DEFAULT_OPUS_MODEL="$seed_model"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="$seed_model"
+    export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ $(t 'switched_to') Seed-Code（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
     echo "   MODEL: $ANTHROPIC_MODEL"
-    echo "   TIMEOUT: $API_TIMEOUT_MS"
 }
 
 # 显示帮助信息
@@ -1370,25 +1340,15 @@ show_help() {
 ensure_model_override_defaults() {
     local -a pairs=(
         "DEEPSEEK_MODEL=deepseek-chat"
-        "DEEPSEEK_SMALL_FAST_MODEL=deepseek-chat"
         "KIMI_MODEL=kimi-for-coding"
-        "KIMI_SMALL_FAST_MODEL=kimi-for-coding"
         "KIMI_CN_MODEL=kimi-k2.5"
-        "KIMI_CN_SMALL_FAST_MODEL=kimi-k2.5"
         "MINIMAX_MODEL=MiniMax-M2.1"
-        "MINIMAX_SMALL_FAST_MODEL=MiniMax-M2.1"
         "SEED_MODEL=ark-code-latest"
-        "SEED_SMALL_FAST_MODEL=ark-code-latest"
         "QWEN_MODEL=qwen3-max-2026-01-23"
-        "QWEN_SMALL_FAST_MODEL=qwen3-coder-plus"
         "GLM_MODEL=glm-4.7"
-        "GLM_SMALL_FAST_MODEL=glm-4.7"
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
-        "CLAUDE_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929"
         "OPUS_MODEL=claude-opus-4-5-20251101"
-        "OPUS_SMALL_FAST_MODEL=claude-sonnet-4-5-20250929"
         "HAIKU_MODEL=claude-haiku-4-5-20251001"
-        "HAIKU_SMALL_FAST_MODEL=claude-haiku-4-5-20251001"
     )
     local added_header=0
     for pair in "${pairs[@]}"; do
@@ -1531,7 +1491,7 @@ emit_openrouter_exports() {
             ;;
     esac
 
-    local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+    local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL CLAUDE_CODE_SUBAGENT_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
     echo "$prelude"
     echo "export ANTHROPIC_BASE_URL='https://openrouter.ai/api'"
     echo "export ANTHROPIC_API_URL='https://openrouter.ai/api'"
@@ -1541,6 +1501,7 @@ emit_openrouter_exports() {
     echo "export ANTHROPIC_MODEL='${model}'"
     echo "export ANTHROPIC_SMALL_FAST_MODEL='${small}'"
     emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
+    emit_subagent_model "$model"
 }
 
 emit_env_exports() {
@@ -1550,7 +1511,7 @@ emit_env_exports() {
     load_config || return 1
 
     # 通用前导：清理旧变量
-    local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+    local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL CLAUDE_CODE_SUBAGENT_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
 
     case "$target" in
         "open")
@@ -1559,17 +1520,13 @@ emit_env_exports() {
         "deepseek"|"ds")
             if is_effectively_set "$DEEPSEEK_API_KEY"; then
                 echo "$prelude"
-                echo "export API_TIMEOUT_MS='600000'"
-                echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
                 echo "export ANTHROPIC_BASE_URL='https://api.deepseek.com/anthropic'"
-                echo "export ANTHROPIC_API_URL='https://api.deepseek.com/anthropic'"
                 echo "if [ -z \"\${DEEPSEEK_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
                 echo "export ANTHROPIC_AUTH_TOKEN=\"\${DEEPSEEK_API_KEY}\""
                 local ds_model="${DEEPSEEK_MODEL:-deepseek-chat}"
-                local ds_small="${DEEPSEEK_SMALL_FAST_MODEL:-deepseek-chat}"
                 echo "export ANTHROPIC_MODEL='${ds_model}'"
-                echo "export ANTHROPIC_SMALL_FAST_MODEL='${ds_small}'"
                 emit_default_models "deepseek/deepseek-v3.2" "deepseek/deepseek-v3.2" "deepseek/deepseek-v3.2"
+                emit_subagent_model "$ds_model"
             else
                 echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY${NC}" >&2
                 return 1
@@ -1592,26 +1549,20 @@ emit_env_exports() {
             fi
             local kimi_base_url=""
             local kimi_model=""
-            local kimi_small=""
             if [[ "$region" == "global" ]]; then
                 kimi_base_url="https://api.moonshot.ai/anthropic"
                 kimi_model="${KIMI_MODEL:-kimi-for-coding}"
-                kimi_small="${KIMI_SMALL_FAST_MODEL:-kimi-for-coding}"
             else
                 kimi_base_url="https://api.moonshot.cn/anthropic"
                 kimi_model="${KIMI_CN_MODEL:-kimi-k2.5}"
-                kimi_small="${KIMI_CN_SMALL_FAST_MODEL:-kimi-k2.5}"
             fi
             echo "$prelude"
-            echo "export API_TIMEOUT_MS='600000'"
-            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
             echo "export ANTHROPIC_BASE_URL='${kimi_base_url}'"
-            echo "export ANTHROPIC_API_URL='${kimi_base_url}'"
             echo "if [ -z \"\${KIMI_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
             echo "export ANTHROPIC_AUTH_TOKEN=\"\${KIMI_API_KEY}\""
             echo "export ANTHROPIC_MODEL='${kimi_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_small}'"
             emit_default_models "$kimi_model" "$kimi_model" "$kimi_model"
+            emit_subagent_model "$kimi_model"
             ;;
         "qwen")
             if ! is_effectively_set "$QWEN_API_KEY"; then
@@ -1634,17 +1585,13 @@ emit_env_exports() {
                     ;;
             esac
             local qwen_model="${QWEN_MODEL:-qwen3-max-2026-01-23}"
-            local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-coder-plus}"
             echo "$prelude"
-            echo "export API_TIMEOUT_MS='600000'"
-            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
             echo "export ANTHROPIC_BASE_URL='${qwen_base_url}'"
-            echo "export ANTHROPIC_API_URL='${qwen_base_url}'"
             echo "if [ -z \"\${QWEN_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
             echo "export ANTHROPIC_AUTH_TOKEN=\"\${QWEN_API_KEY}\""
             echo "export ANTHROPIC_MODEL='${qwen_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${qwen_small}'"
-            emit_default_models "$qwen_model" "$qwen_model" "$qwen_small"
+            emit_default_models "$qwen_model" "$qwen_model" "qwen3-coder-plus"
+            emit_subagent_model "$qwen_model"
             ;;
         "glm"|"glm4"|"glm4.6"|"glm4.7")
             if ! is_effectively_set "$GLM_API_KEY"; then
@@ -1667,17 +1614,13 @@ emit_env_exports() {
                     ;;
             esac
             local glm_model="${GLM_MODEL:-glm-4.7}"
-            local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.7}"
             echo "$prelude"
-            echo "export API_TIMEOUT_MS='600000'"
-            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
             echo "export ANTHROPIC_BASE_URL='${glm_base_url}'"
-            echo "export ANTHROPIC_API_URL='${glm_base_url}'"
             echo "if [ -z \"\${GLM_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
             echo "export ANTHROPIC_AUTH_TOKEN=\"\${GLM_API_KEY}\""
             echo "export ANTHROPIC_MODEL='${glm_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
             emit_default_models "$glm_model" "$glm_model" "$glm_model"
+            emit_subagent_model "$glm_model"
             ;;
         "minimax"|"mm")
             if ! is_effectively_set "$MINIMAX_API_KEY"; then
@@ -1700,17 +1643,13 @@ emit_env_exports() {
                     ;;
             esac
             local mm_model="${MINIMAX_MODEL:-MiniMax-M2.1}"
-            local mm_small="${MINIMAX_SMALL_FAST_MODEL:-MiniMax-M2.1}"
             echo "$prelude"
-            echo "export API_TIMEOUT_MS='3000000'"
-            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
             echo "export ANTHROPIC_BASE_URL='${mm_base_url}'"
-            echo "export ANTHROPIC_API_URL='${mm_base_url}'"
             echo "if [ -z \"\${MINIMAX_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
             echo "export ANTHROPIC_AUTH_TOKEN=\"\${MINIMAX_API_KEY}\""
             echo "export ANTHROPIC_MODEL='${mm_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${mm_small}'"
             emit_default_models "$mm_model" "$mm_model" "$mm_model"
+            emit_subagent_model "$mm_model"
             ;;
         "seed"|"doubao")
             if ! is_effectively_set "$ARK_API_KEY"; then
@@ -1742,30 +1681,29 @@ emit_env_exports() {
                     ;;
             esac
             echo "$prelude"
-            echo "export API_TIMEOUT_MS='3000000'"
-            echo "export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1'"
             echo "export ANTHROPIC_BASE_URL='https://ark.cn-beijing.volces.com/api/coding'"
-            echo "export ANTHROPIC_API_URL='https://ark.cn-beijing.volces.com/api/coding'"
             echo "if [ -z \"\${ARK_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
             echo "export ANTHROPIC_AUTH_TOKEN=\"\${ARK_API_KEY}\""
             echo "export ANTHROPIC_MODEL='${seed_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${seed_model}'"
             emit_default_models "$seed_model" "$seed_model" "$seed_model"
+            emit_subagent_model "$seed_model"
             ;;
         "claude"|"sonnet"|"s")
             echo "$prelude"
-            # 官方 Anthropic 默认网关，无需设置 BASE_URL
-            echo "unset ANTHROPIC_BASE_URL"
+            # 官方 Anthropic 网关
+            echo "export ANTHROPIC_BASE_URL='https://api.anthropic.com/'"
             echo "unset ANTHROPIC_API_URL"
             echo "unset ANTHROPIC_API_KEY"
             local claude_model="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
-            local claude_small="${CLAUDE_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
             local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
             local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
             local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5-20251001}"
             echo "export ANTHROPIC_MODEL='${claude_model}'"
-            echo "export ANTHROPIC_SMALL_FAST_MODEL='${claude_small}'"
+            if is_effectively_set "$CLAUDE_API_KEY"; then
+                echo "export ANTHROPIC_AUTH_TOKEN=\"\${CLAUDE_API_KEY}\""
+            fi
             emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
+            emit_subagent_model "$claude_model"
             ;;
         *)
             echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|claude|open]" 1>&2

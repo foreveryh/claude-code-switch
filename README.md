@@ -92,8 +92,8 @@ All providers below require their own API key, except **Claude (official)** whic
   - Global Base URL: `https://coding-intl.dashscope.aliyuncs.com/apps/anthropic`
   - China Base URL: `https://coding.dashscope.aliyuncs.com/apps/anthropic`
   - Main model: `qwen3-max-2026-01-23`
-  - Small model: `qwen3-coder-plus`
-  - Default models: OPUS/SONNET = main, HAIKU = small
+  - Haiku default: `qwen3-coder-plus`
+  - Default models: OPUS/SONNET = main, HAIKU = `qwen3-coder-plus`
 
 - **GLM** (default: global)
   - Command: `ccm glm [global|china]`
@@ -106,7 +106,6 @@ All providers below require their own API key, except **Claude (official)** whic
   - Global Base URL: `https://api.minimax.io/anthropic`
   - China Base URL: `https://api.minimaxi.com/anthropic`
   - Model: `MiniMax-M2.1`
-  - Uses `API_TIMEOUT_MS=3000000` and `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`
 
 - **Doubao / Seed (ARK)**
   - Command: `ccm seed [doubao|glm|deepseek|kimi]`
@@ -120,7 +119,7 @@ All providers below require their own API key, except **Claude (official)** whic
 
 - **Claude (official)**
   - Command: `ccm claude`
-  - No base URL (uses Anthropic default)
+  - Base URL: `https://api.anthropic.com/`
   - Uses your Claude Code subscription unless you set `CLAUDE_API_KEY`
 
 ### OpenRouter (explicit command, no fallback)
@@ -193,7 +192,6 @@ DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
-QWEN_SMALL_FAST_MODEL=qwen3-coder-plus
 GLM_MODEL=glm-4.7
 MINIMAX_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
@@ -206,5 +204,6 @@ HAIKU_MODEL=claude-haiku-4-5-20251001
 ## Notes
 
 - If you do not use rc injection, run `eval "$(./ccm <provider>)"` to apply env vars (or `eval "$(ccm <provider>)"` if `ccm` is on PATH).
+- CCM only exports these 7 vars per provider: `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL`, `ANTHROPIC_DEFAULT_OPUS_MODEL`, `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`, `CLAUDE_CODE_SUBAGENT_MODEL`. OpenRouter follows its own requirements.
 - `ccm open` prints supported providers and correct usage.
 - `ccm project glm` only affects the current project via `.claude/settings.local.json`.

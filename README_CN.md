@@ -92,8 +92,8 @@ ccc open kimi      # OpenRouter
   - Global Base URL：`https://coding-intl.dashscope.aliyuncs.com/apps/anthropic`
   - China Base URL：`https://coding.dashscope.aliyuncs.com/apps/anthropic`
   - 主模型：`qwen3-max-2026-01-23`
-  - 小模型：`qwen3-coder-plus`
-  - 默认三模型：OPUS/SONNET = 主模型，HAIKU = 小模型
+  - HAIKU 默认模型：`qwen3-coder-plus`
+  - 默认三模型：OPUS/SONNET = 主模型，HAIKU = `qwen3-coder-plus`
 
 - **GLM**（默认 global）
   - 命令：`ccm glm [global|china]`
@@ -106,7 +106,6 @@ ccc open kimi      # OpenRouter
   - Global Base URL：`https://api.minimax.io/anthropic`
   - China Base URL：`https://api.minimaxi.com/anthropic`
   - 模型：`MiniMax-M2.1`
-  - 默认设置 `API_TIMEOUT_MS=3000000` 与 `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`
 
 - **豆包 / Seed（ARK）**
   - 命令：`ccm seed [doubao|glm|deepseek|kimi]`
@@ -120,7 +119,7 @@ ccc open kimi      # OpenRouter
 
 - **Claude 官方**
   - 命令：`ccm claude`
-  - 不设置 Base URL（默认官方）
+  - Base URL：`https://api.anthropic.com/`
   - 默认使用 Claude Code 订阅（或配置 `CLAUDE_API_KEY`）
 
 ### OpenRouter（显式命令，不做兜底）
@@ -193,7 +192,6 @@ DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
-QWEN_SMALL_FAST_MODEL=qwen3-coder-plus
 GLM_MODEL=glm-4.7
 MINIMAX_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
@@ -206,5 +204,6 @@ HAIKU_MODEL=claude-haiku-4-5-20251001
 ## 备注
 
 - 若不使用 rc 注入，请使用 `eval "$(./ccm <provider>)"` 应用环境变量（或 `eval "$(ccm <provider>)"`，前提是 `ccm` 在 PATH 中）。
+- CCM 每个 provider 仅导出这 7 个变量：`ANTHROPIC_BASE_URL`、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_MODEL`、`ANTHROPIC_DEFAULT_OPUS_MODEL`、`ANTHROPIC_DEFAULT_SONNET_MODEL`、`ANTHROPIC_DEFAULT_HAIKU_MODEL`、`CLAUDE_CODE_SUBAGENT_MODEL`。OpenRouter 仍遵循自身要求。
 - `ccm open` 会提示支持的 provider 与正确用法。
 - `ccm project glm` 只影响当前项目（`.claude/settings.local.json`）。
