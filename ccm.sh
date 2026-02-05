@@ -387,6 +387,23 @@ mask_presence() {
     fi
 }
 
+# 输出 Claude Code 默认模型环境变量
+emit_default_models() {
+    local sonnet="$1"
+    local opus="$2"
+    local haiku="$3"
+    echo "export ANTHROPIC_DEFAULT_SONNET_MODEL='${sonnet}'"
+    echo "export ANTHROPIC_DEFAULT_OPUS_MODEL='${opus}'"
+    echo "export ANTHROPIC_DEFAULT_HAIKU_MODEL='${haiku}'"
+}
+
+emit_default_models_from_pair() {
+    local primary="$1"
+    local small="$2"
+    local haiku="${small:-$primary}"
+    emit_default_models "$primary" "$primary" "$haiku"
+}
+
 # ============================================
 # Claude Pro 账号管理功能
 # ============================================
@@ -431,7 +448,10 @@ project_write_glm_settings() {
     "ANTHROPIC_API_URL": "https://open.bigmodel.cn/api/anthropic",
     "ANTHROPIC_API_KEY": "${GLM_API_KEY}",
     "ANTHROPIC_MODEL": "${glm_model}",
-    "ANTHROPIC_SMALL_FAST_MODEL": "${glm_small}"
+    "ANTHROPIC_SMALL_FAST_MODEL": "${glm_small}",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "${glm_model}",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "${glm_model}",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${glm_small}"
   }
 }
 EOF
@@ -1023,6 +1043,9 @@ clean_env() {
     unset ANTHROPIC_API_KEY
     unset ANTHROPIC_MODEL
     unset ANTHROPIC_SMALL_FAST_MODEL
+    unset ANTHROPIC_DEFAULT_SONNET_MODEL
+    unset ANTHROPIC_DEFAULT_OPUS_MODEL
+    unset ANTHROPIC_DEFAULT_HAIKU_MODEL
     unset API_TIMEOUT_MS
     unset CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC
 }
@@ -1381,7 +1404,7 @@ switch_to_ppinfra() {
     fi
 
     # 清理旧环境变量（关键：避免认证冲突）
-    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
     
     # 根据目标模型输出PPINFRA配置的export语句
     case "$target" in
@@ -1397,6 +1420,7 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
             echo "export ANTHROPIC_MODEL='deepseek/deepseek-v3.2-exp'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='deepseek/deepseek-v3.2-exp'"
+            emit_default_models_from_pair "deepseek/deepseek-v3.2-exp" "deepseek/deepseek-v3.2-exp"
             ;;
         "glm"|"glm4"|"glm4.6"|"glm4.7")
             if [[ "$no_color" == "true" ]]; then
@@ -1409,6 +1433,7 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
             echo "export ANTHROPIC_MODEL='zai-org/glm-4.7'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='zai-org/glm-4.7'"
+            emit_default_models_from_pair "zai-org/glm-4.7" "zai-org/glm-4.7"
             ;;
         "kimi"|"kimi2")
             if [[ "$no_color" == "true" ]]; then
@@ -1421,6 +1446,7 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
             echo "export ANTHROPIC_MODEL='moonshotai/kimi-k2-thinking'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='moonshotai/kimi-k2-thinking'"
+            emit_default_models_from_pair "moonshotai/kimi-k2-thinking" "moonshotai/kimi-k2-thinking"
             ;;
         "kimi-cn")
             if [[ "$no_color" == "true" ]]; then
@@ -1433,6 +1459,7 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
             echo "export ANTHROPIC_MODEL='moonshotai/kimi-k2-thinking'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='moonshotai/kimi-k2-thinking'"
+            emit_default_models_from_pair "moonshotai/kimi-k2-thinking" "moonshotai/kimi-k2-thinking"
             ;;
         "qwen")
             if [[ "$no_color" == "true" ]]; then
@@ -1445,6 +1472,7 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
             echo "export ANTHROPIC_MODEL='qwen3-next-80b-a3b-thinking'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='qwen3-next-80b-a3b-thinking'"
+            emit_default_models_from_pair "qwen3-next-80b-a3b-thinking" "qwen3-next-80b-a3b-thinking"
             ;;
         "minimax"|"mm")
             if [[ "$no_color" == "true" ]]; then
@@ -1457,6 +1485,7 @@ switch_to_ppinfra() {
             echo "export ANTHROPIC_AUTH_TOKEN='$ppinfra_key'"
             echo "export ANTHROPIC_MODEL='minimax/minimax-m2'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='minimax/minimax-m2'"
+            emit_default_models_from_pair "minimax/minimax-m2" "minimax/minimax-m2"
             ;;
         *)
             if [[ "$no_color" == "true" ]]; then
@@ -1505,7 +1534,7 @@ switch_to_proxy() {
     fi
 
     # 清理旧环境变量
-    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
 
     # 环境变量导出
     echo "export ANTHROPIC_BASE_URL='$base_url'"
@@ -1514,6 +1543,7 @@ switch_to_proxy() {
     echo "export ANTHROPIC_API_KEY='$api_key'"
     echo "export ANTHROPIC_MODEL='$model'"
     echo "export ANTHROPIC_SMALL_FAST_MODEL='$small_fast_model'"
+    emit_default_models_from_pair "$model" "$small_fast_model"
     echo "export API_TIMEOUT_MS='300000'"
 
     # 成功提示（输出到stderr，避免干扰eval）
@@ -1680,7 +1710,7 @@ emit_env_exports() {
     load_config || return 1
 
     # 通用前导：清理旧变量
-    local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+    local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
 
     case "$target" in
         "deepseek"|"ds")
@@ -1697,6 +1727,7 @@ emit_env_exports() {
                 local ds_small="${DEEPSEEK_SMALL_FAST_MODEL:-deepseek-chat}"
                 echo "export ANTHROPIC_MODEL='${ds_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${ds_small}'"
+                emit_default_models_from_pair "$ds_model" "$ds_small"
             elif is_effectively_set "$PPINFRA_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1709,6 +1740,7 @@ emit_env_exports() {
                 local ds_small="${DEEPSEEK_SMALL_FAST_MODEL:-deepseek/deepseek-v3.2-exp}"
                 echo "export ANTHROPIC_MODEL='${ds_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${ds_small}'"
+                emit_default_models_from_pair "$ds_model" "$ds_small"
             else
                 echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY or PPINFRA_API_KEY${NC}" >&2
                 return 1
@@ -1727,6 +1759,7 @@ emit_env_exports() {
                 local kimi_small="${KIMI_SMALL_FAST_MODEL:-kimi-for-coding}"
                 echo "export ANTHROPIC_MODEL='${kimi_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_small}'"
+                emit_default_models_from_pair "$kimi_model" "$kimi_small"
             elif is_effectively_set "$PPINFRA_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1739,6 +1772,7 @@ emit_env_exports() {
                 local kimi_small="${KIMI_SMALL_FAST_MODEL:-moonshotai/kimi-k2-thinking}"
                 echo "export ANTHROPIC_MODEL='${kimi_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_small}'"
+                emit_default_models_from_pair "$kimi_model" "$kimi_small"
             else
                 echo -e "${RED}❌ Please configure KIMI_API_KEY or PPINFRA_API_KEY${NC}" >&2
                 return 1
@@ -1757,6 +1791,7 @@ emit_env_exports() {
                 local kimi_cn_small="${KIMI_CN_SMALL_FAST_MODEL:-kimi-k2-thinking}"
                 echo "export ANTHROPIC_MODEL='${kimi_cn_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_cn_small}'"
+                emit_default_models_from_pair "$kimi_cn_model" "$kimi_cn_small"
             elif is_effectively_set "$PPINFRA_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1769,6 +1804,7 @@ emit_env_exports() {
                 local kimi_cn_small="${KIMI_CN_SMALL_FAST_MODEL:-moonshotai/kimi-k2-thinking}"
                 echo "export ANTHROPIC_MODEL='${kimi_cn_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${kimi_cn_small}'"
+                emit_default_models_from_pair "$kimi_cn_model" "$kimi_cn_small"
             else
                 echo -e "${RED}❌ Please configure KIMI_CN_API_KEY or PPINFRA_API_KEY${NC}" >&2
                 return 1
@@ -1787,6 +1823,7 @@ emit_env_exports() {
                 local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-next-80b-a3b-instruct}"
                 echo "export ANTHROPIC_MODEL='${qwen_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${qwen_small}'"
+                emit_default_models_from_pair "$qwen_model" "$qwen_small"
             elif is_effectively_set "$PPINFRA_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1799,6 +1836,7 @@ emit_env_exports() {
                 local qwen_small="${QWEN_SMALL_FAST_MODEL:-qwen3-next-80b-a3b-thinking}"
                 echo "export ANTHROPIC_MODEL='${qwen_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${qwen_small}'"
+                emit_default_models_from_pair "$qwen_model" "$qwen_small"
             else
                 echo -e "${RED}❌ Please configure QWEN_API_KEY or PPINFRA_API_KEY${NC}" >&2
                 return 1
@@ -1817,6 +1855,7 @@ emit_env_exports() {
                 local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.5-air}"
                 echo "export ANTHROPIC_MODEL='${glm_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
+                emit_default_models_from_pair "$glm_model" "$glm_small"
             elif is_effectively_set "$PPINFRA_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1829,6 +1868,7 @@ emit_env_exports() {
                 local glm_small="${GLM_SMALL_FAST_MODEL:-zai-org/glm-4.7}"
                 echo "export ANTHROPIC_MODEL='${glm_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${glm_small}'"
+                emit_default_models_from_pair "$glm_model" "$glm_small"
             else
                 echo -e "${RED}❌ Please configure GLM_API_KEY or PPINFRA_API_KEY${NC}" >&2
                 return 1
@@ -1842,8 +1882,12 @@ emit_env_exports() {
             echo "unset ANTHROPIC_API_KEY"
             local claude_model="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
             local claude_small="${CLAUDE_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
+            local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
+            local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
+            local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5}"
             echo "export ANTHROPIC_MODEL='${claude_model}'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='${claude_small}'"
+            emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
             ;;
         "opus"|"o")
             echo "$prelude"
@@ -1852,8 +1896,12 @@ emit_env_exports() {
             echo "unset ANTHROPIC_API_KEY"
             local opus_model="${OPUS_MODEL:-claude-opus-4-5-20251101}"
             local opus_small="${OPUS_SMALL_FAST_MODEL:-claude-sonnet-4-5-20250929}"
+            local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
+            local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
+            local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5}"
             echo "export ANTHROPIC_MODEL='${opus_model}'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='${opus_small}'"
+            emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
             ;;
         "haiku"|"h")
             echo "$prelude"
@@ -1862,8 +1910,12 @@ emit_env_exports() {
             echo "unset ANTHROPIC_API_KEY"
             local haiku_model="${HAIKU_MODEL:-claude-haiku-4-5}"
             local haiku_small="${HAIKU_SMALL_FAST_MODEL:-claude-haiku-4-5}"
+            local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
+            local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
+            local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5}"
             echo "export ANTHROPIC_MODEL='${haiku_model}'"
             echo "export ANTHROPIC_SMALL_FAST_MODEL='${haiku_small}'"
+            emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
             ;;
         "longcat")
             if ! is_effectively_set "$LONGCAT_API_KEY"; then
@@ -1882,6 +1934,7 @@ emit_env_exports() {
                 local lc_small="${LONGCAT_SMALL_FAST_MODEL:-LongCat-Flash-Chat}"
                 echo "export ANTHROPIC_MODEL='${lc_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${lc_small}'"
+                emit_default_models_from_pair "$lc_model" "$lc_small"
             else
                 echo "# ❌ $(t 'not_detected') LONGCAT_API_KEY" 1>&2
                 return 1
@@ -1900,6 +1953,7 @@ emit_env_exports() {
                 local mm_small="${MINIMAX_SMALL_FAST_MODEL:-minimax/minimax-m2}"
                 echo "export ANTHROPIC_MODEL='${mm_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${mm_small}'"
+                emit_default_models_from_pair "$mm_model" "$mm_small"
             elif is_effectively_set "$PPINFRA_API_KEY"; then
                 echo "$prelude"
                 echo "export API_TIMEOUT_MS='600000'"
@@ -1912,6 +1966,7 @@ emit_env_exports() {
                 local mm_small="${MINIMAX_SMALL_FAST_MODEL:-minimax/minimax-m2}"
                 echo "export ANTHROPIC_MODEL='${mm_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${mm_small}'"
+                emit_default_models_from_pair "$mm_model" "$mm_small"
             else
                 echo -e "${RED}❌ Please configure MINIMAX_API_KEY or PPINFRA_API_KEY${NC}" >&2
                 return 1
@@ -1930,6 +1985,7 @@ emit_env_exports() {
                 local seed_small="${SEED_SMALL_FAST_MODEL:-doubao-seed-code-preview-latest}"
                 echo "export ANTHROPIC_MODEL='${seed_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${seed_small}'"
+                emit_default_models_from_pair "$seed_model" "$seed_small"
             else
                 echo -e "${RED}❌ Please configure ARK_API_KEY${NC}" >&2
                 return 1
@@ -1954,6 +2010,7 @@ emit_env_exports() {
                 local kat_small="${KAT_SMALL_FAST_MODEL:-KAT-Coder}"
                 echo "export ANTHROPIC_MODEL='${kat_model}'"
                 echo "export ANTHROPIC_SMALL_FAST_MODEL='${kat_small}'"
+                emit_default_models_from_pair "$kat_model" "$kat_small"
             else
                 echo "# ❌ $(t 'missing_api_key'): KAT_API_KEY" 1>&2
                 echo "# $(t 'please_set_in_config'): KAT_API_KEY" 1>&2
