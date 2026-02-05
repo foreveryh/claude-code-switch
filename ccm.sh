@@ -391,6 +391,71 @@ mask_presence() {
 # Claude Pro 账号管理功能
 # ============================================
 
+project_settings_path() {
+    echo "$PWD/.claude/settings.local.json"
+}
+
+backup_project_settings() {
+    local path="$1"
+    local ts
+    ts="$(date "+%Y%m%d-%H%M%S")"
+    cp -f "$path" "${path}.bak.${ts}"
+}
+
+project_write_glm_settings() {
+    local settings_path
+    settings_path="$(project_settings_path)"
+    local settings_dir
+    settings_dir="$(dirname "$settings_path")"
+
+    if ! is_effectively_set "$GLM_API_KEY"; then
+        echo -e "${RED}❌ Please configure GLM_API_KEY before writing project settings${NC}" >&2
+        return 1
+    fi
+
+    local glm_model="${GLM_MODEL:-glm-4.7}"
+    local glm_small="${GLM_SMALL_FAST_MODEL:-glm-4.5-air}"
+
+    if [[ -f "$settings_path" ]]; then
+        if ! grep -q '"ccmManaged"[[:space:]]*:[[:space:]]*true' "$settings_path"; then
+            backup_project_settings "$settings_path"
+        fi
+    fi
+
+    mkdir -p "$settings_dir"
+    cat > "$settings_path" <<EOF
+{
+  "ccmManaged": true,
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic",
+    "ANTHROPIC_API_URL": "https://open.bigmodel.cn/api/anthropic",
+    "ANTHROPIC_AUTH_TOKEN": "${GLM_API_KEY}",
+    "ANTHROPIC_API_KEY": "${GLM_API_KEY}",
+    "ANTHROPIC_MODEL": "${glm_model}",
+    "ANTHROPIC_SMALL_FAST_MODEL": "${glm_small}"
+  }
+}
+EOF
+    chmod 600 "$settings_path"
+    echo -e "${GREEN}✅ Wrote project settings for GLM at:${NC} $settings_path" >&2
+    echo -e "${YELLOW}💡 This overrides user settings (e.g. Quotio) for this project only.${NC}" >&2
+}
+
+project_reset_settings() {
+    local settings_path
+    settings_path="$(project_settings_path)"
+    if [[ ! -f "$settings_path" ]]; then
+        echo -e "${YELLOW}⚠️  No project settings to reset at:${NC} $settings_path" >&2
+        return 0
+    fi
+    if ! grep -q '"ccmManaged"[[:space:]]*:[[:space:]]*true' "$settings_path"; then
+        backup_project_settings "$settings_path"
+    fi
+    rm -f "$settings_path"
+    echo -e "${GREEN}✅ Removed project settings:${NC} $settings_path" >&2
+    echo -e "${YELLOW}💡 Claude Code will fall back to user settings (e.g. Quotio).${NC}" >&2
+}
+
 # 跨平台 base64 编码函数（无换行）
 base64_encode_nolinebreak() {
     if [[ "$OS_TYPE" == "macos" ]]; then
@@ -1500,6 +1565,9 @@ show_help() {
     echo -e "${YELLOW}$(t 'examples'):${NC}"
     echo "  eval \"\$(ccm deepseek)\"                   # Apply in current shell (recommended)"
     echo "  eval \"\$(ccm seed)\"                     # Switch to 豆包 Seed-Code with ARK_API_KEY"
+    echo ""
+    echo "  project glm        - write .claude/settings.local.json for GLM (project-only)"
+    echo "  project reset      - remove project override (use user settings)"
     echo "  $(basename "$0") status                      # Check current status (masked)"
     echo "  $(basename "$0") save-account work           # Save current account as 'work'"
     echo "  $(basename "$0") opus:personal               # Switch to 'personal' account with Opus"
@@ -2004,6 +2072,23 @@ main() {
             local target="${1:-}"
             local no_color="${2:-false}"
             switch_to_ppinfra "$target" "$no_color"
+            ;;
+        "project")
+            shift
+            local action="${1:-}"
+            case "$action" in
+                "glm")
+                    project_write_glm_settings
+                    ;;
+                "reset")
+                    project_reset_settings
+                    ;;
+                *)
+                    echo -e "${RED}❌ $(t 'unknown_option'): project $action${NC}" >&2
+                    echo -e "${YELLOW}💡 Usage: ccm project [glm|reset]${NC}" >&2
+                    return 1
+                    ;;
+            esac
             ;;
         "proxy")
             switch_to_proxy

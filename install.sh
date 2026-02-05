@@ -245,7 +245,7 @@ ccm() {
 
   # All commands use eval to apply environment variables
   case "\$1" in
-    ""|"help"|"-h"|"--help"|"status"|"st"|"config"|"cfg"|"save-account"|"switch-account"|"list-accounts"|"delete-account"|"current-account"|"debug-keychain")
+    ""|"help"|"-h"|"--help"|"status"|"st"|"config"|"cfg"|"save-account"|"switch-account"|"list-accounts"|"delete-account"|"current-account"|"debug-keychain"|"project")
       # These commands don't need eval, execute directly
       "\$script" "\$@"
       ;;
