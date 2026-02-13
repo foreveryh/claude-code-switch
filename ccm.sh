@@ -1656,6 +1656,7 @@ show_help() {
     echo "  status, st       - $(t 'show_current_config')"
     echo "  env [model]      - $(t 'output_export_only')"
     echo "  config, cfg      - $(t 'edit_config_file')"
+    echo "  update-config    - Update model IDs to latest defaults"
     echo "  help, h          - $(t 'show_help')"
     echo ""
     echo -e "${YELLOW}$(t 'examples'):${NC}"
@@ -1750,6 +1751,56 @@ edit_config() {
         echo -e "${YELLOW}$(t 'edit_manually'): $CONFIG_FILE${NC}"
         echo -e "${YELLOW}$(t 'install_editor'): cursor, code, vim, nano${NC}"
         return 1
+    fi
+}
+
+# 更新配置文件中的模型 ID（当默认值变化时）
+update_config() {
+    if [[ ! -f "$CONFIG_FILE" ]]; then
+        echo -e "${YELLOW}⚠️  Config file not found. Run 'ccm config' first.${NC}" >&2
+        return 1
+    fi
+
+    echo -e "${BLUE}🔄 Checking for outdated model IDs...${NC}" >&2
+
+    # 定义需要更新的键值对映射（旧值 -> 新值）
+    # 格式: "KEY|OLD_VALUE|NEW_VALUE"
+    local -a updates=(
+        "KIMI_MODEL|kimi-for-coding|kimi-k2.5"
+        "MINIMAX_MODEL|MiniMax-M2.1|MiniMax-M2.5"
+        "GLM_MODEL|glm-4|glm-5"
+        "GLM_MODEL|glm-4.6|glm-5"
+        "GLM_MODEL|glm-4.7|glm-5"
+    )
+
+    local updated_count=0
+
+    for update in "${updates[@]}"; do
+        local key="${update%%|*}"
+        local rest="${update#*|}"
+        local old_value="${rest%%|*}"
+        local new_value="${rest##*|}"
+
+        # 检查配置文件中是否有需要更新的旧值
+        if grep -qE "^[[:space:]]*${key}[[:space:]]*=[[:space:]]*${old_value}([[:space:]]*$|[[:space:]]*#)" "$CONFIG_FILE" 2>/dev/null; then
+            # 使用 sed 替换
+            if [[ "$OS_TYPE" == "macos" ]]; then
+                sed -i '' "s|^\([[:space:]]*${key}[[:space:]]*=[[:space:]]*\)${old_value}|\1${new_value}|" "$CONFIG_FILE"
+            else
+                sed -i "s|^\([[:space:]]*${key}[[:space:]]*=[[:space:]]*\)${old_value}|\1${new_value}|" "$CONFIG_FILE"
+            fi
+            echo -e "${GREEN}✅ Updated ${key}: ${old_value} → ${new_value}${NC}" >&2
+            ((updated_count++))
+        fi
+    done
+
+    # 同时确保缺失的键被添加
+    ensure_model_override_defaults
+
+    if [[ $updated_count -eq 0 ]]; then
+        echo -e "${GREEN}✅ Config is up to date${NC}" >&2
+    else
+        echo -e "${GREEN}✅ Updated ${updated_count} model ID(s)${NC}" >&2
     fi
 }
 
@@ -2182,6 +2233,9 @@ main() {
             ;;
         "config"|"cfg")
             edit_config
+            ;;
+        "update-config"|"update")
+            update_config
             ;;
         "help"|"-h"|"--help")
             show_help
