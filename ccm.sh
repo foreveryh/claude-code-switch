@@ -460,6 +460,294 @@ project_reset_settings() {
     echo -e "${YELLOW}💡 Claude Code will fall back to user settings (e.g. Quotio).${NC}" >&2
 }
 
+# ============================================
+# User-level settings (~/.claude/settings.json)
+# ============================================
+
+USER_SETTINGS_PATH="$HOME/.claude/settings.json"
+
+user_settings_path() {
+    echo "$USER_SETTINGS_PATH"
+}
+
+backup_user_settings() {
+    local path="$1"
+    local ts
+    ts="$(date "+%Y%m%d-%H%M%S")"
+    cp -f "$path" "${path}.bak.${ts}"
+}
+
+# Get provider config for user-level settings
+get_provider_config() {
+    local provider="$1"
+    local region="${2:-global}"
+    local config_base_url=""
+    local config_model=""
+    local config_token_var=""
+
+    case "$provider" in
+        "glm"|"glm5")
+            if ! is_effectively_set "$GLM_API_KEY"; then
+                echo -e "${RED}❌ Please configure GLM_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="GLM_API_KEY"
+            config_model="${GLM_MODEL:-glm-5}"
+            case "$region" in
+                "global") config_base_url="https://api.z.ai/api/anthropic" ;;
+                "china") config_base_url="https://open.bigmodel.cn/api/anthropic" ;;
+            esac
+            ;;
+        "deepseek"|"ds")
+            if ! is_effectively_set "$DEEPSEEK_API_KEY"; then
+                echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="DEEPSEEK_API_KEY"
+            config_model="${DEEPSEEK_MODEL:-deepseek-chat}"
+            config_base_url="https://api.deepseek.com/anthropic"
+            ;;
+        "kimi"|"kimi2")
+            if ! is_effectively_set "$KIMI_API_KEY"; then
+                echo -e "${RED}❌ Please configure KIMI_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="KIMI_API_KEY"
+            case "$region" in
+                "global")
+                    config_base_url="https://api.moonshot.ai/anthropic"
+                    config_model="${KIMI_MODEL:-kimi-for-coding}"
+                    ;;
+                "china")
+                    config_base_url="https://api.moonshot.cn/anthropic"
+                    config_model="${KIMI_CN_MODEL:-kimi-k2.5}"
+                    ;;
+            esac
+            ;;
+        "qwen")
+            if ! is_effectively_set "$QWEN_API_KEY"; then
+                echo -e "${RED}❌ Please configure QWEN_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="QWEN_API_KEY"
+            config_model="${QWEN_MODEL:-qwen3-max-2026-01-23}"
+            case "$region" in
+                "global") config_base_url="https://coding-intl.dashscope.aliyuncs.com/apps/anthropic" ;;
+                "china") config_base_url="https://coding.dashscope.aliyuncs.com/apps/anthropic" ;;
+            esac
+            ;;
+        "minimax"|"mm")
+            if ! is_effectively_set "$MINIMAX_API_KEY"; then
+                echo -e "${RED}❌ Please configure MINIMAX_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="MINIMAX_API_KEY"
+            config_model="${MINIMAX_MODEL:-MiniMax-M2.5}"
+            case "$region" in
+                "global") config_base_url="https://api.minimax.io/anthropic" ;;
+                "china") config_base_url="https://api.minimaxi.com/anthropic" ;;
+            esac
+            ;;
+        "seed"|"doubao")
+            if ! is_effectively_set "$ARK_API_KEY"; then
+                echo -e "${RED}❌ Please configure ARK_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="ARK_API_KEY"
+            config_model="${SEED_MODEL:-ark-code-latest}"
+            config_base_url="https://ark.cn-beijing.volces.com/api/coding"
+            ;;
+        "claude"|"sonnet"|"s")
+            config_token_var=""  # Uses Claude Pro subscription
+            config_model="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
+            config_base_url="https://api.anthropic.com/"
+            ;;
+        *)
+            echo -e "${RED}❌ Unknown provider: $provider${NC}" >&2
+            return 1
+            ;;
+    esac
+
+    echo "${config_base_url}|${config_model}|${config_token_var}"
+}
+
+user_write_settings() {
+    local provider="$1"
+    local region="${2:-global}"
+
+    # Normalize region if needed
+    if [[ "$provider" =~ ^(glm|kimi|qwen|minimax)$ ]]; then
+        local normalized_region
+        if ! normalized_region="$(normalize_region "$region")"; then
+            echo -e "${RED}❌ Invalid region: $region${NC}" >&2
+            echo -e "${YELLOW}💡 Usage: ccm user $provider [global|china]${NC}" >&2
+            return 1
+        fi
+        region="$normalized_region"
+    fi
+
+    local config
+    config="$(get_provider_config "$provider" "$region")" || return 1
+
+    local config_base_url="${config%%|*}"
+    local rest="${config#*|}"
+    local config_model="${rest%%|*}"
+    local config_token_var="${rest##*|}"
+
+    local config_token=""
+    if [[ -n "$config_token_var" ]]; then
+        config_token="${!config_token_var}"
+    fi
+
+    local settings_path
+    settings_path="$(user_settings_path)"
+    local settings_dir
+    settings_dir="$(dirname "$settings_path")"
+
+    # Backup existing settings if not ccm-managed
+    if [[ -f "$settings_path" ]]; then
+        if ! grep -q '"ccmManaged"[[:space:]]*:[[:space:]]*true' "$settings_path" 2>/dev/null; then
+            backup_user_settings "$settings_path"
+        fi
+    fi
+
+    mkdir -p "$settings_dir"
+
+    # Use Python or jq to merge settings if available, otherwise use simple approach
+    if command -v python3 >/dev/null 2>&1; then
+        python3 << PYTHON_EOF
+import json
+import os
+
+settings_path = "$settings_path"
+existing = {}
+
+if os.path.exists(settings_path):
+    try:
+        with open(settings_path, 'r') as f:
+            existing = json.load(f)
+    except:
+        existing = {}
+
+# Preserve non-ccm settings but mark as ccm-managed
+existing['ccmManaged'] = True
+existing['ccmProvider'] = '$provider'
+existing['ccmRegion'] = '$region'
+
+# Set env
+existing['env'] = {
+    'ANTHROPIC_BASE_URL': '$config_base_url',
+    'ANTHROPIC_MODEL': '$config_model',
+    'ANTHROPIC_DEFAULT_SONNET_MODEL': '$config_model',
+    'ANTHROPIC_DEFAULT_OPUS_MODEL': '$config_model',
+    'ANTHROPIC_DEFAULT_HAIKU_MODEL': '$config_model',
+    'CLAUDE_CODE_SUBAGENT_MODEL': '$config_model'
+}
+$(if [[ -n "$config_token" ]]; then echo "existing['env']['ANTHROPIC_AUTH_TOKEN'] = '$config_token'"; fi)
+
+with open(settings_path, 'w') as f:
+    json.dump(existing, f, indent=2)
+
+os.chmod(settings_path, 0o600)
+PYTHON_EOF
+    else
+        # Fallback: write minimal settings (will lose other settings)
+        cat > "$settings_path" <<EOF
+{
+  "ccmManaged": true,
+  "ccmProvider": "$provider",
+  "ccmRegion": "$region",
+  "env": {
+    "ANTHROPIC_BASE_URL": "$config_base_url",
+    "ANTHROPIC_MODEL": "$config_model",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "$config_model",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "$config_model",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "$config_model",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "$config_model"$([[ -n "$config_token" ]] && echo ",
+    \"ANTHROPIC_AUTH_TOKEN\": \"$config_token\"")
+  }
+}
+EOF
+        chmod 600 "$settings_path"
+    fi
+
+    echo -e "${GREEN}✅ Wrote user-level settings for ${provider}${region:+ ($region)}${NC}" >&2
+    echo -e "${BLUE}   File: $settings_path${NC}" >&2
+    echo -e "${YELLOW}💡 This overrides environment variables and takes highest priority.${NC}" >&2
+    echo -e "${YELLOW}💡 Use 'ccm user reset' to restore environment variable control.${NC}" >&2
+}
+
+user_reset_settings() {
+    local settings_path
+    settings_path="$(user_settings_path)"
+
+    if [[ ! -f "$settings_path" ]]; then
+        echo -e "${YELLOW}⚠️  No user settings file at: $settings_path${NC}" >&2
+        return 0
+    fi
+
+    if ! grep -q '"ccmManaged"[[:space:]]*:[[:space:]]*true' "$settings_path" 2>/dev/null; then
+        echo -e "${YELLOW}⚠️  Settings file is not managed by ccm. Not modifying.${NC}" >&2
+        echo -e "${YELLOW}   File: $settings_path${NC}" >&2
+        return 0
+    fi
+
+    # Backup before reset
+    backup_user_settings "$settings_path"
+
+    # Remove env section and ccm markers using Python or jq
+    if command -v python3 >/dev/null 2>&1; then
+        python3 << PYTHON_EOF
+import json
+import os
+
+settings_path = "$settings_path"
+
+with open(settings_path, 'r') as f:
+    data = json.load(f)
+
+# Remove ccm-managed keys
+data.pop('ccmManaged', None)
+data.pop('ccmProvider', None)
+data.pop('ccmRegion', None)
+data.pop('env', None)
+
+with open(settings_path, 'w') as f:
+    json.dump(data, f, indent=2)
+PYTHON_EOF
+        echo -e "${GREEN}✅ Removed ccm-managed settings from user settings${NC}" >&2
+    else
+        # Fallback: just remove the file
+        rm -f "$settings_path"
+        echo -e "${GREEN}✅ Removed user settings file${NC}" >&2
+    fi
+
+    echo -e "${YELLOW}💡 Claude Code will now use environment variables.${NC}" >&2
+    echo -e "${YELLOW}   Use 'ccm <provider>' to set environment variables.${NC}" >&2
+}
+
+user_show_usage() {
+    echo -e "${BLUE}User-level settings (writes to ~/.claude/settings.json)${NC}" >&2
+    echo "" >&2
+    echo "Usage:" >&2
+    echo "  ccm user <provider> [region]   - Write provider settings to user-level" >&2
+    echo "  ccm user reset                  - Remove ccm settings, restore env var control" >&2
+    echo "" >&2
+    echo "Providers:" >&2
+    echo "  glm [global|china]    - GLM" >&2
+    echo "  deepseek              - DeepSeek" >&2
+    echo "  kimi [global|china]   - Kimi" >&2
+    echo "  qwen [global|china]   - Qwen" >&2
+    echo "  minimax [global|china] - MiniMax" >&2
+    echo "  seed                  - Doubao/Seed" >&2
+    echo "  claude                - Claude (official)" >&2
+    echo "" >&2
+    echo "Examples:" >&2
+    echo "  ccm user glm global   # Use GLM globally" >&2
+    echo "  ccm user deepseek     # Use DeepSeek globally" >&2
+    echo "  ccm user reset        # Remove, use env vars instead" >&2
+}
+
 # 跨平台 base64 编码函数（无换行）
 base64_encode_nolinebreak() {
     if [[ "$OS_TYPE" == "macos" ]]; then
@@ -996,6 +1284,36 @@ get_current_account() {
 
 # 显示当前状态（脱敏）
 show_status() {
+    # 检查用户级配置 (~/.claude/settings.json)
+    local user_settings_path="$HOME/.claude/settings.json"
+    if [[ -f "$user_settings_path" ]]; then
+        # 检查是否有 env 设置
+        if grep -q '"env"[[:space:]]*:' "$user_settings_path" 2>/dev/null; then
+            local user_base_url=$(grep -o '"ANTHROPIC_BASE_URL"[[:space:]]*:[[:space:]]*"[^"]*"' "$user_settings_path" | cut -d'"' -f4)
+            local user_model=$(grep -o '"ANTHROPIC_MODEL"[[:space:]]*:[[:space:]]*"[^"]*"' "$user_settings_path" | cut -d'"' -f4)
+            local user_token=$(grep -o '"ANTHROPIC_AUTH_TOKEN"[[:space:]]*:[[:space:]]*"[^"]*"' "$user_settings_path" | cut -d'"' -f4)
+            local ccm_managed=$(grep -o '"ccmManaged"[[:space:]]*:[[:space:]]*[a-z]*' "$user_settings_path" | grep -o 'true\|false')
+
+            if [[ "$ccm_managed" == "true" ]]; then
+                echo -e "${GREEN}👤 User config (ccm-managed):${NC} $user_settings_path"
+            else
+                echo -e "${YELLOW}⚠️  User config (external):${NC} $user_settings_path"
+                echo -e "${YELLOW}   This overrides environment variables!${NC}"
+            fi
+            echo "   BASE_URL: ${user_base_url:-'N/A'}"
+            echo "   MODEL: ${user_model:-'N/A'}"
+            echo -n "   AUTH_TOKEN: "
+            mask_token "$user_token"
+            echo ""
+            if [[ "$ccm_managed" != "true" ]]; then
+                echo -e "${YELLOW}💡 Use 'ccm user <provider>' to take control, or edit the file directly.${NC}"
+            else
+                echo -e "${YELLOW}💡 Use 'ccm user reset' to restore environment variable control.${NC}"
+            fi
+            echo ""
+        fi
+    fi
+
     # 检查项目级配置
     local project_settings=""
     local project_settings_path="$(project_settings_path)"
@@ -1317,6 +1635,15 @@ show_help() {
     echo "  claude, sonnet, s       - env claude (official)"
     echo "  open <provider>         - env OpenRouter (run 'ccm open' for help)"
     echo ""
+    echo -e "${YELLOW}User-level Settings (highest priority):${NC}"
+    echo "  user <provider> [region] - write to ~/.claude/settings.json"
+    echo "  user reset               - remove ccm settings, restore env var control"
+    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, claude"
+    echo ""
+    echo -e "${YELLOW}Project-level Settings:${NC}"
+    echo "  project glm [global|china] - write .claude/settings.local.json (project-only)"
+    echo "  project reset              - remove project override"
+    echo ""
     echo -e "${YELLOW}Claude Pro Account Management:${NC}"
     echo "  save-account <name>     - Save current Claude Pro account"
     echo "  switch-account <name>   - Switch to saved account"
@@ -1338,8 +1665,8 @@ show_help() {
     echo "  eval \"\$(ccm seed kimi)\"               # 豆包 Seed-Code (kimi)"
     echo "  eval \"\$(ccm open kimi)\"               # OpenRouter kimi"
     echo ""
-    echo "  project glm [global|china] - write .claude/settings.local.json for GLM (project-only)"
-    echo "  project reset      - remove project override (use user settings)"
+    echo "  ccm user glm global    # Set GLM as default (highest priority)"
+    echo "  ccm user reset         # Restore env var control"
     echo "  $(basename "$0") status                      # Check current status (masked)"
     echo "  $(basename "$0") save-account work           # Save current account as 'work'"
     echo ""
@@ -1826,6 +2153,26 @@ main() {
                 *)
                     echo -e "${RED}❌ $(t 'unknown_option'): project $action${NC}" >&2
                     echo -e "${YELLOW}💡 Usage: ccm project [glm|reset] [global|china]${NC}" >&2
+                    return 1
+                    ;;
+            esac
+            ;;
+        "user")
+            shift
+            local user_action="${1:-}"
+            case "$user_action" in
+                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"claude"|"sonnet"|"s")
+                    user_write_settings "$user_action" "${2:-}"
+                    ;;
+                "reset")
+                    user_reset_settings
+                    ;;
+                ""|"help"|"-h"|"--help")
+                    user_show_usage
+                    ;;
+                *)
+                    echo -e "${RED}❌ $(t 'unknown_option'): user $user_action${NC}" >&2
+                    user_show_usage
                     return 1
                     ;;
             esac

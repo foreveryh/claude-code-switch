@@ -24,6 +24,10 @@ ccm config
 ccm glm              # 切换到 GLM
 ccc glm global       # 切换 + 启动 Claude Code
 
+# 进阶：用户级设置（最高优先级，覆盖一切）
+ccm user glm global      # 设置 GLM 为全局默认
+ccm user reset           # 恢复环境变量控制
+
 # 进阶：项目级覆盖
 ccm project glm china    # 仅此项目使用 GLM
 
@@ -197,6 +201,25 @@ ccm current-account
 ccm delete-account work
 ```
 
+### 用户级设置（最高优先级）
+直接写入 `~/.claude/settings.json`。这会覆盖一切，包括环境变量。当你有其他工具（如 Quotio）也在修改这个文件时特别有用。
+
+```bash
+# 设置用户级 provider
+ccm user glm global      # 所有项目使用 GLM 海外
+ccm user glm china       # 所有项目使用 GLM 国内
+ccm user deepseek        # 所有项目使用 DeepSeek
+ccm user claude          # 所有项目使用 Claude 官方
+
+# 重置为环境变量控制
+ccm user reset           # 移除 ccm 设置，使用环境变量
+```
+
+**适用场景：**
+- 你有 Quotio 或其他代理设置了 `~/.claude/settings.json`
+- 你想要一个持久化的默认设置，不受 shell 重启影响
+- 环境变量被其他东西覆盖了
+
 ### 项目级覆盖
 为特定项目覆盖设置（保持全局设置不变）：
 
@@ -219,9 +242,11 @@ ccc claude:personal       # 切换到 'personal' 账号 + 使用 Claude
 
 ## 配置
 
-### 优先级
-1. 环境变量（最高）
-2. `~/.ccm_config` 文件
+### 优先级（从高到低）
+1. `~/.claude/settings.json`（env 部分）- 用户级设置
+2. `.claude/settings.local.json` - 项目级设置
+3. 环境变量
+4. `~/.ccm_config` 文件
 
 ### 配置文件位置
 ```

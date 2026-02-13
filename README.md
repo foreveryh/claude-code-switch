@@ -24,6 +24,10 @@ ccm config
 ccm glm              # switch to GLM
 ccc glm global       # switch + launch Claude Code
 
+# Advanced: User-level settings (highest priority, overrides everything)
+ccm user glm global      # Set GLM as default for all projects
+ccm user reset           # Restore environment variable control
+
 # Advanced: Project-only override
 ccm project glm china    # GLM for this project only
 
@@ -197,6 +201,25 @@ ccm current-account
 ccm delete-account work
 ```
 
+### User-Level Settings (Highest Priority)
+Write settings directly to `~/.claude/settings.json`. This overrides everything including environment variables and is useful when you have other tools (like Quotio) that also modify this file.
+
+```bash
+# Set provider at user level
+ccm user glm global      # GLM global for all projects
+ccm user glm china       # GLM China for all projects
+ccm user deepseek        # DeepSeek for all projects
+ccm user claude          # Claude official for all projects
+
+# Reset to environment variable control
+ccm user reset           # Remove ccm settings, use env vars instead
+```
+
+**When to use:**
+- You have Quotio or another proxy that sets `~/.claude/settings.json`
+- You want a persistent default that survives shell restarts
+- Environment variables are being overridden by something else
+
 ### Project-Only Override
 Override settings for a specific project (keeps global settings intact):
 
@@ -219,9 +242,11 @@ ccc claude:personal       # Switch to 'personal' account + use Claude
 
 ## Configuration
 
-### Priority Order
-1. Environment variables (highest)
-2. `~/.ccm_config` file
+### Priority Order (highest to lowest)
+1. `~/.claude/settings.json` (env section) - User-level settings
+2. `.claude/settings.local.json` - Project-level settings
+3. Environment variables
+4. `~/.ccm_config` file
 
 ### Config File Location
 ```
