@@ -179,7 +179,7 @@ GLM_MODEL=glm-5
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
-MINIMAX_MODEL=MiniMax-M2.1
+MINIMAX_MODEL=MiniMax-M2.5
 SEED_MODEL=ark-code-latest
 
 EOF
@@ -286,7 +286,7 @@ GLM_MODEL=glm-5
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
-MINIMAX_MODEL=MiniMax-M2.1
+MINIMAX_MODEL=MiniMax-M2.5
 SEED_MODEL=ark-code-latest
 
 EOF
@@ -1205,7 +1205,7 @@ switch_to_minimax() {
             base_url="https://api.minimaxi.com/anthropic"
             ;;
     esac
-    local mm_model="${MINIMAX_MODEL:-MiniMax-M2.1}"
+    local mm_model="${MINIMAX_MODEL:-MiniMax-M2.5}"
     export ANTHROPIC_BASE_URL="$base_url"
     export ANTHROPIC_AUTH_TOKEN="$MINIMAX_API_KEY"
     export ANTHROPIC_MODEL="$mm_model"
@@ -1348,7 +1348,7 @@ show_help() {
     echo "  🌕 KIMI China           - kimi-k2.5 (api.moonshot.cn/anthropic)"
     echo "  🤖 Deepseek             - deepseek-chat (api.deepseek.com/anthropic)"
     echo "  🌰 豆包 Seed-Code       - ark-code-latest (ark.cn-beijing.volces.com/api/coding)"
-    echo "  🎯 MiniMax              - MiniMax-M2.1 (api.minimax.io / api.minimaxi.com)"
+    echo "  🎯 MiniMax              - MiniMax-M2.5 (api.minimax.io / api.minimaxi.com)"
     echo "  🐪 Qwen                 - qwen3-max-2026-01-23 / qwen3-coder-plus (Coding Plan)"
     echo "  🇨🇳 GLM                 - glm-5 (api.z.ai / open.bigmodel.cn)"
     echo "  🧠 Claude Sonnet 4.5    - claude-sonnet-4-5-20250929"
@@ -1360,7 +1360,7 @@ ensure_model_override_defaults() {
         "DEEPSEEK_MODEL=deepseek-chat"
         "KIMI_MODEL=kimi-for-coding"
         "KIMI_CN_MODEL=kimi-k2.5"
-        "MINIMAX_MODEL=MiniMax-M2.1"
+        "MINIMAX_MODEL=MiniMax-M2.5"
         "SEED_MODEL=ark-code-latest"
         "QWEN_MODEL=qwen3-max-2026-01-23"
         "GLM_MODEL=glm-5"
@@ -1660,7 +1660,7 @@ emit_env_exports() {
                     mm_base_url="https://api.minimaxi.com/anthropic"
                     ;;
             esac
-            local mm_model="${MINIMAX_MODEL:-MiniMax-M2.1}"
+            local mm_model="${MINIMAX_MODEL:-MiniMax-M2.5}"
             echo "$prelude"
             echo "export ANTHROPIC_BASE_URL='${mm_base_url}'"
             echo "if [ -z \"\${MINIMAX_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
