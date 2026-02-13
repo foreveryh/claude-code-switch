@@ -132,6 +132,12 @@ ccm status             # 显示当前模型和 API Key 状态
 ccm current-account    # 显示当前 Claude Pro 账号
 ```
 
+### 更新配置
+当新版本的模型 ID 发生变化时，更新你的配置：
+```bash
+ccm update-config      # 更新过时的模型 ID 到最新默认值
+```
+
 ### 获取帮助
 ```bash
 ccm help               # 显示所有命令

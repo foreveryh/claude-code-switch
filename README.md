@@ -132,6 +132,12 @@ ccm status             # Show current model and API key status
 ccm current-account    # Show current Claude Pro account
 ```
 
+### Update Config
+When model IDs change in new versions, update your config:
+```bash
+ccm update-config      # Update outdated model IDs to latest defaults
+```
+
 ### Get Help
 ```bash
 ccm help               # Show all commands
