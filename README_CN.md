@@ -154,6 +154,8 @@ ccc                    # 显示 ccc 用法（无参数）
 | 豆包/Seed | `ccm seed [variant]` | - | `ark.cn-beijing.volces.com/api/coding` |
 | Claude | `ccm claude` | - | `api.anthropic.com` |
 
+> **GLM Coding 套餐**：[bigmodel.cn/glm-coding](https://www.bigmodel.cn/glm-coding?ic=5XMIOZPPXB)
+
 ### Seed 变体
 ```bash
 ccm seed              # ark-code-latest（默认）
