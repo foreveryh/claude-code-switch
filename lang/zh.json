@@ -100,5 +100,6 @@
   "config_file_location": "~/.ccm_config",
   "custom_proxy": "自定义代理",
   "base_url_config_note": "BASE URL可通过 CLAUDE_PROXY_BASE_URL 环境变量或配置文件修改",
-  "custom": "（自定义）"
+  "custom": "（自定义）",
+  "project_config": "检测到项目配置"
 }

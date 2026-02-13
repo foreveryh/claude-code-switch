@@ -100,5 +100,6 @@
   "config_file_location": "~/.ccm_config",
   "custom_proxy": "Custom Proxy",
   "base_url_config_note": "BASE URL can be changed via CLAUDE_PROXY_BASE_URL environment variable or config file",
-  "custom": "(custom)"
+  "custom": "(custom)",
+  "project_config": "Project config detected"
 }

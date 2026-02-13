@@ -996,6 +996,24 @@ get_current_account() {
 
 # 显示当前状态（脱敏）
 show_status() {
+    # 检查项目级配置
+    local project_settings=""
+    local project_settings_path="$(project_settings_path)"
+    if [[ -f "$project_settings_path" ]]; then
+        if grep -q '"ccmManaged"[[:space:]]*:[[:space:]]*true' "$project_settings_path" 2>/dev/null; then
+            echo -e "${GREEN}📁 $(t 'project_config'):${NC} $project_settings_path"
+            # 提取项目配置中的关键信息
+            local proj_base_url=$(grep -o '"ANTHROPIC_BASE_URL"[[:space:]]*:[[:space:]]*"[^"]*"' "$project_settings_path" | cut -d'"' -f4)
+            local proj_model=$(grep -o '"ANTHROPIC_MODEL"[[:space:]]*:[[:space:]]*"[^"]*"' "$project_settings_path" | cut -d'"' -f4)
+            local proj_token=$(grep -o '"ANTHROPIC_AUTH_TOKEN"[[:space:]]*:[[:space:]]*"[^"]*"' "$project_settings_path" | cut -d'"' -f4)
+            echo "   BASE_URL: ${proj_base_url:-'N/A'}"
+            echo "   MODEL: ${proj_model:-'N/A'}"
+            echo -n "   AUTH_TOKEN: "
+            mask_token "$proj_token"
+            echo ""
+        fi
+    fi
+
     echo -e "${BLUE}📊 $(t 'current_model_config'):${NC}"
     echo "   BASE_URL: ${ANTHROPIC_BASE_URL:-'Default (Anthropic)'}"
     echo -n "   AUTH_TOKEN: "
