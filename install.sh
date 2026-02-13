@@ -303,7 +303,7 @@ ccc() {
   # Helper: known model keyword
   _is_known_model() {
     case "\$1" in
-      deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
+      deepseek|ds|glm|glm5|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
         return 0 ;;
       *)
         return 1 ;;
@@ -324,14 +324,14 @@ ccc() {
       ccm open "\$open_provider" || return 1
     else
       case "\$model" in
-        kimi|kimi2|qwen|glm|glm4|glm4.6|glm4.7|minimax|mm)
+        kimi|kimi2|qwen|glm|glm5|minimax|mm)
           if [[ "\${1:-}" =~ ^(global|china|cn)$ ]]; then
             region_arg="\$1"
             shift || true
           fi
           ;;
         seed|doubao)
-          if [[ "\${1:-}" =~ ^(doubao|glm|glm4|glm4.7|deepseek|ds|kimi|kimi2)$ ]]; then
+          if [[ "\${1:-}" =~ ^(doubao|glm|glm5|deepseek|ds|kimi|kimi2)$ ]]; then
             seed_variant="\$1"
             shift || true
           fi
@@ -566,7 +566,7 @@ fi
 
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
+        deepseek|ds|glm|glm5|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
             return 0 ;;
         *)
             return 1 ;;
@@ -586,14 +586,14 @@ else
         eval "$("$CCM" open "$open_provider")"
     else
         case "$model" in
-            kimi|kimi2|qwen|glm|glm4|glm4.6|glm4.7|minimax|mm)
+            kimi|kimi2|qwen|glm|glm5|minimax|mm)
                 if [[ "${1:-}" =~ ^(global|china|cn)$ ]]; then
                     region_arg="$1"
                     shift || true
                 fi
                 ;;
             seed|doubao)
-                if [[ "${1:-}" =~ ^(doubao|glm|glm4|glm4.7|deepseek|ds|kimi|kimi2)$ ]]; then
+                if [[ "${1:-}" =~ ^(doubao|glm|glm5|deepseek|ds|kimi|kimi2)$ ]]; then
                     seed_variant="$1"
                     shift || true
                 fi
@@ -687,7 +687,7 @@ fi
 
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
+        deepseek|ds|glm|glm5|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
             return 0 ;;
         *)
             return 1 ;;
@@ -707,14 +707,14 @@ else
         eval "$("$CCM" open "$open_provider")"
     else
         case "$model" in
-            kimi|kimi2|qwen|glm|glm4|glm4.6|glm4.7|minimax|mm)
+            kimi|kimi2|qwen|glm|glm5|minimax|mm)
                 if [[ "${1:-}" =~ ^(global|china|cn)$ ]]; then
                     region_arg="$1"
                     shift || true
                 fi
                 ;;
             seed|doubao)
-                if [[ "${1:-}" =~ ^(doubao|glm|glm4|glm4.7|deepseek|ds|kimi|kimi2)$ ]]; then
+                if [[ "${1:-}" =~ ^(doubao|glm|glm5|deepseek|ds|kimi|kimi2)$ ]]; then
                     seed_variant="$1"
                     shift || true
                 fi

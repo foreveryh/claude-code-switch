@@ -99,7 +99,7 @@ ccc open kimi      # OpenRouter
   - 命令：`ccm glm [global|china]`
   - Global Base URL：`https://api.z.ai/api/anthropic`
   - China Base URL：`https://open.bigmodel.cn/api/anthropic`
-  - 模型：`glm-4.7`
+  - 模型：`glm-5`
 
 - **MiniMax**（默认 global）
   - 命令：`ccm minimax [global|china]`
@@ -113,7 +113,7 @@ ccc open kimi      # OpenRouter
   - 默认模型：`ark-code-latest`
   - 子模型：
     - `ccm seed doubao` → `doubao-seed-code`
-    - `ccm seed glm` → `glm-4.7`
+    - `ccm seed glm` → `glm-5`
     - `ccm seed deepseek` → `deepseek-v3.2`
     - `ccm seed kimi` → `kimi-k2.5`
 
@@ -192,12 +192,12 @@ DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
-GLM_MODEL=glm-4.7
+GLM_MODEL=glm-5
 MINIMAX_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 # 这些用于设置 Claude Code 默认模型（ANTHROPIC_DEFAULT_*）：
-OPUS_MODEL=claude-opus-4-5-20251101
+OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
 ```
 

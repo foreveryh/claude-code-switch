@@ -175,9 +175,9 @@ DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
-GLM_MODEL=glm-4.7
+GLM_MODEL=glm-5
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
-OPUS_MODEL=claude-opus-4-5-20251101
+OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
@@ -282,9 +282,9 @@ DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
-GLM_MODEL=glm-4.7
+GLM_MODEL=glm-5
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
-OPUS_MODEL=claude-opus-4-5-20251101
+OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
@@ -408,7 +408,7 @@ project_write_glm_settings() {
         return 1
     fi
 
-    local glm_model="${GLM_MODEL:-glm-4.7}"
+    local glm_model="${GLM_MODEL:-glm-5}"
     local base_url=""
     case "$region" in
         "global")
@@ -1073,7 +1073,7 @@ switch_to_claude() {
     fi
     export ANTHROPIC_MODEL="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
-    export ANTHROPIC_DEFAULT_OPUS_MODEL="${OPUS_MODEL:-claude-opus-4-5-20251101}"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="${OPUS_MODEL:-claude-opus-4-6}"
     export ANTHROPIC_DEFAULT_HAIKU_MODEL="${HAIKU_MODEL:-claude-haiku-4-5-20251001}"
     export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ 已切换到 Claude Sonnet 4.5 (使用 Claude Pro 订阅)${NC}"
@@ -1108,7 +1108,7 @@ switch_to_glm() {
             base_url="https://open.bigmodel.cn/api/anthropic"
             ;;
     esac
-    local glm_model="${GLM_MODEL:-glm-4.7}"
+    local glm_model="${GLM_MODEL:-glm-5}"
     export ANTHROPIC_BASE_URL="$base_url"
     export ANTHROPIC_AUTH_TOKEN="$GLM_API_KEY"
     export ANTHROPIC_MODEL="$glm_model"
@@ -1258,8 +1258,8 @@ switch_to_seed() {
         "doubao"|"seed")
             seed_model="doubao-seed-code"
             ;;
-        "glm"|"glm4"|"glm4.7")
-            seed_model="glm-4.7"
+        "glm"|"glm5")
+            seed_model="glm-5"
             ;;
         "deepseek"|"ds")
             seed_model="deepseek-v3.2"
@@ -1332,7 +1332,7 @@ show_help() {
     echo "  🌰 豆包 Seed-Code       - ark-code-latest (ark.cn-beijing.volces.com/api/coding)"
     echo "  🎯 MiniMax              - MiniMax-M2.1 (api.minimax.io / api.minimaxi.com)"
     echo "  🐪 Qwen                 - qwen3-max-2026-01-23 / qwen3-coder-plus (Coding Plan)"
-    echo "  🇨🇳 GLM                 - glm-4.7 (api.z.ai / open.bigmodel.cn)"
+    echo "  🇨🇳 GLM                 - glm-5 (api.z.ai / open.bigmodel.cn)"
     echo "  🧠 Claude Sonnet 4.5    - claude-sonnet-4-5-20250929"
 }
 
@@ -1345,9 +1345,9 @@ ensure_model_override_defaults() {
         "MINIMAX_MODEL=MiniMax-M2.1"
         "SEED_MODEL=ark-code-latest"
         "QWEN_MODEL=qwen3-max-2026-01-23"
-        "GLM_MODEL=glm-4.7"
+        "GLM_MODEL=glm-5"
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
-        "OPUS_MODEL=claude-opus-4-5-20251101"
+        "OPUS_MODEL=claude-opus-4-6"
         "HAIKU_MODEL=claude-haiku-4-5-20251001"
     )
     local added_header=0
@@ -1446,7 +1446,7 @@ emit_openrouter_exports() {
             model="anthropic/claude-sonnet-4.5"
             small="anthropic/claude-haiku-4.5"
             default_sonnet="anthropic/claude-sonnet-4.5"
-            default_opus="anthropic/claude-opus-4.5"
+            default_opus="anthropic/claude-opus-4.6"
             default_haiku="anthropic/claude-haiku-4.5"
             ;;
         "kimi")
@@ -1463,9 +1463,9 @@ emit_openrouter_exports() {
             default_opus="$model"
             default_haiku="$model"
             ;;
-        "glm"|"glm4"|"glm4.7")
-            model="z-ai/glm-4.7"
-            small="z-ai/glm-4.7"
+        "glm"|"glm5")
+            model="z-ai/glm-5"
+            small="z-ai/glm-5"
             default_sonnet="$model"
             default_opus="$model"
             default_haiku="$model"
@@ -1593,7 +1593,7 @@ emit_env_exports() {
             emit_default_models "$qwen_model" "$qwen_model" "qwen3-coder-plus"
             emit_subagent_model "$qwen_model"
             ;;
-        "glm"|"glm4"|"glm4.6"|"glm4.7")
+        "glm"|"glm5")
             if ! is_effectively_set "$GLM_API_KEY"; then
                 echo -e "${RED}❌ Please configure GLM_API_KEY${NC}" >&2
                 return 1
@@ -1613,7 +1613,7 @@ emit_env_exports() {
                     glm_base_url="https://open.bigmodel.cn/api/anthropic"
                     ;;
             esac
-            local glm_model="${GLM_MODEL:-glm-4.7}"
+            local glm_model="${GLM_MODEL:-glm-5}"
             echo "$prelude"
             echo "export ANTHROPIC_BASE_URL='${glm_base_url}'"
             echo "if [ -z \"\${GLM_API_KEY}\" ] && [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
@@ -1665,8 +1665,8 @@ emit_env_exports() {
                 "doubao"|"seed")
                     seed_model="doubao-seed-code"
                     ;;
-                "glm"|"glm4"|"glm4.7")
-                    seed_model="glm-4.7"
+                "glm"|"glm5")
+                    seed_model="glm-5"
                     ;;
                 "deepseek"|"ds")
                     seed_model="deepseek-v3.2"
@@ -1696,7 +1696,7 @@ emit_env_exports() {
             echo "unset ANTHROPIC_API_KEY"
             local claude_model="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
             local default_sonnet="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
-            local default_opus="${OPUS_MODEL:-claude-opus-4-5-20251101}"
+            local default_opus="${OPUS_MODEL:-claude-opus-4-6}"
             local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5-20251001}"
             echo "export ANTHROPIC_MODEL='${claude_model}'"
             if is_effectively_set "$CLAUDE_API_KEY"; then
@@ -1782,7 +1782,7 @@ main() {
         "seed"|"doubao")
             emit_env_exports seed "${2:-}"
             ;;
-        "glm"|"glm4"|"glm4.6"|"glm4.7")
+        "glm"|"glm5")
             emit_env_exports glm "${2:-}"
             ;;
         "claude"|"sonnet"|"s")
