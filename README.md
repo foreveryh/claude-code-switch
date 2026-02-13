@@ -1,5 +1,9 @@
 # Claude Code Switch (ccm)
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/issues)
+
 Switch Claude Code between AI providers with one command.
 
 [中文文档](README_CN.md)
@@ -17,8 +21,15 @@ source ~/.zshrc  # or ~/.bashrc
 ccm config
 
 # 4. Switch and use
-ccm kimi          # switch to Kimi
-ccc glm global    # switch + launch Claude Code
+ccm glm              # switch to GLM
+ccc glm global       # switch + launch Claude Code
+
+# Advanced: Project-only override
+ccm project glm china    # GLM for this project only
+
+# Advanced: Multiple Claude Pro accounts
+ccm save-account work    # save current account
+ccm switch-account work  # switch to saved account
 ```
 
 ---
@@ -93,21 +104,22 @@ ccm status    # Check current configuration
 
 ### Switch Provider (in current shell)
 ```bash
-ccm deepseek           # DeepSeek
-ccm kimi               # Kimi global
-ccm kimi china         # Kimi China
-ccm glm global         # GLM global
-ccm qwen china         # Qwen China
-ccm minimax            # MiniMax
-ccm seed               # Doubao/Seed
-ccm claude             # Claude official
+ccm glm global        # GLM global (default)
+ccm glm china         # GLM China
+ccm deepseek          # DeepSeek
+ccm kimi global       # Kimi global
+ccm kimi china        # Kimi China
+ccm qwen global       # Qwen global
+ccm minimax           # MiniMax
+ccm seed              # Doubao/Seed
+ccm claude            # Claude official
 ```
 
 ### Switch + Launch Claude Code
 ```bash
-ccc deepseek           # Switch to DeepSeek, then launch
-ccc kimi china         # Switch to Kimi China, then launch
-ccc open kimi          # Via OpenRouter
+ccc glm global        # Switch to GLM global, then launch
+ccc glm china         # Switch to GLM China, then launch
+ccc open glm          # Via OpenRouter
 ```
 
 ### Check Status
@@ -130,11 +142,11 @@ ccc                    # Show ccc usage (no args)
 
 | Provider | Command | Region | Base URL |
 |----------|---------|--------|----------|
+| GLM | `ccm glm [global\|china]` | global (default) | `api.z.ai/api/anthropic` |
+| | | china | `open.bigmodel.cn/api/anthropic` |
 | DeepSeek | `ccm deepseek` | - | `api.deepseek.com/anthropic` |
 | Kimi | `ccm kimi [global\|china]` | global (default) | `api.moonshot.ai/anthropic` |
 | | | china | `api.moonshot.cn/anthropic` |
-| GLM | `ccm glm [global\|china]` | global (default) | `api.z.ai/api/anthropic` |
-| | | china | `open.bigmodel.cn/api/anthropic` |
 | Qwen | `ccm qwen [global\|china]` | global (default) | `coding-intl.dashscope.aliyuncs.com/apps/anthropic` |
 | | | china | `coding.dashscope.aliyuncs.com/apps/anthropic` |
 | MiniMax | `ccm minimax [global\|china]` | global (default) | `api.minimax.io/anthropic` |
@@ -154,8 +166,8 @@ ccm seed kimi         # kimi-k2.5
 ### OpenRouter
 ```bash
 ccm open              # Show help
+ccm open glm          # GLM via OpenRouter
 ccm open claude       # Claude via OpenRouter
-ccm open kimi         # Kimi via OpenRouter
 ccm open deepseek     # DeepSeek via OpenRouter
 ```
 
@@ -189,6 +201,7 @@ Override settings for a specific project (keeps global settings intact):
 ```bash
 # In your project directory
 ccm project glm global    # Use GLM for this project only
+ccm project glm china     # Use GLM China for this project
 ccm project reset         # Remove project override
 ```
 
@@ -249,12 +262,12 @@ If you installed with `--no-rc` or want to use from cloned repo:
 
 ```bash
 # Switch model (apply env vars to current shell)
-eval "$(ccm deepseek)"
-eval "$(./ccm.sh kimi china)"
+eval "$(ccm glm global)"
+eval "$(./ccm.sh glm china)"
 
 # Or use the wrapper scripts directly
-./ccm deepseek           # Just prints exports
-./ccc kimi               # Switch + launch
+./ccm glm global         # Just prints exports
+./ccc glm china          # Switch + launch
 ```
 
 ---
@@ -265,3 +278,38 @@ eval "$(./ccm.sh kimi china)"
 - **Claude official**: Uses your Claude Code subscription by default, or `CLAUDE_API_KEY` if set
 - **OpenRouter**: Requires explicit `ccm open <provider>` command
 - **Project override**: Only affects the current project via `.claude/settings.local.json`
+
+---
+
+## Contributing
+
+Contributions are welcome! Here's how you can help:
+
+### Report Issues
+Found a bug or have a feature request? [Open an issue](https://github.com/foreveryh/claude-code-switch/issues).
+
+### Submit Code
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+### Development
+```bash
+git clone https://github.com/foreveryh/claude-code-switch.git
+cd claude-code-switch
+./ccm.sh help    # Test locally without installing
+```
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+## Acknowledgments
+
+This tool is inspired by the need to easily switch between AI providers while using Claude Code. Thanks to all contributors and the open-source community.

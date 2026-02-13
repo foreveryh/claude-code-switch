@@ -1,5 +1,9 @@
 # Claude Code Switch (ccm)
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/issues)
+
 一条命令切换 Claude Code 的 AI 提供商。
 
 [English](README.md)
@@ -17,8 +21,15 @@ source ~/.zshrc  # 或 ~/.bashrc
 ccm config
 
 # 4. 切换并使用
-ccm kimi          # 切换到 Kimi
-ccc glm global    # 切换 + 启动 Claude Code
+ccm glm              # 切换到 GLM
+ccc glm global       # 切换 + 启动 Claude Code
+
+# 进阶：项目级覆盖
+ccm project glm china    # 仅此项目使用 GLM
+
+# 进阶：多个 Claude Pro 账号
+ccm save-account work    # 保存当前账号
+ccm switch-account work  # 切换到已保存账号
 ```
 
 ---
@@ -93,21 +104,22 @@ ccm status    # 查看当前配置状态
 
 ### 切换提供商（当前 shell）
 ```bash
-ccm deepseek           # DeepSeek
-ccm kimi               # Kimi 海外
-ccm kimi china         # Kimi 国内
-ccm glm global         # GLM 海外
-ccm qwen china         # Qwen 国内
-ccm minimax            # MiniMax
-ccm seed               # 豆包/Seed
-ccm claude             # Claude 官方
+ccm glm global        # GLM 海外（默认）
+ccm glm china         # GLM 国内
+ccm deepseek          # DeepSeek
+ccm kimi global       # Kimi 海外
+ccm kimi china        # Kimi 国内
+ccm qwen global       # Qwen 海外
+ccm minimax           # MiniMax
+ccm seed              # 豆包/Seed
+ccm claude            # Claude 官方
 ```
 
 ### 切换 + 启动 Claude Code
 ```bash
-ccc deepseek           # 切换到 DeepSeek，然后启动
-ccc kimi china         # 切换到 Kimi 国内，然后启动
-ccc open kimi          # 通过 OpenRouter
+ccc glm global        # 切换到 GLM 海外，然后启动
+ccc glm china         # 切换到 GLM 国内，然后启动
+ccc open glm          # 通过 OpenRouter
 ```
 
 ### 查看状态
@@ -130,11 +142,11 @@ ccc                    # 显示 ccc 用法（无参数）
 
 | 提供商 | 命令 | 区域 | Base URL |
 |--------|------|------|----------|
+| GLM | `ccm glm [global\|china]` | global（默认） | `api.z.ai/api/anthropic` |
+| | | china | `open.bigmodel.cn/api/anthropic` |
 | DeepSeek | `ccm deepseek` | - | `api.deepseek.com/anthropic` |
 | Kimi | `ccm kimi [global\|china]` | global（默认） | `api.moonshot.ai/anthropic` |
 | | | china | `api.moonshot.cn/anthropic` |
-| GLM | `ccm glm [global\|china]` | global（默认） | `api.z.ai/api/anthropic` |
-| | | china | `open.bigmodel.cn/api/anthropic` |
 | Qwen | `ccm qwen [global\|china]` | global（默认） | `coding-intl.dashscope.aliyuncs.com/apps/anthropic` |
 | | | china | `coding.dashscope.aliyuncs.com/apps/anthropic` |
 | MiniMax | `ccm minimax [global\|china]` | global（默认） | `api.minimax.io/anthropic` |
@@ -154,8 +166,8 @@ ccm seed kimi         # kimi-k2.5
 ### OpenRouter
 ```bash
 ccm open              # 显示帮助
+ccm open glm          # 通过 OpenRouter 使用 GLM
 ccm open claude       # 通过 OpenRouter 使用 Claude
-ccm open kimi         # 通过 OpenRouter 使用 Kimi
 ccm open deepseek     # 通过 OpenRouter 使用 DeepSeek
 ```
 
@@ -188,7 +200,8 @@ ccm delete-account work
 
 ```bash
 # 在项目目录中
-ccm project glm global    # 仅此项目使用 GLM
+ccm project glm global    # 仅此项目使用 GLM 海外
+ccm project glm china     # 仅此项目使用 GLM 国内
 ccm project reset         # 移除项目覆盖
 ```
 
@@ -249,12 +262,12 @@ HAIKU_MODEL=claude-haiku-4-5-20251001
 
 ```bash
 # 切换模型（将环境变量应用到当前 shell）
-eval "$(ccm deepseek)"
-eval "$(./ccm.sh kimi china)"
+eval "$(ccm glm global)"
+eval "$(./ccm.sh glm china)"
 
 # 或直接使用包装脚本
-./ccm deepseek           # 仅输出 export 语句
-./ccc kimi               # 切换 + 启动
+./ccm glm global         # 仅输出 export 语句
+./ccc glm china          # 切换 + 启动
 ```
 
 ---
@@ -265,3 +278,38 @@ eval "$(./ccm.sh kimi china)"
 - **Claude 官方**：默认使用 Claude Code 订阅，或使用 `CLAUDE_API_KEY`（如果设置了）
 - **OpenRouter**：需要显式使用 `ccm open <provider>` 命令
 - **项目覆盖**：仅影响当前项目（`.claude/settings.local.json`）
+
+---
+
+## 贡献
+
+欢迎贡献！你可以通过以下方式参与：
+
+### 报告问题
+发现 bug 或有功能建议？[提交 Issue](https://github.com/foreveryh/claude-code-switch/issues)。
+
+### 提交代码
+1. Fork 本仓库
+2. 创建功能分支 (`git checkout -b feature/your-feature`)
+3. 提交你的修改
+4. 推送到分支
+5. 创建 Pull Request
+
+### 开发
+```bash
+git clone https://github.com/foreveryh/claude-code-switch.git
+cd claude-code-switch
+./ccm.sh help    # 本地测试，无需安装
+```
+
+---
+
+## 许可证
+
+MIT License - 详见 [LICENSE](LICENSE)。
+
+---
+
+## 致谢
+
+本工具的诞生源于在使用 Claude Code 时方便切换 AI 提供商的需求。感谢所有贡献者和开源社区。
