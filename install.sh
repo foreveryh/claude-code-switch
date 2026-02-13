@@ -549,6 +549,7 @@ model=""
 open_provider=""
 region_arg=""
 seed_variant=""
+account=""
 
 if [[ "${1:-}" == "open" ]]; then
     shift || true
@@ -670,6 +671,7 @@ model=""
 open_provider=""
 region_arg=""
 seed_variant=""
+account=""
 
 if [[ "${1:-}" == "open" ]]; then
     shift || true

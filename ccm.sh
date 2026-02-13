@@ -772,11 +772,11 @@ EOF
         else
             # 添加新账号
             local encoded_creds=$(echo "$credentials" | base64_encode_nolinebreak)
-            # 移除最后的 } (使用 macOS 兼容的命令)
-            sed '$d' "$ACCOUNTS_FILE" > "$temp_file"
-            # 检查是否需要添加逗号
-            if grep -q '"' "$temp_file"; then
-                echo "," >> "$temp_file"
+            # 移除最后的 } 并在上一行末尾添加逗号
+            if [[ "$OS_TYPE" == "macos" ]]; then
+                sed '$d' "$ACCOUNTS_FILE" | sed '' '$s/$/,/' > "$temp_file"
+            else
+                sed '$d' "$ACCOUNTS_FILE" | sed '$s/$/,/' > "$temp_file"
             fi
             echo "  \"$account_name\": \"$encoded_creds\"" >> "$temp_file"
             echo "}" >> "$temp_file"

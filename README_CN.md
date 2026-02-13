@@ -1,34 +1,34 @@
 # Claude Code Switch (ccm)
 
-一个简单、清晰的 Claude Code 模型/提供商切换工具，所有配置显式可控。
+一条命令切换 Claude Code 的 AI 提供商。
 
 [English](README.md)
 
 ## 快速开始
 
 ```bash
-# 1) 安装
+# 1. 安装
 curl -fsSL https://raw.githubusercontent.com/foreveryh/claude-code-switch/main/quick-install.sh | bash
 
-# 2) 重新加载 shell
+# 2. 重新加载 shell
 source ~/.zshrc  # 或 ~/.bashrc
 
-# 3) 配置密钥
+# 3. 配置 API 密钥
 ccm config
 
-# 4) 切换模型
-ccm kimi
-ccm qwen china
-
-# 5) 一键启动 Claude Code
-ccc glm global
+# 4. 切换并使用
+ccm kimi          # 切换到 Kimi
+ccc glm global    # 切换 + 启动 Claude Code
 ```
+
+---
 
 ## 安装
 
 ### 快速安装（推荐）
 ```bash
 curl -fsSL https://raw.githubusercontent.com/foreveryh/claude-code-switch/main/quick-install.sh | bash
+source ~/.zshrc  # 或 ~/.bashrc
 ```
 
 ### 本地安装
@@ -36,13 +36,22 @@ curl -fsSL https://raw.githubusercontent.com/foreveryh/claude-code-switch/main/q
 git clone https://github.com/foreveryh/claude-code-switch.git
 cd claude-code-switch
 ./install.sh
+source ~/.zshrc
 ```
 
-默认会注入 `ccm()` / `ccc()` 到你的 shell rc 文件，这样可以直接运行 `ccm <provider>`。
+### 安装模式
 
-如果**不想注入 rc**：
+| 模式 | 命令 | 适用场景 |
+|------|------|----------|
+| **用户级**（默认） | `./install.sh` | 个人使用，全局可用 |
+| **系统级** | `./install.sh --system` | 共享机器，所有用户 |
+| **项目级** | `./install.sh --project` | 项目专属，独立配置 |
+
+### 安装选项
 ```bash
-./install.sh --no-rc
+./install.sh --no-rc           # 不注入 shell rc
+./install.sh --cleanup-legacy  # 清理旧版安装
+./install.sh --help            # 显示所有选项
 ```
 
 ### 卸载
@@ -50,135 +59,166 @@ cd claude-code-switch
 ./uninstall.sh
 ```
 
-## 使用方式
+---
 
-### 在当前 shell 中切换
-如果已注入 rc：
+## 首次配置
+
+### 1. 配置 API 密钥
 ```bash
-ccm deepseek
-ccm kimi china
-```
-
-如果直接运行仓库脚本：
-```bash
-eval "$(./ccm deepseek)"
-```
-
-### 一键启动 Claude Code
-```bash
-ccc kimi           # 切换模型后启动
-ccc qwen global
-ccc open kimi      # OpenRouter
-```
-
-### Provider（直连）
-以下 provider 均需要你自己的 API Key，**Claude 官方**可直接使用 Claude Code 订阅（或配置 `CLAUDE_API_KEY`）。
-
-- **DeepSeek**
-  - 命令：`ccm deepseek`
-  - Base URL：`https://api.deepseek.com/anthropic`
-  - 模型：`deepseek-chat`（默认）
-  - Claude Code 默认三模型：`deepseek/deepseek-v3.2`
-
-- **Kimi**（默认 global）
-  - 命令：`ccm kimi [global|china]`
-  - Global Base URL：`https://api.moonshot.ai/anthropic`
-  - China Base URL：`https://api.moonshot.cn/anthropic`
-  - Global 模型：`kimi-for-coding`
-  - China 模型：`kimi-k2.5`
-
-- **Qwen（Coding Plan）**（默认 global）
-  - 命令：`ccm qwen [global|china]`
-  - Global Base URL：`https://coding-intl.dashscope.aliyuncs.com/apps/anthropic`
-  - China Base URL：`https://coding.dashscope.aliyuncs.com/apps/anthropic`
-  - 主模型：`qwen3-max-2026-01-23`
-  - HAIKU 默认模型：`qwen3-coder-plus`
-  - 默认三模型：OPUS/SONNET = 主模型，HAIKU = `qwen3-coder-plus`
-
-- **GLM**（默认 global）
-  - 命令：`ccm glm [global|china]`
-  - Global Base URL：`https://api.z.ai/api/anthropic`
-  - China Base URL：`https://open.bigmodel.cn/api/anthropic`
-  - 模型：`glm-5`
-
-- **MiniMax**（默认 global）
-  - 命令：`ccm minimax [global|china]`
-  - Global Base URL：`https://api.minimax.io/anthropic`
-  - China Base URL：`https://api.minimaxi.com/anthropic`
-  - 模型：`MiniMax-M2.1`
-
-- **豆包 / Seed（ARK）**
-  - 命令：`ccm seed [doubao|glm|deepseek|kimi]`
-  - Base URL：`https://ark.cn-beijing.volces.com/api/coding`
-  - 默认模型：`ark-code-latest`
-  - 子模型：
-    - `ccm seed doubao` → `doubao-seed-code`
-    - `ccm seed glm` → `glm-5`
-    - `ccm seed deepseek` → `deepseek-v3.2`
-    - `ccm seed kimi` → `kimi-k2.5`
-
-- **Claude 官方**
-  - 命令：`ccm claude`
-  - Base URL：`https://api.anthropic.com/`
-  - 默认使用 Claude Code 订阅（或配置 `CLAUDE_API_KEY`）
-
-### OpenRouter（显式命令，不做兜底）
-OpenRouter 不是兜底方案，只会在你调用 `ccm open ...` 时生效。
-
-```bash
-ccm open                # 输出支持的 provider 与用法
-ccm open kimi
-```
-
-支持的 provider：
-- `claude`（默认）
-- `deepseek`
-- `kimi`
-- `glm`
-- `qwen`
-- `minimax`
-
-OpenRouter 默认行为：
-- Base URL：`https://openrouter.ai/api`
-- 使用 `OPENROUTER_API_KEY`
-- 会设置 `ANTHROPIC_API_KEY=""` 避免冲突
-
-### 项目级覆盖（Quotio 友好）
-```bash
-ccm project glm [global|china]
-ccm project reset
-```
-会在当前项目写入/移除 `.claude/settings.local.json`，只影响该项目。
-
-### 状态 & 配置
-```bash
-ccm status
 ccm config
 ```
 
-### Claude Pro 多账号管理
+这会用编辑器打开 `~/.ccm_config`，添加你的 API 密钥：
+
 ```bash
-ccm save-account work
-ccm switch-account work
-ccm list-accounts
-ccm delete-account work
-ccm current-account
+# 每个提供商需要对应的 API Key
+DEEPSEEK_API_KEY=sk-...
+KIMI_API_KEY=...
+GLM_API_KEY=...
+QWEN_API_KEY=...
+MINIMAX_API_KEY=...
+ARK_API_KEY=...           # 豆包/Seed
+OPENROUTER_API_KEY=...    # OpenRouter
+CLAUDE_API_KEY=...        # 可选，用于 Claude API（非订阅）
 ```
+
+### 2. 验证配置
+```bash
+ccm status    # 查看当前配置状态
+```
+
+---
+
+## 基本用法
+
+### 切换提供商（当前 shell）
+```bash
+ccm deepseek           # DeepSeek
+ccm kimi               # Kimi 海外
+ccm kimi china         # Kimi 国内
+ccm glm global         # GLM 海外
+ccm qwen china         # Qwen 国内
+ccm minimax            # MiniMax
+ccm seed               # 豆包/Seed
+ccm claude             # Claude 官方
+```
+
+### 切换 + 启动 Claude Code
+```bash
+ccc deepseek           # 切换到 DeepSeek，然后启动
+ccc kimi china         # 切换到 Kimi 国内，然后启动
+ccc open kimi          # 通过 OpenRouter
+```
+
+### 查看状态
+```bash
+ccm status             # 显示当前模型和 API Key 状态
+ccm current-account    # 显示当前 Claude Pro 账号
+```
+
+### 获取帮助
+```bash
+ccm help               # 显示所有命令
+ccc                    # 显示 ccc 用法（无参数）
+```
+
+---
+
+## 提供商参考
+
+### 直连提供商（需要 API Key）
+
+| 提供商 | 命令 | 区域 | Base URL |
+|--------|------|------|----------|
+| DeepSeek | `ccm deepseek` | - | `api.deepseek.com/anthropic` |
+| Kimi | `ccm kimi [global\|china]` | global（默认） | `api.moonshot.ai/anthropic` |
+| | | china | `api.moonshot.cn/anthropic` |
+| GLM | `ccm glm [global\|china]` | global（默认） | `api.z.ai/api/anthropic` |
+| | | china | `open.bigmodel.cn/api/anthropic` |
+| Qwen | `ccm qwen [global\|china]` | global（默认） | `coding-intl.dashscope.aliyuncs.com/apps/anthropic` |
+| | | china | `coding.dashscope.aliyuncs.com/apps/anthropic` |
+| MiniMax | `ccm minimax [global\|china]` | global（默认） | `api.minimax.io/anthropic` |
+| | | china | `api.minimaxi.com/anthropic` |
+| 豆包/Seed | `ccm seed [variant]` | - | `ark.cn-beijing.volces.com/api/coding` |
+| Claude | `ccm claude` | - | `api.anthropic.com` |
+
+### Seed 变体
+```bash
+ccm seed              # ark-code-latest（默认）
+ccm seed doubao       # doubao-seed-code
+ccm seed glm          # glm-5
+ccm seed deepseek     # deepseek-v3.2
+ccm seed kimi         # kimi-k2.5
+```
+
+### OpenRouter
+```bash
+ccm open              # 显示帮助
+ccm open claude       # 通过 OpenRouter 使用 Claude
+ccm open kimi         # 通过 OpenRouter 使用 Kimi
+ccm open deepseek     # 通过 OpenRouter 使用 DeepSeek
+```
+
+---
+
+## 进阶功能
+
+### Claude Pro 多账号管理
+在多个 Claude Pro 订阅之间切换：
+
+```bash
+# 保存当前登录的账号
+ccm save-account work
+
+# 切换到已保存的账号
+ccm switch-account work
+
+# 列出所有已保存的账号
+ccm list-accounts
+
+# 显示当前账号
+ccm current-account
+
+# 删除已保存的账号
+ccm delete-account work
+```
+
+### 项目级覆盖
+为特定项目覆盖设置（保持全局设置不变）：
+
+```bash
+# 在项目目录中
+ccm project glm global    # 仅此项目使用 GLM
+ccm project reset         # 移除项目覆盖
+```
+
+这会在当前项目创建/删除 `.claude/settings.local.json`。
+
+### 指定账号启动
+```bash
+ccc work                  # 切换到 'work' 账号，然后启动
+ccc claude:personal       # 切换到 'personal' 账号 + 使用 Claude
+```
+
+---
 
 ## 配置
 
-优先级：
-1) 环境变量
-2) `~/.ccm_config`
+### 优先级
+1. 环境变量（最高）
+2. `~/.ccm_config` 文件
 
-编辑配置：
-```bash
-ccm config
+### 配置文件位置
+```
+~/.ccm_config
 ```
 
-示例 `~/.ccm_config`：
+### 完整配置示例
 ```bash
-# API keys
+# 语言（en 或 zh）
+CCM_LANGUAGE=zh
+
+# API Keys（每个提供商需要对应的密钥）
 DEEPSEEK_API_KEY=sk-...
 KIMI_API_KEY=...
 GLM_API_KEY=...
@@ -186,8 +226,9 @@ QWEN_API_KEY=...
 MINIMAX_API_KEY=...
 ARK_API_KEY=...
 OPENROUTER_API_KEY=...
+CLAUDE_API_KEY=...
 
-# 可选覆盖
+# 模型 ID 覆盖（可选）
 DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-for-coding
 KIMI_CN_MODEL=kimi-k2.5
@@ -196,14 +237,31 @@ GLM_MODEL=glm-5
 MINIMAX_MODEL=MiniMax-M2.1
 SEED_MODEL=ark-code-latest
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
-# 这些用于设置 Claude Code 默认模型（ANTHROPIC_DEFAULT_*）：
 OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
 ```
 
+---
+
+## 不使用 RC 注入
+
+如果使用 `--no-rc` 安装或直接从仓库运行：
+
+```bash
+# 切换模型（将环境变量应用到当前 shell）
+eval "$(ccm deepseek)"
+eval "$(./ccm.sh kimi china)"
+
+# 或直接使用包装脚本
+./ccm deepseek           # 仅输出 export 语句
+./ccc kimi               # 切换 + 启动
+```
+
+---
+
 ## 备注
 
-- 若不使用 rc 注入，请使用 `eval "$(./ccm <provider>)"` 应用环境变量（或 `eval "$(ccm <provider>)"`，前提是 `ccm` 在 PATH 中）。
-- CCM 每个 provider 仅导出这 7 个变量：`ANTHROPIC_BASE_URL`、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_MODEL`、`ANTHROPIC_DEFAULT_OPUS_MODEL`、`ANTHROPIC_DEFAULT_SONNET_MODEL`、`ANTHROPIC_DEFAULT_HAIKU_MODEL`、`CLAUDE_CODE_SUBAGENT_MODEL`。OpenRouter 仍遵循自身要求。
-- `ccm open` 会提示支持的 provider 与正确用法。
-- `ccm project glm` 只影响当前项目（`.claude/settings.local.json`）。
+- **每个提供商导出 7 个环境变量**：`ANTHROPIC_BASE_URL`、`ANTHROPIC_AUTH_TOKEN`、`ANTHROPIC_MODEL`、`ANTHROPIC_DEFAULT_OPUS_MODEL`、`ANTHROPIC_DEFAULT_SONNET_MODEL`、`ANTHROPIC_DEFAULT_HAIKU_MODEL`、`CLAUDE_CODE_SUBAGENT_MODEL`
+- **Claude 官方**：默认使用 Claude Code 订阅，或使用 `CLAUDE_API_KEY`（如果设置了）
+- **OpenRouter**：需要显式使用 `ccm open <provider>` 命令
+- **项目覆盖**：仅影响当前项目（`.claude/settings.local.json`）
