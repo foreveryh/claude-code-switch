@@ -270,7 +270,7 @@ CLAUDE_API_KEY=...
 
 # Model ID Overrides (optional)
 DEEPSEEK_MODEL=deepseek-chat
-KIMI_MODEL=kimi-for-coding
+KIMI_MODEL=kimi-k2.5
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
 GLM_MODEL=glm-5

@@ -172,7 +172,7 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
-KIMI_MODEL=kimi-for-coding
+KIMI_MODEL=kimi-k2.5
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
 GLM_MODEL=glm-5
@@ -279,7 +279,7 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
-KIMI_MODEL=kimi-for-coding
+KIMI_MODEL=kimi-k2.5
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
 GLM_MODEL=glm-5
@@ -516,7 +516,7 @@ get_provider_config() {
             case "$region" in
                 "global")
                     config_base_url="https://api.moonshot.ai/anthropic"
-                    config_model="${KIMI_MODEL:-kimi-for-coding}"
+                    config_model="${KIMI_MODEL:-kimi-k2.5}"
                     ;;
                 "china")
                     config_base_url="https://api.moonshot.cn/anthropic"
@@ -1468,10 +1468,10 @@ switch_to_kimi() {
     # 海外 Kimi 端点
     export ANTHROPIC_BASE_URL="https://api.moonshot.ai/anthropic"
     export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
-    export ANTHROPIC_MODEL="kimi-for-coding"
-    export ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-for-coding"
-    export ANTHROPIC_DEFAULT_OPUS_MODEL="kimi-for-coding"
-    export ANTHROPIC_DEFAULT_HAIKU_MODEL="kimi-for-coding"
+    export ANTHROPIC_MODEL="kimi-k2.5"
+    export ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-k2.5"
+    export ANTHROPIC_DEFAULT_OPUS_MODEL="kimi-k2.5"
+    export ANTHROPIC_DEFAULT_HAIKU_MODEL="kimi-k2.5"
     export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
     echo -e "${GREEN}✅ $(t 'switched_to') KIMI（$(t 'official')）${NC}"
     echo "   BASE_URL: $ANTHROPIC_BASE_URL"
@@ -1671,7 +1671,7 @@ show_help() {
     echo "  $(basename "$0") save-account work           # Save current account as 'work'"
     echo ""
     echo -e "${YELLOW}支持的模型:${NC}"
-    echo "  🌙 KIMI Global          - kimi-for-coding (api.moonshot.ai/anthropic)"
+    echo "  🌙 KIMI Global          - kimi-k2.5 (api.moonshot.ai/anthropic)"
     echo "  🌕 KIMI China           - kimi-k2.5 (api.moonshot.cn/anthropic)"
     echo "  🤖 Deepseek             - deepseek-chat (api.deepseek.com/anthropic)"
     echo "  🌰 豆包 Seed-Code       - ark-code-latest (ark.cn-beijing.volces.com/api/coding)"
@@ -1685,7 +1685,7 @@ show_help() {
 ensure_model_override_defaults() {
     local -a pairs=(
         "DEEPSEEK_MODEL=deepseek-chat"
-        "KIMI_MODEL=kimi-for-coding"
+        "KIMI_MODEL=kimi-k2.5"
         "KIMI_CN_MODEL=kimi-k2.5"
         "MINIMAX_MODEL=MiniMax-M2.5"
         "SEED_MODEL=ark-code-latest"
@@ -1896,7 +1896,7 @@ emit_env_exports() {
             local kimi_model=""
             if [[ "$region" == "global" ]]; then
                 kimi_base_url="https://api.moonshot.ai/anthropic"
-                kimi_model="${KIMI_MODEL:-kimi-for-coding}"
+                kimi_model="${KIMI_MODEL:-kimi-k2.5}"
             else
                 kimi_base_url="https://api.moonshot.cn/anthropic"
                 kimi_model="${KIMI_CN_MODEL:-kimi-k2.5}"
