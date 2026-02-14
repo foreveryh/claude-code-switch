@@ -339,6 +339,18 @@ cd claude-code-switch
 
 ---
 
+## 更新日志
+
+### v2.4.0 (2025-02)
+- **`ccm user` 命令** - 直接写入 `~/.claude/settings.json`（最高优先级）
+- **`ccm update-config` 命令** - 自动更新过时的模型 ID
+- **配置文件立即生效** - 编辑 `~/.ccm_config` 后立即生效
+- **增强 `ccm status`** - 检测并警告用户级设置覆盖
+- 模型更新：Kimi → `kimi-k2.5`、MiniMax → `MiniMax-M2.5`、GLM → `glm-5`
+- 添加 Coding Plan 链接：GLM、豆包
+
+---
+
 ## 许可证
 
 MIT License - 详见 [LICENSE](LICENSE)。

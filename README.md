@@ -339,6 +339,18 @@ cd claude-code-switch
 
 ---
 
+## What's New
+
+### v2.4.0 (2025-02)
+- **`ccm user` command** - Write settings directly to `~/.claude/settings.json` (highest priority)
+- **`ccm update-config` command** - Update outdated model IDs automatically
+- **Config file now always reloads** - Edit `~/.ccm_config` and changes apply immediately
+- **Enhanced `ccm status`** - Detects and warns about user-level settings overrides
+- Model updates: Kimi → `kimi-k2.5`, MiniMax → `MiniMax-M2.5`, GLM → `glm-5`
+- Added Coding Plan links: GLM, Doubao
+
+---
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
