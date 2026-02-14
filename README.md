@@ -164,7 +164,9 @@ ccc                    # Show ccc usage (no args)
 | Seed/Doubao | `ccm seed [variant]` | - | `ark.cn-beijing.volces.com/api/coding` |
 | Claude | `ccm claude` | - | `api.anthropic.com` |
 
-> **GLM Coding Plan**: Get a subscription at [bigmodel.cn/glm-coding](https://www.bigmodel.cn/glm-coding?ic=5XMIOZPPXB)
+> **GLM Coding Plan**: [bigmodel.cn/glm-coding](https://www.bigmodel.cn/glm-coding?ic=5XMIOZPPXB)
+>
+> **Doubao Coding Plan**: [volcengine.com](https://volcengine.com/L/rLv5d5OWXgg/) (Invite code: `ZP5PZMEY`)
 
 ### Seed Variants
 ```bash

@@ -165,6 +165,8 @@ ccc                    # 显示 ccc 用法（无参数）
 | Claude | `ccm claude` | - | `api.anthropic.com` |
 
 > **GLM Coding 套餐**：[bigmodel.cn/glm-coding](https://www.bigmodel.cn/glm-coding?ic=5XMIOZPPXB)
+>
+> **豆包 Coding Plan**：[volcengine.com](https://volcengine.com/L/rLv5d5OWXgg/)（邀请码：`ZP5PZMEY`）
 
 ### Seed 变体
 ```bash
