@@ -253,8 +253,8 @@ ccc claude:personal       # Switch to 'personal' account + use Claude
 ### Priority Order (highest to lowest)
 1. `~/.claude/settings.json` (env section) - User-level settings
 2. `.claude/settings.local.json` - Project-level settings
-3. Environment variables
-4. `~/.ccm_config` file
+3. `~/.ccm_config` file - **Always reloads on each ccm command**
+4. Environment variables (only used if config value is a placeholder)
 
 ### Config File Location
 ```

@@ -253,8 +253,8 @@ ccc claude:personal       # 切换到 'personal' 账号 + 使用 Claude
 ### 优先级（从高到低）
 1. `~/.claude/settings.json`（env 部分）- 用户级设置
 2. `.claude/settings.local.json` - 项目级设置
-3. 环境变量
-4. `~/.ccm_config` 文件
+3. `~/.ccm_config` 文件 - **每次运行 ccm 都会重新加载**
+4. 环境变量（仅当配置值为占位符时使用）
 
 ### 配置文件位置
 ```

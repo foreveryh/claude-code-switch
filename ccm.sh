@@ -221,16 +221,15 @@ EOF
             local value="${BASH_REMATCH[3]}"
             # 去掉首尾空白
             value=$(echo "$value" | sed -E 's/^[[:space:]]*//; s/[[:space:]]*$//')
-            # 仅当环境未设置、为空或为占位符时才应用
-            local env_value="${!key}"
-            local lower_env_value
-            lower_env_value=$(printf '%s' "$env_value" | tr '[:upper:]' '[:lower:]')
-            # 检查是否为占位符值
-            local is_placeholder=false
-            if [[ "$lower_env_value" == *"your"* && "$lower_env_value" == *"api"* && "$lower_env_value" == *"key"* ]]; then
-                is_placeholder=true
+            # 检查配置文件的值是否为占位符
+            local lower_value
+            lower_value=$(printf '%s' "$value" | tr '[:upper:]' '[:lower:]')
+            local is_config_placeholder=false
+            if [[ "$lower_value" == *"your"* && "$lower_value" == *"api"* && "$lower_value" == *"key"* ]]; then
+                is_config_placeholder=true
             fi
-            if [[ -n "$key" && ( -z "$env_value" || "$env_value" == "" || "$is_placeholder" == "true" ) ]]; then
+            # 配置文件总是覆盖，除非配置值是占位符
+            if [[ -n "$key" && "$is_config_placeholder" == "false" ]]; then
                 echo "export $key=$value" >> "$temp_file"
             fi
         fi
