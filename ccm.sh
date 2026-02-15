@@ -459,6 +459,95 @@ project_reset_settings() {
     echo -e "${YELLOW}💡 Claude Code will fall back to user settings (e.g. Quotio).${NC}" >&2
 }
 
+# Generic project-level settings writer for all providers
+project_write_settings() {
+    local provider="$1"
+    local region="${2:-global}"
+
+    # Normalize region if needed
+    if [[ "$provider" =~ ^(glm|kimi|qwen|minimax)$ ]]; then
+        local normalized_region
+        if ! normalized_region="$(normalize_region "$region")"; then
+            echo -e "${RED}❌ Invalid region: $region${NC}" >&2
+            echo -e "${YELLOW}💡 Usage: ccm project $provider [global|china]${NC}" >&2
+            return 1
+        fi
+        region="$normalized_region"
+    fi
+
+    local config
+    config="$(get_provider_config "$provider" "$region")" || return 1
+
+    local config_base_url="${config%%|*}"
+    local rest="${config#*|}"
+    local config_model="${rest%%|*}"
+    local config_token_var="${rest##*|}"
+
+    local config_token=""
+    if [[ -n "$config_token_var" ]]; then
+        config_token="${!config_token_var}"
+    fi
+
+    local settings_path
+    settings_path="$(project_settings_path)"
+    local settings_dir
+    settings_dir="$(dirname "$settings_path")"
+
+    # Backup existing settings if not ccm-managed
+    if [[ -f "$settings_path" ]]; then
+        if ! grep -q '"ccmManaged"[[:space:]]*:[[:space:]]*true' "$settings_path" 2>/dev/null; then
+            backup_project_settings "$settings_path"
+        fi
+    fi
+
+    mkdir -p "$settings_dir"
+
+    # Write project settings (simple format, no need to preserve other settings)
+    cat > "$settings_path" <<EOF
+{
+  "ccmManaged": true,
+  "ccmProvider": "$provider",
+  "ccmRegion": "$region",
+  "env": {
+    "ANTHROPIC_BASE_URL": "${config_base_url}",
+    "ANTHROPIC_MODEL": "${config_model}",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "${config_model}",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "${config_model}",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${config_model}",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "${config_model}"$([[ -n "$config_token" ]] && echo ",
+    \"ANTHROPIC_AUTH_TOKEN\": \"$config_token\"")
+  }
+}
+EOF
+    chmod 600 "$settings_path"
+    echo -e "${GREEN}✅ Wrote project settings for ${provider}${region:+ ($region)}${NC}" >&2
+    echo -e "${BLUE}   File: $settings_path${NC}" >&2
+    echo -e "${YELLOW}💡 This overrides user settings for this project only.${NC}" >&2
+    echo -e "${YELLOW}💡 Use 'ccm project reset' to remove.${NC}" >&2
+}
+
+project_show_usage() {
+    echo -e "${BLUE}Project-level settings (writes to .claude/settings.local.json)${NC}" >&2
+    echo "" >&2
+    echo "Usage:" >&2
+    echo "  ccm project <provider> [region]   - Write provider settings to project-level" >&2
+    echo "  ccm project reset                  - Remove project override" >&2
+    echo "" >&2
+    echo "Providers:" >&2
+    echo "  glm [global|china]    - GLM" >&2
+    echo "  deepseek              - DeepSeek" >&2
+    echo "  kimi [global|china]   - Kimi" >&2
+    echo "  qwen [global|china]   - Qwen" >&2
+    echo "  minimax [global|china] - MiniMax" >&2
+    echo "  seed                  - Doubao/Seed" >&2
+    echo "  claude                - Claude (official)" >&2
+    echo "" >&2
+    echo "Examples:" >&2
+    echo "  ccm project glm global   # Use GLM for this project" >&2
+    echo "  ccm project seed         # Use Seed for this project" >&2
+    echo "  ccm project reset        # Remove project override" >&2
+}
+
 # ============================================
 # User-level settings (~/.claude/settings.json)
 # ============================================
@@ -1640,8 +1729,9 @@ show_help() {
     echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, claude"
     echo ""
     echo -e "${YELLOW}Project-level Settings:${NC}"
-    echo "  project glm [global|china] - write .claude/settings.local.json (project-only)"
+    echo "  project <provider> [region] - write .claude/settings.local.json (project-only)"
     echo "  project reset              - remove project override"
+    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, claude"
     echo ""
     echo -e "${YELLOW}Claude Pro Account Management:${NC}"
     echo "  save-account <name>     - Save current Claude Pro account"
@@ -2192,17 +2282,20 @@ main() {
             ;;
         "project")
             shift
-            local action="${1:-}"
-            case "$action" in
-                "glm")
-                    project_write_glm_settings "${2:-}"
+            local project_action="${1:-}"
+            case "$project_action" in
+                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"claude"|"sonnet"|"s")
+                    project_write_settings "$project_action" "${2:-}"
                     ;;
                 "reset")
                     project_reset_settings
                     ;;
+                ""|"help"|"-h"|"--help")
+                    project_show_usage
+                    ;;
                 *)
-                    echo -e "${RED}❌ $(t 'unknown_option'): project $action${NC}" >&2
-                    echo -e "${YELLOW}💡 Usage: ccm project [glm|reset] [global|china]${NC}" >&2
+                    echo -e "${RED}❌ $(t 'unknown_option'): project $project_action${NC}" >&2
+                    project_show_usage
                     return 1
                     ;;
             esac
