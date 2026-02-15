@@ -109,6 +109,8 @@
   "openrouter_provider_glm": "GLM (通过 OpenRouter)",
   "openrouter_provider_kimi": "Kimi (通过 OpenRouter)",
   "openrouter_provider_deepseek": "DeepSeek (通过 OpenRouter)",
+  "openrouter_provider_minimax": "MiniMax (通过 OpenRouter)",
+  "openrouter_provider_qwen": "Qwen (通过 OpenRouter)",
   "openrouter_provider_claude": "Claude (通过 OpenRouter)",
   "openrouter_provider_unknown": "未知 (模型:"
 }

@@ -109,6 +109,8 @@
   "openrouter_provider_glm": "GLM (via OpenRouter)",
   "openrouter_provider_kimi": "Kimi (via OpenRouter)",
   "openrouter_provider_deepseek": "DeepSeek (via OpenRouter)",
+  "openrouter_provider_minimax": "MiniMax (via OpenRouter)",
+  "openrouter_provider_qwen": "Qwen (via OpenRouter)",
   "openrouter_provider_claude": "Claude (via OpenRouter)",
   "openrouter_provider_unknown": "Unknown (model:"
 }

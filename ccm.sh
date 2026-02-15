@@ -1361,6 +1361,8 @@ show_status() {
                     *glm*) echo "   Provider: $(t 'openrouter_provider_glm')" ;;
                     *kimi*) echo "   Provider: $(t 'openrouter_provider_kimi')" ;;
                     *deepseek*) echo "   Provider: $(t 'openrouter_provider_deepseek')" ;;
+                    *minimax*) echo "   Provider: $(t 'openrouter_provider_minimax')" ;;
+                    *qwen*) echo "   Provider: $(t 'openrouter_provider_qwen')" ;;
                     *claude*|*anthropic*) echo "   Provider: $(t 'openrouter_provider_claude')" ;;
                     *) echo "   Provider: $(t 'openrouter_provider_unknown') ${ANTHROPIC_MODEL})" ;;
                 esac
