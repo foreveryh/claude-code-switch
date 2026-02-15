@@ -161,6 +161,9 @@ MINIMAX_API_KEY=your-minimax-api-key
 # 豆包 Seed-Code (字节跳动)
 ARK_API_KEY=your-ark-api-key
 
+# StepFun
+STEPFUN_API_KEY=your-stepfun-api-key
+
 # Qwen（阿里云 DashScope）
 QWEN_API_KEY=your-qwen-api-key
 
@@ -181,6 +184,7 @@ OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.5
 SEED_MODEL=ark-code-latest
+STEPFUN_MODEL=step-3.5-flash
 
 EOF
         echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -267,6 +271,9 @@ MINIMAX_API_KEY=your-minimax-api-key
 # 豆包 Seed-Code (字节跳动)
 ARK_API_KEY=your-ark-api-key
 
+# StepFun
+STEPFUN_API_KEY=your-stepfun-api-key
+
 # Qwen（阿里云 DashScope）
 QWEN_API_KEY=your-qwen-api-key
 
@@ -287,6 +294,7 @@ OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.5
 SEED_MODEL=ark-code-latest
+STEPFUN_MODEL=step-3.5-flash
 
 EOF
     echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -555,6 +563,15 @@ get_provider_config() {
             config_token_var="ARK_API_KEY"
             config_model="${SEED_MODEL:-ark-code-latest}"
             config_base_url="https://ark.cn-beijing.volces.com/api/coding"
+            ;;
+        "stepfun")
+            if ! is_effectively_set "$STEPFUN_API_KEY"; then
+                echo -e "${RED}❌ Please configure STEPFUN_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="STEPFUN_API_KEY"
+            config_model="${STEPFUN_MODEL:-step-3.5-flash}"
+            config_base_url="https://api.stepfun.ai/v1/anthropic"
             ;;
         "claude"|"sonnet"|"s")
             config_token_var=""  # Uses Claude Pro subscription
@@ -1345,6 +1362,7 @@ show_status() {
     echo "   DEEPSEEK_API_KEY: $(mask_presence DEEPSEEK_API_KEY)"
     echo "   ARK_API_KEY: $(mask_presence ARK_API_KEY)"
     echo "   QWEN_API_KEY: $(mask_presence QWEN_API_KEY)"
+    echo "   STEPFUN_API_KEY: $(mask_presence STEPFUN_API_KEY)"
     echo "   OPENROUTER_API_KEY: $(mask_presence OPENROUTER_API_KEY)"
     echo ""
 }
@@ -1631,13 +1649,14 @@ show_help() {
     echo "  glm [global|china]      - env glm (default: global)"
     echo "  minimax [global|china]  - env minimax (default: global)"
     echo "  seed [doubao|glm|deepseek|kimi] - env 豆包 Seed-Code"
+    echo "  stepfun                 - env StepFun"
     echo "  claude, sonnet, s       - env claude (official)"
     echo "  open <provider>         - env OpenRouter (run 'ccm open' for help)"
     echo ""
     echo -e "${YELLOW}User-level Settings (highest priority):${NC}"
     echo "  user <provider> [region] - write to ~/.claude/settings.json"
     echo "  user reset               - remove ccm settings, restore env var control"
-    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, claude"
+    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, stepfun, claude"
     echo ""
     echo -e "${YELLOW}Project-level Settings:${NC}"
     echo "  project glm [global|china] - write .claude/settings.local.json (project-only)"
@@ -1675,6 +1694,7 @@ show_help() {
     echo "  🌕 KIMI China           - kimi-k2.5 (api.moonshot.cn/anthropic)"
     echo "  🤖 Deepseek             - deepseek-chat (api.deepseek.com/anthropic)"
     echo "  🌰 豆包 Seed-Code       - ark-code-latest (ark.cn-beijing.volces.com/api/coding)"
+    echo "  ⚡ StepFun              - step-3.5-flash (api.stepfun.ai)"
     echo "  🎯 MiniMax              - MiniMax-M2.5 (api.minimax.io / api.minimaxi.com)"
     echo "  🐪 Qwen                 - qwen3-max-2026-01-23 / qwen3-coder-plus (Coding Plan)"
     echo "  🇨🇳 GLM                 - glm-5 (api.z.ai / open.bigmodel.cn)"
@@ -1689,6 +1709,7 @@ ensure_model_override_defaults() {
         "KIMI_CN_MODEL=kimi-k2.5"
         "MINIMAX_MODEL=MiniMax-M2.5"
         "SEED_MODEL=ark-code-latest"
+        "STEPFUN_MODEL=step-3.5-flash"
         "QWEN_MODEL=qwen3-max-2026-01-23"
         "GLM_MODEL=glm-5"
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
@@ -2083,6 +2104,20 @@ emit_env_exports() {
             emit_default_models "$seed_model" "$seed_model" "$seed_model"
             emit_subagent_model "$seed_model"
             ;;
+        "stepfun")
+            if ! is_effectively_set "$STEPFUN_API_KEY"; then
+                echo -e "${RED}❌ Please configure STEPFUN_API_KEY${NC}" >&2
+                return 1
+            fi
+            echo "$prelude"
+            echo "export ANTHROPIC_BASE_URL='https://api.stepfun.ai/v1/anthropic'"
+            echo "if [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${STEPFUN_API_KEY}\""
+            local stepfun_model="${STEPFUN_MODEL:-step-3.5-flash}"
+            echo "export ANTHROPIC_MODEL='${stepfun_model}'"
+            emit_default_models "$stepfun_model" "$stepfun_model" "$stepfun_model"
+            emit_subagent_model "$stepfun_model"
+            ;;
         "claude"|"sonnet"|"s")
             echo "$prelude"
             # 官方 Anthropic 网关
@@ -2101,7 +2136,7 @@ emit_env_exports() {
             emit_subagent_model "$claude_model"
             ;;
         *)
-            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|claude|open]" 1>&2
+            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|stepfun|claude|open]" 1>&2
             return 1
             ;;
     esac
@@ -2180,6 +2215,9 @@ main() {
         "glm"|"glm5")
             emit_env_exports glm "${2:-}"
             ;;
+        "stepfun")
+            emit_env_exports stepfun
+            ;;
         "claude"|"sonnet"|"s")
             emit_env_exports claude
             ;;
@@ -2211,7 +2249,7 @@ main() {
             shift
             local user_action="${1:-}"
             case "$user_action" in
-                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"claude"|"sonnet"|"s")
+                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"stepfun"|"claude"|"sonnet"|"s")
                     user_write_settings "$user_action" "${2:-}"
                     ;;
                 "reset")

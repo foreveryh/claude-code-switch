@@ -48,6 +48,7 @@
   "usage_env_eval": "用法: env [模型] - 仅输出 export 语句（用于 eval），不打印密钥明文",
   "longcat_features": "官方：LongCat-Flash-Thinking / LongCat-Flash-Chat",
   "glm_features": "官方：glm-4.5 / glm-4.5-air",
+  "stepfun_features": "StepFun：step-3.5-flash",
   "claude_sonnet_features": "claude-sonnet-4-20250514",
   "claude_opus_features": "claude-opus-4-6",
   "using_pro_subscription": "使用 Claude Pro 订阅",
