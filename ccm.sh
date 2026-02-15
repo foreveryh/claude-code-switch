@@ -1365,7 +1365,7 @@ show_status() {
                     *qwen*) echo "   Provider: $(t 'openrouter_provider_qwen')" ;;
                     *stepfun*)
                         echo "   Provider: $(t 'openrouter_provider_stepfun')"
-                        [[ "$ANTHROPIC_MODEL" == *":free" ]] && echo "   ${GREEN}🆓 Free Tier${NC}"
+                        [[ "$ANTHROPIC_MODEL" == *":free" ]] && echo -e "   ${GREEN}🆓 Free Tier${NC}"
                         ;;
                     *claude*|*anthropic*) echo "   Provider: $(t 'openrouter_provider_claude')" ;;
                     *) echo "   Provider: $(t 'openrouter_provider_unknown') ${ANTHROPIC_MODEL})" ;;
