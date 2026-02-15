@@ -1920,8 +1920,8 @@ emit_openrouter_exports() {
             default_haiku="qwen/qwen3-coder-next"
             ;;
         "minimax"|"mm")
-            model="minimax/minimax-m2.1"
-            small="minimax/minimax-m2.1"
+            model="minimax/minimax-m2.5"
+            small="minimax/minimax-m2.5"
             default_sonnet="$model"
             default_opus="$model"
             default_haiku="$model"
