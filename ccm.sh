@@ -1363,7 +1363,10 @@ show_status() {
                     *deepseek*) echo "   Provider: $(t 'openrouter_provider_deepseek')" ;;
                     *minimax*) echo "   Provider: $(t 'openrouter_provider_minimax')" ;;
                     *qwen*) echo "   Provider: $(t 'openrouter_provider_qwen')" ;;
-                    *stepfun*) echo "   Provider: $(t 'openrouter_provider_stepfun')" ;;
+                    *stepfun*)
+                        echo "   Provider: $(t 'openrouter_provider_stepfun')"
+                        [[ "$ANTHROPIC_MODEL" == *":free" ]] && echo "   ${GREEN}🆓 Free Tier${NC}"
+                        ;;
                     *claude*|*anthropic*) echo "   Provider: $(t 'openrouter_provider_claude')" ;;
                     *) echo "   Provider: $(t 'openrouter_provider_unknown') ${ANTHROPIC_MODEL})" ;;
                 esac
@@ -1859,9 +1862,13 @@ show_open_help() {
     echo -e "${YELLOW}Supported providers:${NC}"
     echo "  claude (default), deepseek, kimi, glm, qwen, minimax, stepfun"
     echo ""
+    echo -e "${YELLOW}Free tier:${NC}"
+    echo "  stepfun-free (sf-free) - stepfun/step-3.5-flash:free"
+    echo ""
     echo -e "${YELLOW}Examples:${NC}"
     echo "  eval \"\$(ccm open claude)\""
     echo "  eval \"\$(ccm open kimi)\""
+    echo "  eval \"\$(ccm open sf-free)\""
 }
 
 emit_openrouter_exports() {
@@ -1930,6 +1937,13 @@ emit_openrouter_exports() {
         "stepfun"|"sf")
             model="stepfun/step-3.5-flash"
             small="stepfun/step-3.5-flash"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        "stepfun-free"|"sf-free")
+            model="stepfun/step-3.5-flash:free"
+            small="stepfun/step-3.5-flash:free"
             default_sonnet="$model"
             default_opus="$model"
             default_haiku="$model"
