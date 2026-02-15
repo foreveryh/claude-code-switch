@@ -1363,6 +1363,7 @@ show_status() {
                     *deepseek*) echo "   Provider: $(t 'openrouter_provider_deepseek')" ;;
                     *minimax*) echo "   Provider: $(t 'openrouter_provider_minimax')" ;;
                     *qwen*) echo "   Provider: $(t 'openrouter_provider_qwen')" ;;
+                    *stepfun*) echo "   Provider: $(t 'openrouter_provider_stepfun')" ;;
                     *claude*|*anthropic*) echo "   Provider: $(t 'openrouter_provider_claude')" ;;
                     *) echo "   Provider: $(t 'openrouter_provider_unknown') ${ANTHROPIC_MODEL})" ;;
                 esac
@@ -1856,7 +1857,7 @@ show_open_help() {
     echo "  ccm open <provider>"
     echo ""
     echo -e "${YELLOW}Supported providers:${NC}"
-    echo "  claude (default), deepseek, kimi, glm, qwen, minimax"
+    echo "  claude (default), deepseek, kimi, glm, qwen, minimax, stepfun"
     echo ""
     echo -e "${YELLOW}Examples:${NC}"
     echo "  eval \"\$(ccm open claude)\""
@@ -1922,6 +1923,13 @@ emit_openrouter_exports() {
         "minimax"|"mm")
             model="minimax/minimax-m2.5"
             small="minimax/minimax-m2.5"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        "stepfun"|"sf")
+            model="stepfun/step-3.5-flash"
+            small="stepfun/step-3.5-flash"
             default_sonnet="$model"
             default_opus="$model"
             default_haiku="$model"
