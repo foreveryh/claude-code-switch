@@ -1348,6 +1348,30 @@ show_status() {
         fi
     fi
 
+    # OpenRouter Configuration
+    if is_effectively_set "$OPENROUTER_API_KEY"; then
+        echo -e "${BLUE}🌐 OpenRouter:${NC}"
+        if [[ "${ANTHROPIC_BASE_URL:-}" == *"openrouter"* ]]; then
+            echo -e "   ${GREEN}Status:${NC} $(t 'openrouter_active')"
+            echo "   MODEL: ${ANTHROPIC_MODEL:-'(not set)'}"
+            echo "   SUBAGENT_MODEL: ${CLAUDE_CODE_SUBAGENT_MODEL:-'(not set)'}"
+            # Detect provider from model name
+            if [[ -n "${ANTHROPIC_MODEL:-}" ]]; then
+                case "$ANTHROPIC_MODEL" in
+                    *glm*) echo "   Provider: $(t 'openrouter_provider_glm')" ;;
+                    *kimi*) echo "   Provider: $(t 'openrouter_provider_kimi')" ;;
+                    *deepseek*) echo "   Provider: $(t 'openrouter_provider_deepseek')" ;;
+                    *claude*|*anthropic*) echo "   Provider: $(t 'openrouter_provider_claude')" ;;
+                    *) echo "   Provider: $(t 'openrouter_provider_unknown') ${ANTHROPIC_MODEL})" ;;
+                esac
+            fi
+        else
+            echo -e "   ${YELLOW}Status:${NC} $(t 'openrouter_configured_not_active')"
+            echo -e "${YELLOW}   💡 $(t 'openrouter_use_eval_hint')${NC}"
+        fi
+        echo ""
+    fi
+
     echo -e "${BLUE}📊 $(t 'current_model_config'):${NC}"
     echo "   BASE_URL: ${ANTHROPIC_BASE_URL:-'Default (Anthropic)'}"
     echo -n "   AUTH_TOKEN: "
