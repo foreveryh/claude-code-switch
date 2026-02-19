@@ -48,6 +48,7 @@
   "usage_env_eval": "用法: env [模型] - 仅输出 export 语句（用于 eval），不打印密钥明文",
   "longcat_features": "官方：LongCat-Flash-Thinking / LongCat-Flash-Chat",
   "glm_features": "官方：glm-4.5 / glm-4.5-air",
+  "stepfun_features": "StepFun：step-3.5-flash",
   "claude_sonnet_features": "claude-sonnet-4-20250514",
   "claude_opus_features": "claude-opus-4-6",
   "using_pro_subscription": "使用 Claude Pro 订阅",
@@ -101,5 +102,16 @@
   "custom_proxy": "自定义代理",
   "base_url_config_note": "BASE URL可通过 CLAUDE_PROXY_BASE_URL 环境变量或配置文件修改",
   "custom": "（自定义）",
-  "project_config": "检测到项目配置"
+  "project_config": "检测到项目配置",
+  "openrouter_active": "已激活",
+  "openrouter_configured_not_active": "已配置但未激活",
+  "openrouter_use_eval_hint": "使用 'eval $(ccm open <provider>)' 激活",
+  "openrouter_provider_glm": "GLM (通过 OpenRouter)",
+  "openrouter_provider_kimi": "Kimi (通过 OpenRouter)",
+  "openrouter_provider_deepseek": "DeepSeek (通过 OpenRouter)",
+  "openrouter_provider_minimax": "MiniMax (通过 OpenRouter)",
+  "openrouter_provider_qwen": "Qwen (通过 OpenRouter)",
+  "openrouter_provider_stepfun": "StepFun (通过 OpenRouter)",
+  "openrouter_provider_claude": "Claude (通过 OpenRouter)",
+  "openrouter_provider_unknown": "未知 (模型:"
 }

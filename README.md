@@ -180,10 +180,19 @@ ccm seed kimi         # kimi-k2.5
 ### OpenRouter
 ```bash
 ccm open              # Show help
-ccm open glm          # GLM via OpenRouter
 ccm open claude       # Claude via OpenRouter
+ccm open glm          # GLM via OpenRouter
+ccm open kimi         # Kimi via OpenRouter
 ccm open deepseek     # DeepSeek via OpenRouter
+ccm open qwen         # Qwen via OpenRouter
+ccm open minimax      # MiniMax via OpenRouter
+ccm open stepfun      # StepFun via OpenRouter
+ccm open sf-free      # StepFun free tier
 ```
+
+**Available providers:** `claude`, `glm`, `kimi`, `deepseek`, `qwen`, `minimax`, `stepfun`
+
+**Free tier:** `stepfun-free` or `sf-free` for StepFun's free model
 
 ---
 

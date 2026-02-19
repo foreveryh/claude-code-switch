@@ -48,6 +48,7 @@
   "usage_env_eval": "Usage: env [model] - Output export statements only (for eval), no plaintext keys",
   "longcat_features": "Official: LongCat-Flash-Thinking / LongCat-Flash-Chat",
   "glm_features": "Official: glm-4.5 / glm-4.5-air",
+  "stepfun_features": "StepFun: step-3.5-flash",
   "claude_sonnet_features": "claude-sonnet-4-20250514",
   "claude_opus_features": "claude-opus-4-6",
   "using_pro_subscription": "using Claude Pro subscription",
@@ -101,5 +102,16 @@
   "custom_proxy": "Custom Proxy",
   "base_url_config_note": "BASE URL can be changed via CLAUDE_PROXY_BASE_URL environment variable or config file",
   "custom": "(custom)",
-  "project_config": "Project config detected"
+  "project_config": "Project config detected",
+  "openrouter_active": "Active",
+  "openrouter_configured_not_active": "Configured but not active",
+  "openrouter_use_eval_hint": "Use 'eval $(ccm open <provider>)' to activate",
+  "openrouter_provider_glm": "GLM (via OpenRouter)",
+  "openrouter_provider_kimi": "Kimi (via OpenRouter)",
+  "openrouter_provider_deepseek": "DeepSeek (via OpenRouter)",
+  "openrouter_provider_minimax": "MiniMax (via OpenRouter)",
+  "openrouter_provider_qwen": "Qwen (via OpenRouter)",
+  "openrouter_provider_stepfun": "StepFun (via OpenRouter)",
+  "openrouter_provider_claude": "Claude (via OpenRouter)",
+  "openrouter_provider_unknown": "Unknown (model:"
 }
