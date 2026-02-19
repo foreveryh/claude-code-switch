@@ -60,6 +60,7 @@ pids
 .vscode/
 .idea/
 *.sublime-*
+.claude/
 # Obsolete file backups
 .obsolete_backup_*/
 
