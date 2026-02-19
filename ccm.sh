@@ -1150,7 +1150,7 @@ EOF
             local encoded_creds=$(echo "$credentials" | base64_encode_nolinebreak)
             # 移除最后的 } 并在上一行末尾添加逗号
             if [[ "$OS_TYPE" == "macos" ]]; then
-                sed '$d' "$ACCOUNTS_FILE" | sed '' '$s/$/,/' > "$temp_file"
+                sed '$d' "$ACCOUNTS_FILE" | sed '$s/$/,/' > "$temp_file"
             else
                 sed '$d' "$ACCOUNTS_FILE" | sed '$s/$/,/' > "$temp_file"
             fi
