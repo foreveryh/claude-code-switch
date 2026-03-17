@@ -6,7 +6,7 @@
 
 Switch Claude Code between AI providers with one command.
 
-[中文文档](README_CN.md)
+[中文文档](README_CN.md) | [Python Version Guide](docs/PYTHON_VERSION.md)
 
 ## Quick Start
 
@@ -21,20 +21,47 @@ source ~/.zshrc  # or ~/.bashrc
 ccm config
 
 # 4. Switch and use
-ccm glm              # switch to GLM
-ccc glm global       # switch + launch Claude Code
+eval "$(ccm glm)"          # switch to GLM (eval mode)
+ccc glm global             # switch + launch Claude Code
 
 # Advanced: User-level settings (highest priority, overrides everything)
-ccm user glm global      # Set GLM as default for all projects
-ccm user reset           # Restore environment variable control
+ccm user glm global        # Set GLM as default for all projects
+ccm user reset             # Restore environment variable control
 
 # Advanced: Project-only override
-ccm project glm china    # GLM for this project only
+ccm project glm china      # GLM for this project only
 
 # Advanced: Multiple Claude Pro accounts
-ccm save-account work    # save current account
-ccm switch-account work  # switch to saved account
+ccm save-account work      # save current account
+ccm switch-account work    # switch to saved account
 ```
+
+## 🆕 Python Version (v3.0)
+
+CCM has been migrated to Python for better maintainability, testing, and cross-platform support.
+
+### Install Python Version
+
+```bash
+# Using uv (recommended)
+uv tool install git+https://github.com/foreveryh/claude-code-switch.git
+
+# Or from source
+git clone https://github.com/foreveryh/claude-code-switch.git
+cd claude-code-switch
+uv tool install .
+```
+
+### Python Version Features
+
+- ✅ Modern CLI with Typer/Rich
+- ✅ Type-safe with Pydantic
+- ✅ 72 unit & integration tests
+- ✅ Cross-platform keychain support
+- ✅ Project & user-level settings
+- ✅ i18n (English/Chinese)
+
+See [Python Version Guide](docs/PYTHON_VERSION.md) for full documentation.
 
 ---
 

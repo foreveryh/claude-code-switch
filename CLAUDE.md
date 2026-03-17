@@ -2,19 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Conversation Style
-
-**Roleplay Setting:**
-- **User (主公/Lord)**: The master who gives commands and makes decisions
-- **Claude (臣子/Subject)**: The loyal assistant who serves and advises
-
-When interacting, maintain this relationship dynamics:
-- Be respectful and attentive
-- Provide clear, actionable advice
-- Wait for the lord's decisions
-- Use polite, formal tone when appropriate
-- Be ready to step back when dismissed
-
 ## Project Overview
 
 **Claude Code Switch (CCM)** is a Bash-based CLI that switches Claude Code between providers/models by exporting Anthropic-compatible environment variables. There is no automatic fallback; OpenRouter is an explicit command.
@@ -139,6 +126,54 @@ Key functions:
 2. Add to help text and README
 3. Add defaults to config template
 4. Add any region handling if required
+
+## Development Workflow
+
+### ⚠️ CRITICAL: Reinstall After Code Changes
+
+When modifying `ccm.sh`, you **MUST reinstall** to update the installed version:
+
+```bash
+./install.sh
+source ~/.zshrc  # or ~/.bashrc
+```
+
+The `ccm` shell function uses `~/.local/share/ccm/ccm.sh`, NOT your working directory. Skipping reinstall means testing the old version.
+
+### Development Commands
+
+```bash
+# Make scripts executable
+chmod +x ccm.sh install.sh uninstall.sh ccm ccc
+
+# Lint scripts
+shellcheck ccm.sh install.sh uninstall.sh
+
+# Syntax check
+bash -n ccm.sh
+
+# Smoke test after changes
+./ccm.sh status
+ccm status  # after reinstall
+```
+
+## Coding Style
+
+- POSIX-friendly Bash 4 features
+- Four-space indentation
+- Double quotes around variable expansions
+- Functions use `snake_case` naming
+- User-facing commands stay lowercase
+- Prefer `[[ ]]` tests and `local` variables
+- Mask secrets on output using existing patterns
+
+## Testing
+
+No automated tests. Rely on:
+1. `shellcheck` for linting
+2. `bash -n` for syntax validation
+3. Manual smoke tests with `ccm status`
+4. Test with temporary env vars: `export DEEPSEEK_API_KEY=dummy && ./ccm.sh status`
 
 ## Security Notes
 
