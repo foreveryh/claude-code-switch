@@ -156,7 +156,7 @@ ccc                    # 显示 ccc 用法（无参数）
 | | | china | `open.bigmodel.cn/api/anthropic` |
 | DeepSeek | `ccm deepseek` | - | `api.deepseek.com/anthropic` |
 | Kimi | `ccm kimi [global\|china]` | global（默认） | `api.moonshot.ai/anthropic` |
-| | | china | `api.moonshot.cn/anthropic` |
+| | | china | `api.kimi.com/coding` |
 | Qwen | `ccm qwen [global\|china]` | global（默认） | `coding-intl.dashscope.aliyuncs.com/apps/anthropic` |
 | | | china | `coding.dashscope.aliyuncs.com/apps/anthropic` |
 | MiniMax | `ccm minimax [global\|china]` | global（默认） | `api.minimax.io/anthropic` |

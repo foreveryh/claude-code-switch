@@ -615,7 +615,7 @@ get_provider_config() {
                     config_model="${KIMI_MODEL:-kimi-k2.5}"
                     ;;
                 "china")
-                    config_base_url="https://api.moonshot.cn/anthropic"
+                    config_base_url="https://api.kimi.com/coding"
                     config_model="${KIMI_CN_MODEL:-kimi-k2.5}"
                     ;;
             esac
@@ -1626,7 +1626,7 @@ switch_to_kimi_cn() {
         return 1
     fi
     # 国内 Kimi 端点
-    export ANTHROPIC_BASE_URL="https://api.moonshot.cn/anthropic"
+    export ANTHROPIC_BASE_URL="https://api.kimi.com/coding"
     export ANTHROPIC_AUTH_TOKEN="$KIMI_API_KEY"
     export ANTHROPIC_MODEL="kimi-k2.5"
     export ANTHROPIC_DEFAULT_SONNET_MODEL="kimi-k2.5"
@@ -1814,7 +1814,7 @@ show_help() {
     echo ""
     echo -e "${YELLOW}支持的模型:${NC}"
     echo "  🌙 KIMI Global          - kimi-k2.5 (api.moonshot.ai/anthropic)"
-    echo "  🌕 KIMI China           - kimi-k2.5 (api.moonshot.cn/anthropic)"
+    echo "  🌕 KIMI China           - kimi-k2.5 (api.kimi.com/coding)"
     echo "  🤖 Deepseek             - deepseek-chat (api.deepseek.com/anthropic)"
     echo "  🌰 豆包 Seed-Code       - ark-code-latest (ark.cn-beijing.volces.com/api/coding)"
     echo "  ⚡ StepFun              - step-3.5-flash (api.stepfun.ai)"
@@ -2110,7 +2110,7 @@ emit_env_exports() {
                 kimi_base_url="https://api.moonshot.ai/anthropic"
                 kimi_model="${KIMI_MODEL:-kimi-k2.5}"
             else
-                kimi_base_url="https://api.moonshot.cn/anthropic"
+                kimi_base_url="https://api.kimi.com/coding"
                 kimi_model="${KIMI_CN_MODEL:-kimi-k2.5}"
             fi
             echo "$prelude"
