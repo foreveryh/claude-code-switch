@@ -156,7 +156,7 @@ ccc                    # Show ccc usage (no args)
 | | | china | `open.bigmodel.cn/api/anthropic` |
 | DeepSeek | `ccm deepseek` | - | `api.deepseek.com/anthropic` |
 | Kimi | `ccm kimi [global\|china]` | global (default) | `api.moonshot.ai/anthropic` |
-| | | china | `api.moonshot.cn/anthropic` |
+| | | china | `api.kimi.com/coding` |
 | Qwen | `ccm qwen [global\|china]` | global (default) | `coding-intl.dashscope.aliyuncs.com/apps/anthropic` |
 | | | china | `coding.dashscope.aliyuncs.com/apps/anthropic` |
 | MiniMax | `ccm minimax [global\|china]` | global (default) | `api.minimax.io/anthropic` |
