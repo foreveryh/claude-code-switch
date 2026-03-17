@@ -14,7 +14,6 @@ from rich.console import Console
 
 from ccm.core.config import Config, is_effectively_set, load_config
 from ccm.core.providers import ProviderConfig, get_provider, normalize_region
-from ccm.i18n import t
 
 console = Console(stderr=True)
 

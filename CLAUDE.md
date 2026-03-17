@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Claude Code Switch (CCM)** is a Bash-based CLI that switches Claude Code between providers/models by exporting Anthropic-compatible environment variables. There is no automatic fallback; OpenRouter is an explicit command.
+**Claude Code Switch (CCM)** is a Python CLI that switches Claude Code between providers/models by exporting Anthropic-compatible environment variables. There is no automatic fallback; OpenRouter is an explicit command.
 
 **Supported Providers (direct):** Claude (official), DeepSeek, Moonshot Kimi, Zhipu GLM, Alibaba Qwen (Coding Plan), MiniMax, Doubao/Seed (ARK)
 
@@ -14,25 +14,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 Claude-Code-Switch/
-├── ccm.sh              # Core script
-├── install.sh          # Installer (rc injection optional)
-├── uninstall.sh        # Uninstaller
-├── ccm                 # Wrapper script (delegates to ccm.sh)
-├── ccc                 # Launcher script (switch + exec claude)
-├── lang/               # i18n strings (en.json, zh.json)
-├── docs/               # Internal docs
+├── src/ccm/
+│   ├── cli/              # CLI entry points (main.py, launcher.py)
+│   ├── core/             # Core logic (config, exports, providers)
+│   ├── settings/         # Project/user settings management
+│   ├── shell/            # Shell integration (rc injection, wrappers)
+│   └── providers/        # Provider configurations
+├── tests/                # Unit and integration tests
+├── docs/                 # Internal docs
 └── README.md / README_CN.md / TROUBLESHOOTING.md / CHANGELOG.md
 ```
 
 ## Key Architecture & Design Patterns
 
-### 1) Two usage modes
-- **Direct execution:** `./ccm ...` / `./ccc ...` (no install)
-- **Installed functions:** `ccm ...` / `ccc ...` (after `./install.sh`)
-  - Installer copies `ccm.sh` + `lang/` into `${XDG_DATA_HOME:-$HOME/.local/share}/ccm`
-  - Optional rc injection for `ccm()` / `ccc()` functions
-
-### 2) Configuration hierarchy
+### 1) Configuration hierarchy
 Priority order:
 1. Environment variables
 2. `~/.ccm_config` (created on first run)
@@ -40,8 +35,8 @@ Priority order:
 
 Key function: `is_effectively_set()` treats placeholder values as unset.
 
-### 3) Environment export pattern
-`emit_env_exports()` prints export statements which are `eval`'d by the caller:
+### 2) Environment export pattern
+`ShellExportGenerator.generate_for_provider()` returns export statements which are `eval`'d by the caller:
 ```bash
 export ANTHROPIC_BASE_URL=...
 export ANTHROPIC_AUTH_TOKEN=...
@@ -52,7 +47,7 @@ export ANTHROPIC_DEFAULT_HAIKU_MODEL=...
 export CLAUDE_CODE_SUBAGENT_MODEL=...
 ```
 
-### 4) Region-aware providers
+### 3) Region-aware providers
 Kimi / GLM / Qwen / MiniMax accept `global|china`:
 - `ccm kimi [global|china]`
 - `ccm glm [global|china]`
@@ -61,30 +56,35 @@ Kimi / GLM / Qwen / MiniMax accept `global|china`:
 
 Normalization handled by `normalize_region()`.
 
-### 5) OpenRouter (explicit)
+### 4) OpenRouter (explicit)
 OpenRouter is not a fallback. Use:
 - `ccm open <provider>`
 
-`emit_openrouter_exports()` sets:
+OpenRouter exports set:
 - Base URL: `https://openrouter.ai/api`
 - `ANTHROPIC_AUTH_TOKEN=$OPENROUTER_API_KEY`
 - `ANTHROPIC_API_KEY=""` (avoid conflicts)
 
-### 6) Project-only override (Quotio-friendly)
-`ccm project glm [global|china]` writes `.claude/settings.local.json` so GLM applies only to the current project.
+### 5) Project-only override
+`ccm project glm [global|china]` writes `.claude/settings.local.json` so the provider applies only to the current project.
 
 ## Common Commands & Workflows
 
-### Installation
+### Install (Python version)
 ```bash
-./install.sh
-source ~/.zshrc
+# Using uv (recommended)
+uv tool install git+https://github.com/foreveryh/claude-code-switch.git
+
+# Or from source
+git clone https://github.com/foreveryh/claude-code-switch.git
+cd claude-code-switch
+uv tool install .
 ```
 
 ### Switch in current shell
 ```bash
-ccm deepseek
-ccm kimi china
+eval "$(ccm deepseek)"
+eval "$(ccm kimi china)"
 ```
 
 ### Launch Claude Code
@@ -100,80 +100,62 @@ ccm seed kimi         # kimi-k2.5
 ccm seed deepseek     # deepseek-v3.2
 ```
 
-### Account management (Claude Pro)
-```bash
-ccm save-account work
-ccm switch-account work
-ccm list-accounts
-ccm delete-account work
-ccm current-account
-```
+## Code Organization
 
-## Code Organization in ccm.sh
-
-Key functions:
-- `load_translations()` / `load_config()` / `is_effectively_set()`
-- `emit_env_exports()` (provider switching)
-- `emit_openrouter_exports()` (OpenRouter)
-- `normalize_region()`
-- `project_write_glm_settings()` / `project_reset_settings()`
-- `show_status()` / `show_help()`
-- `main()` (command routing)
+Key modules:
+- `src/ccm/cli/main.py` - Typer CLI commands
+- `src/ccm/cli/launcher.py` - `ccc` launcher logic
+- `src/ccm/core/config.py` - Configuration loading
+- `src/ccm/core/exports.py` - Shell export generation
+- `src/ccm/core/providers.py` - Provider definitions
+- `src/ccm/settings/project.py` - Project-level settings
+- `src/ccm/settings/user.py` - User-level settings
 
 ## Adding a New Provider
 
-1. Add provider branch to `emit_env_exports()`
-2. Add to help text and README
-3. Add defaults to config template
-4. Add any region handling if required
+1. Add provider config to `PROVIDERS` dict in `src/ccm/core/providers.py`
+2. Add to help text in `src/ccm/cli/main.py`
+3. Add to README.md and README_CN.md
 
 ## Development Workflow
-
-### ⚠️ CRITICAL: Reinstall After Code Changes
-
-When modifying `ccm.sh`, you **MUST reinstall** to update the installed version:
-
-```bash
-./install.sh
-source ~/.zshrc  # or ~/.bashrc
-```
-
-The `ccm` shell function uses `~/.local/share/ccm/ccm.sh`, NOT your working directory. Skipping reinstall means testing the old version.
 
 ### Development Commands
 
 ```bash
-# Make scripts executable
-chmod +x ccm.sh install.sh uninstall.sh ccm ccc
+# Run tests
+uv run pytest tests/ -v
 
-# Lint scripts
-shellcheck ccm.sh install.sh uninstall.sh
+# Run CLI directly
+uv run ccm --help
+uv run ccm status
 
-# Syntax check
-bash -n ccm.sh
+# Type checking
+uv run mypy src/
 
-# Smoke test after changes
-./ccm.sh status
-ccm status  # after reinstall
+# Linting
+uv run ruff check src/
 ```
 
 ## Coding Style
 
-- POSIX-friendly Bash 4 features
-- Four-space indentation
-- Double quotes around variable expansions
+- Python 3.12+ with type hints
+- Use Pydantic for data validation
+- Typer for CLI, Rich for output
 - Functions use `snake_case` naming
-- User-facing commands stay lowercase
-- Prefer `[[ ]]` tests and `local` variables
-- Mask secrets on output using existing patterns
+- Mask secrets on output using `mask_token()` pattern
 
 ## Testing
 
-No automated tests. Rely on:
-1. `shellcheck` for linting
-2. `bash -n` for syntax validation
-3. Manual smoke tests with `ccm status`
-4. Test with temporary env vars: `export DEEPSEEK_API_KEY=dummy && ./ccm.sh status`
+```bash
+# Run all tests
+uv run pytest tests/ -v
+
+# Run specific test file
+uv run pytest tests/unit/test_exports.py -v
+
+# Run with coverage
+uv run pytest tests/ --cov=src/ccm
+```
 
 ## Security Notes
 

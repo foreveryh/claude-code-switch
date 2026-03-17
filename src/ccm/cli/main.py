@@ -16,7 +16,6 @@ from ccm.core.providers import (
     get_provider,
     normalize_region,
 )
-from ccm.i18n import t
 
 app = typer.Typer(
     name="ccm",
@@ -68,23 +67,20 @@ def help_cmd():
 
 def show_help():
     """Display help information."""
-    config = _get_config()
-    lang = config.ccm_language
-
     console.print(
         Panel.fit(
-            f"[bold blue]{t('switching_info')}[/bold blue]",
+            "[bold blue]Claude Code Model Switcher[/bold blue]",
             border_style="blue",
         )
     )
     console.print()
 
     # Usage
-    console.print(f"[bold]{t('usage')}:[/bold] ccm <command> [options]")
+    console.print("[bold]Usage:[/bold] ccm <command> [options]")
     console.print()
 
     # Model options
-    console.print(f"[bold]{t('model_options')}:[/bold]")
+    console.print("[bold]Model options (equivalent to env, outputs export statements for eval):[/bold]")
     console.print("  ccm deepseek            # DeepSeek")
     console.print("  ccm kimi [global|china] # Kimi (Moonshot AI)")
     console.print("  ccm glm [global|china]  # Zhipu GLM")
@@ -97,19 +93,10 @@ def show_help():
     console.print()
 
     # Tool options
-    console.print(f"[bold]{t('tool_options')}:[/bold]")
+    console.print("[bold]Tool options:[/bold]")
     console.print("  ccm status              # Show current configuration")
     console.print("  ccm config              # Edit configuration file")
     console.print("  ccm help                # Show this help")
-    console.print()
-
-    # Account management
-    console.print("[bold]Account management (Claude Pro):[/bold]")
-    console.print("  ccm save-account <name> # Save current account")
-    console.print("  ccm switch-account <name> # Switch to saved account")
-    console.print("  ccm list-accounts       # List saved accounts")
-    console.print("  ccm delete-account <name> # Delete saved account")
-    console.print("  ccm current-account     # Show current account")
     console.print()
 
     # Settings
@@ -119,8 +106,8 @@ def show_help():
     console.print()
 
     # Examples
-    console.print(f"[bold]{t('examples')}:[/bold]")
-    console.print("  eval \"$(ccm deepseek)\"  # Switch to DeepSeek")
+    console.print("[bold]Examples:[/bold]")
+    console.print('  eval "$(ccm deepseek)"  # Switch to DeepSeek')
     console.print("  ccc glm global           # Switch + launch Claude Code")
     console.print()
 
@@ -201,10 +188,10 @@ def status_cmd():
 def show_status(config: Config):
     """Display current configuration status."""
     console.print()
-    console.print(Panel(f"[bold]{t('current_model_config')}[/bold]", border_style="blue"))
+    console.print(Panel("[bold]Current model configuration[/bold]", border_style="blue"))
 
     # Environment variables status
-    table = Table(title=t("env_vars_status"), show_header=True, header_style="bold")
+    table = Table(title="Environment variables status", show_header=True, header_style="bold")
     table.add_column("Variable", style="cyan")
     table.add_column("Status", style="green")
 
@@ -229,16 +216,16 @@ def show_status(config: Config):
         if config_key:
             config_value = config.get(config_key)
             if is_effectively_set(value):
-                status = f"[green]{t('set')}[/green] {mask_token(value)}"
+                status = f"[green]Set[/green] {mask_token(value)}"
             elif is_effectively_set(config_value):
-                status = f"[green]{t('set')}[/green] (from config) {mask_token(config_value)}"
+                status = f"[green]Set[/green] (from config) {mask_token(config_value)}"
             else:
-                status = f"[red]{t('not_set')}[/red]"
+                status = "[red]Not set[/red]"
         else:
             if is_effectively_set(value):
-                status = f"[green]{t('set')}[/green] {value}"
+                status = f"[green]Set[/green] {value}"
             else:
-                status = f"[red]{t('not_set')}[/red]"
+                status = "[red]Not set[/red]"
 
         table.add_row(var_name, status)
 
@@ -250,9 +237,9 @@ def show_status(config: Config):
 
     config_path = os.path.expanduser("~/.ccm_config")
     if os.path.exists(config_path):
-        console.print(f"[blue]{t('config_file_path')}:[/blue] {config_path}")
+        console.print(f"[blue]Configuration file path:[/blue] {config_path}")
     else:
-        console.print(f"[yellow]{t('config_file_path')}: {t('not_configured')}[/yellow]")
+        console.print("[yellow]Configuration file path: not configured[/yellow]")
 
     console.print()
 
@@ -279,8 +266,8 @@ def config_cmd():
         with open(config_path, "w", encoding="utf-8") as f:
             f.write(create_default_config())
         os.chmod(config_path, 0o600)
-        console.print(f"[green]{t('config_created')}: {config_path}[/green]")
-        console.print(f"[yellow]{t('edit_file_to_add_keys')}[/yellow]")
+        console.print(f"[green]Configuration file created: {config_path}[/green]")
+        console.print("[yellow]Please edit this file to add your API keys[/yellow]")
 
     # Find editor
     editors = [
@@ -294,151 +281,14 @@ def config_cmd():
     for editor, name in editors:
         if editor:
             try:
-                console.print(f"[blue]{t('opening_config_file')}...[/blue]")
+                console.print("[blue]Opening configuration file for editing...[/blue]")
                 subprocess.run([editor, config_path])
                 return
             except FileNotFoundError:
                 continue
 
-    console.print(f"[red]{t('no_editor_found')}[/red]")
-    console.print(f"[yellow]{t('edit_manually')}: {config_path}[/yellow]")
-
-
-# Account management commands
-@app.command("save-account")
-def save_account_cmd(
-    name: str = typer.Argument(..., help="Account name"),
-):
-    """Save current Claude Pro account."""
-    from ccm.core.accounts import save_account
-    from ccm.core.keychain import has_current_credentials
-
-    if not has_current_credentials():
-        console.print(f"[red]❌ {t('no_credentials_found')}[/red]")
-        console.print(f"[yellow]{t('please_login_first')}[/yellow]")
-        raise typer.Exit(1)
-
-    account = save_account(name)
-    if account:
-        console.print(f"[green]✅ {t('account_saved')}: {name}[/green]")
-        if account.credentials.subscription_type:
-            console.print(f"[blue]   {t('subscription_type')}: {account.credentials.subscription_type}[/blue]")
-    else:
-        console.print(f"[red]❌ {t('failed_to_switch_account')}[/red]")
-        raise typer.Exit(1)
-
-
-@app.command("switch-account")
-def switch_account_cmd(
-    name: str = typer.Argument(..., help="Account name"),
-):
-    """Switch to a saved Claude Pro account."""
-    from ccm.core.accounts import get_manager
-
-    manager = get_manager()
-    account = manager.get_account(name)
-
-    if not account:
-        console.print(f"[red]❌ {t('account_not_found')}: {name}[/red]")
-        console.print(f"[yellow]{t('use_list_accounts')}[/yellow]")
-        raise typer.Exit(1)
-
-    # Switch to the account
-    switched = manager.switch_account(name)
-    if switched:
-        console.print(f"[green]✅ {t('account_switched')}: {name}[/green]")
-        console.print(f"[yellow]{t('please_restart_claude_code')}[/yellow]")
-    else:
-        console.print(f"[red]❌ {t('failed_to_switch_account')}[/red]")
-        raise typer.Exit(1)
-
-
-@app.command("list-accounts")
-def list_accounts_cmd():
-    """List saved Claude Pro accounts."""
-    from ccm.core.accounts import get_current_account_name, has_accounts, list_accounts
-
-    if not has_accounts():
-        console.print(f"[yellow]{t('no_accounts_saved')}[/yellow]")
-        console.print(f"[blue]{t('use_save_account')}[/blue]")
-        return
-
-    accounts = list_accounts()
-    current_name = get_current_account_name()
-
-    console.print(f"[bold]{t('saved_accounts')}:[/bold]")
-    console.print()
-
-    table = Table(show_header=True, header_style="bold")
-    table.add_column(t("account_name"), style="cyan")
-    table.add_column(t("subscription_type"), style="green")
-    table.add_column("Status", style="blue")
-
-    for account in accounts:
-        is_current = "✓" if account.name == current_name else ""
-        status = f"[green]{t('active')}[/green]" if is_current else ""
-        sub_type = account.credentials.subscription_type or "-"
-
-        table.add_row(account.name, sub_type, status)
-
-    console.print(table)
-
-
-@app.command("delete-account")
-def delete_account_cmd(
-    name: str = typer.Argument(..., help="Account name"),
-):
-    """Delete a saved Claude Pro account."""
-    from ccm.core.accounts import delete_account, has_accounts
-
-    if not has_accounts():
-        console.print(f"[yellow]{t('no_accounts_saved')}[/yellow]")
-        return
-
-    if delete_account(name):
-        console.print(f"[green]✅ {t('account_deleted')}: {name}[/green]")
-    else:
-        console.print(f"[red]❌ {t('account_not_found')}: {name}[/red]")
-        raise typer.Exit(1)
-
-
-@app.command("current-account")
-def current_account_cmd():
-    """Show current Claude Pro account."""
-    from ccm.core.accounts import get_current_account_name, has_accounts
-    from ccm.core.keychain import has_current_credentials, read_current_credentials
-
-    current_name = get_current_account_name()
-
-    if not has_current_credentials():
-        console.print(f"[yellow]{t('no_current_account')}[/yellow]")
-        console.print(f"[blue]{t('please_login_or_switch')}[/blue]")
-        return
-
-    credentials = read_current_credentials()
-
-    console.print(f"[bold]{t('current_account_info')}:[/bold]")
-    console.print()
-
-    if current_name:
-        console.print(f"[cyan]{t('account_name')}:[/cyan] {current_name}")
-
-    if credentials:
-        if credentials.subscription_type:
-            console.print(f"[cyan]{t('subscription_type')}:[/cyan] {credentials.subscription_type}")
-
-        if credentials.expires_at:
-            from datetime import datetime
-            try:
-                expires_dt = datetime.fromtimestamp(credentials.expires_at)
-                console.print(f"[cyan]{t('token_expires')}:[/cyan] {expires_dt.isoformat()}")
-            except (ValueError, TypeError):
-                pass
-
-        # Mask the access token
-        if credentials.access_token:
-            masked = f"{credentials.access_token[:8]}...{credentials.access_token[-4:]}" if len(credentials.access_token) > 12 else "****"
-            console.print(f"[cyan]{t('access_token')}:[/cyan] {masked}")
+    console.print("[red]No available editor found[/red]")
+    console.print(f"[yellow]Please manually edit configuration file: {config_path}[/yellow]")
 
 
 # Settings commands

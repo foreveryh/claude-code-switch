@@ -31,9 +31,6 @@ ccm user reset             # Restore environment variable control
 # Advanced: Project-only override
 ccm project glm china      # GLM for this project only
 
-# Advanced: Multiple Claude Pro accounts
-ccm save-account work      # save current account
-ccm switch-account work    # switch to saved account
 ```
 
 ## 🆕 Python Version (v3.0)
@@ -54,12 +51,10 @@ uv tool install .
 
 ### Python Version Features
 
-- ✅ Modern CLI with Typer/Rich
-- ✅ Type-safe with Pydantic
-- ✅ 72 unit & integration tests
-- ✅ Cross-platform keychain support
-- ✅ Project & user-level settings
-- ✅ i18n (English/Chinese)
+- Modern CLI with Typer/Rich
+- Type-safe with Pydantic
+- 62 unit & integration tests
+- Project & user-level settings
 
 See [Python Version Guide](docs/PYTHON_VERSION.md) for full documentation.
 
@@ -156,7 +151,6 @@ ccc open glm          # Via OpenRouter
 ### Check Status
 ```bash
 ccm status             # Show current model and API key status
-ccm current-account    # Show current Claude Pro account
 ```
 
 ### Update Config
@@ -225,26 +219,6 @@ ccm open sf-free      # StepFun free tier
 
 ## Advanced Features
 
-### Claude Pro Account Management
-Switch between multiple Claude Pro subscriptions:
-
-```bash
-# Save current logged-in account
-ccm save-account work
-
-# Switch to saved account
-ccm switch-account work
-
-# List all saved accounts
-ccm list-accounts
-
-# Show current account
-ccm current-account
-
-# Delete saved account
-ccm delete-account work
-```
-
 ### User-Level Settings (Highest Priority)
 Write settings directly to `~/.claude/settings.json`. This overrides everything including environment variables and is useful when you have other tools (like Quotio) that also modify this file.
 
@@ -276,12 +250,6 @@ ccm project reset         # Remove project override
 
 This creates/removes `.claude/settings.local.json` in the current project.
 
-### Launch with Account
-```bash
-ccc work                  # Switch to 'work' account, then launch
-ccc claude:personal       # Switch to 'personal' account + use Claude
-```
-
 ---
 
 ## Configuration
@@ -299,9 +267,6 @@ ccc claude:personal       # Switch to 'personal' account + use Claude
 
 ### Full Config Example
 ```bash
-# Language (en or zh)
-CCM_LANGUAGE=en
-
 # API Keys (required for each provider)
 DEEPSEEK_API_KEY=sk-...
 KIMI_API_KEY=...

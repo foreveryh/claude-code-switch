@@ -30,10 +30,6 @@ ccm user reset           # 恢复环境变量控制
 
 # 进阶：项目级覆盖
 ccm project glm china    # 仅此项目使用 GLM
-
-# 进阶：多个 Claude Pro 账号
-ccm save-account work    # 保存当前账号
-ccm switch-account work  # 切换到已保存账号
 ```
 
 ---
@@ -129,7 +125,6 @@ ccc open glm          # 通过 OpenRouter
 ### 查看状态
 ```bash
 ccm status             # 显示当前模型和 API Key 状态
-ccm current-account    # 显示当前 Claude Pro 账号
 ```
 
 ### 更新配置
@@ -189,26 +184,6 @@ ccm open deepseek     # 通过 OpenRouter 使用 DeepSeek
 
 ## 进阶功能
 
-### Claude Pro 多账号管理
-在多个 Claude Pro 订阅之间切换：
-
-```bash
-# 保存当前登录的账号
-ccm save-account work
-
-# 切换到已保存的账号
-ccm switch-account work
-
-# 列出所有已保存的账号
-ccm list-accounts
-
-# 显示当前账号
-ccm current-account
-
-# 删除已保存的账号
-ccm delete-account work
-```
-
 ### 用户级设置（最高优先级）
 直接写入 `~/.claude/settings.json`。这会覆盖一切，包括环境变量。当你有其他工具（如 Quotio）也在修改这个文件时特别有用。
 
@@ -240,12 +215,6 @@ ccm project reset         # 移除项目覆盖
 
 这会在当前项目创建/删除 `.claude/settings.local.json`。
 
-### 指定账号启动
-```bash
-ccc work                  # 切换到 'work' 账号，然后启动
-ccc claude:personal       # 切换到 'personal' 账号 + 使用 Claude
-```
-
 ---
 
 ## 配置
@@ -263,9 +232,6 @@ ccc claude:personal       # 切换到 'personal' 账号 + 使用 Claude
 
 ### 完整配置示例
 ```bash
-# 语言（en 或 zh）
-CCM_LANGUAGE=zh
-
 # API Keys（每个提供商需要对应的密钥）
 DEEPSEEK_API_KEY=sk-...
 KIMI_API_KEY=...
