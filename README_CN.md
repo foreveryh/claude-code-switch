@@ -183,7 +183,15 @@ ccm open              # 显示帮助
 ccm open glm          # 通过 OpenRouter 使用 GLM
 ccm open claude       # 通过 OpenRouter 使用 Claude
 ccm open deepseek     # 通过 OpenRouter 使用 DeepSeek
+
+# 动态模型支持 (v2.5.0+)
+ccm open google/gemini-2.0-flash-001  # 使用任何 OpenRouter 模型 ID
+ccc anthropic/claude-3.5-sonnet       # 直接通过完整 ID 启动
 ```
+
+**支持的短语:** `claude`, `glm`, `kimi`, `deepseek`, `qwen`, `minimax`, `stepfun`
+
+**动态支持:** 支持任何 OpenRouter 完整模型 ID (如 `provider/model-name`)。
 
 ---
 
@@ -340,6 +348,11 @@ cd claude-code-switch
 ---
 
 ## 更新日志
+
+### v2.5.0 (2026-03)
+- **OpenRouter 动态模型** - 支持任何 `provider/model` ID，无需硬编码。
+- **改进的 Shell 集成** - 通过 `ccm_source.sh` 进行干净的模块化加载。
+- **增强型 `ccc`** - 支持通过完整 ID 直接启动 (如 `ccc google/gemini-2.0-flash-001`)。
 
 ### v2.4.0 (2025-02)
 - **`ccm user` 命令** - 直接写入 `~/.claude/settings.json`（最高优先级）

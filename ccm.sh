@@ -1984,69 +1984,84 @@ emit_openrouter_exports() {
     local default_opus=""
     local default_haiku=""
 
-    case "$provider" in
-        "claude"|"anthropic"|"default")
-            model="anthropic/claude-sonnet-4.5"
-            small="anthropic/claude-haiku-4.5"
-            default_sonnet="anthropic/claude-sonnet-4.5"
-            default_opus="anthropic/claude-opus-4.6"
-            default_haiku="anthropic/claude-haiku-4.5"
-            ;;
-        "kimi")
-            model="moonshotai/kimi-k2.5"
-            small="moonshotai/kimi-k2.5"
-            default_sonnet="$model"
-            default_opus="$model"
-            default_haiku="$model"
-            ;;
-        "deepseek"|"ds")
-            model="deepseek/deepseek-v3.2"
-            small="deepseek/deepseek-v3.2"
-            default_sonnet="$model"
-            default_opus="$model"
-            default_haiku="$model"
-            ;;
-        "glm"|"glm5")
-            model="z-ai/glm-5"
-            small="z-ai/glm-5"
-            default_sonnet="$model"
-            default_opus="$model"
-            default_haiku="$model"
-            ;;
-        "qwen")
-            model="qwen/qwen3-coder-next"
-            small="qwen/qwen3-coder-next"
-            default_sonnet="qwen/qwen3-coder-next"
-            default_opus="qwen/qwen3-coder-plus"
-            default_haiku="qwen/qwen3-coder-next"
-            ;;
-        "minimax"|"mm")
-            model="minimax/minimax-m2.5"
-            small="minimax/minimax-m2.5"
-            default_sonnet="$model"
-            default_opus="$model"
-            default_haiku="$model"
-            ;;
-        "stepfun"|"sf")
-            model="stepfun/step-3.5-flash"
-            small="stepfun/step-3.5-flash"
-            default_sonnet="$model"
-            default_opus="$model"
-            default_haiku="$model"
-            ;;
-        "stepfun-free"|"sf-free")
-            model="stepfun/step-3.5-flash:free"
-            small="stepfun/step-3.5-flash:free"
-            default_sonnet="$model"
-            default_opus="$model"
-            default_haiku="$model"
-            ;;
-        *)
-            echo -e "${RED}❌ $(t 'unknown_option'): open $provider${NC}" >&2
-            show_open_help >&2
-            return 1
-            ;;
-    esac
+    # If provider contains '/', assume it's a full OpenRouter model ID
+    # 如果 provider 包含 '/', 假定它是 OpenRouter 的完整模型 ID
+    if [[ "$provider" == *"/"* ]]; then
+        model="$provider"
+        small="$provider"
+        default_sonnet="$provider"
+        default_opus="$provider"
+        default_haiku="$provider"
+    else
+        case "$provider" in
+            "claude"|"anthropic"|"default")
+                model="anthropic/claude-sonnet-4.5"
+                small="anthropic/claude-haiku-4.5"
+                default_sonnet="anthropic/claude-sonnet-4.5"
+                default_opus="anthropic/claude-opus-4.6"
+                default_haiku="anthropic/claude-haiku-4.5"
+                ;;
+            "kimi")
+                model="moonshotai/kimi-k2.5"
+                small="moonshotai/kimi-k2.5"
+                default_sonnet="$model"
+                default_opus="$model"
+                default_haiku="$model"
+                ;;
+            "deepseek"|"ds")
+                model="deepseek/deepseek-v3.2"
+                small="deepseek/deepseek-v3.2"
+                default_sonnet="$model"
+                default_opus="$model"
+                default_haiku="$model"
+                ;;
+            "glm"|"glm5")
+                model="z-ai/glm-5"
+                small="z-ai/glm-5"
+                default_sonnet="$model"
+                default_opus="$model"
+                default_haiku="$model"
+                ;;
+            "qwen")
+                model="qwen/qwen3-coder-next"
+                small="qwen/qwen3-coder-next"
+                default_sonnet="qwen/qwen3-coder-next"
+                default_opus="qwen/qwen3-coder-plus"
+                default_haiku="qwen/qwen3-coder-next"
+                ;;
+            "minimax"|"mm")
+                model="minimax/minimax-m2.5"
+                small="minimax/minimax-m2.5"
+                default_sonnet="$model"
+                default_opus="$model"
+                default_haiku="$model"
+                ;;
+            "stepfun"|"sf")
+                model="stepfun/step-3.5-flash"
+                small="stepfun/step-3.5-flash"
+                default_sonnet="$model"
+                default_opus="$model"
+                default_haiku="$model"
+                ;;
+            "stepfun-free"|"sf-free")
+                model="stepfun/step-3.5-flash:free"
+                small="stepfun/step-3.5-flash:free"
+                default_sonnet="$model"
+                default_opus="$model"
+                default_haiku="$model"
+                ;;
+            *)
+                # If unknown but no '/', allow OpenRouter to try resolving it as simple ID
+                # 如果未知但没有 '/', 允许 OpenRouter 尝试将其解析为简单 ID
+                echo -e "${YELLOW}⚠️  Unknown provider, using as literal model ID: $provider${NC}" >&2
+                model="$provider"
+                small="$provider"
+                default_sonnet="$provider"
+                default_opus="$provider"
+                default_haiku="$provider"
+                ;;
+        esac
+    fi
 
     local prelude="unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL ANTHROPIC_DEFAULT_SONNET_MODEL ANTHROPIC_DEFAULT_OPUS_MODEL ANTHROPIC_DEFAULT_HAIKU_MODEL CLAUDE_CODE_SUBAGENT_MODEL API_TIMEOUT_MS CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
     echo "$prelude"

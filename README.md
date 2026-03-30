@@ -188,11 +188,15 @@ ccm open qwen         # Qwen via OpenRouter
 ccm open minimax      # MiniMax via OpenRouter
 ccm open stepfun      # StepFun via OpenRouter
 ccm open sf-free      # StepFun free tier
+
+# Dynamic model support (v2.5.0+)
+ccm open google/gemini-2.0-flash-001  # Use any OpenRouter model ID
+ccc anthropic/claude-3.5-sonnet       # Launch directly with full ID
 ```
 
-**Available providers:** `claude`, `glm`, `kimi`, `deepseek`, `qwen`, `minimax`, `stepfun`
+**Available shorthands:** `claude`, `glm`, `kimi`, `deepseek`, `qwen`, `minimax`, `stepfun`
 
-**Free tier:** `stepfun-free` or `sf-free` for StepFun's free model
+**Dynamic support:** Use any full model ID from OpenRouter (e.g., `provider/model-name`).
 
 ---
 
@@ -349,6 +353,11 @@ cd claude-code-switch
 ---
 
 ## What's New
+
+### v2.5.0 (2026-03)
+- **Dynamic OpenRouter Models** - Support for any `provider/model` ID without hardcoding.
+- **Improved Shell Integration** - Clean modular loading via `ccm_source.sh`.
+- **Enhanced `ccc`** - Direct launching with full model IDs (e.g., `ccc google/gemini-2.0-flash-001`).
 
 ### v2.4.0 (2025-02)
 - **`ccm user` command** - Write settings directly to `~/.claude/settings.json` (highest priority)
