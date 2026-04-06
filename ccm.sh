@@ -1225,20 +1225,19 @@ EOF
         local oauth_key="${account_name}__oauth"
         local encoded_oauth
         encoded_oauth=$(echo "$oauth_data" | base64_encode_nolinebreak)
-        if grep -q "\"$oauth_key\":" "$ACCOUNTS_FILE" 2>/dev/null; then
-            if [[ "$OS_TYPE" == "macos" ]]; then
-                sed -i '' "s|\"$oauth_key\": *\"[^\"]*\"|\"$oauth_key\": \"$encoded_oauth\"|" "$ACCOUNTS_FILE"
-            else
-                sed -i "s|\"$oauth_key\": *\"[^\"]*\"|\"$oauth_key\": \"$encoded_oauth\"|" "$ACCOUNTS_FILE"
-            fi
-        else
-            local temp_oauth
-            temp_oauth=$(mktemp)
-            sed '$d' "$ACCOUNTS_FILE" | sed '$s/$/,/' > "$temp_oauth"
-            echo "  \"$oauth_key\": \"$encoded_oauth\"" >> "$temp_oauth"
-            echo "}" >> "$temp_oauth"
-            mv "$temp_oauth" "$ACCOUNTS_FILE"
-        fi
+        CCM_OAUTH_KEY="$oauth_key" CCM_ENCODED_OAUTH="$encoded_oauth" CCM_ACCOUNTS_FILE="$ACCOUNTS_FILE" \
+        python3 -c "
+import json, os
+key = os.environ['CCM_OAUTH_KEY']
+encoded = os.environ['CCM_ENCODED_OAUTH']
+path = os.environ['CCM_ACCOUNTS_FILE']
+with open(path, 'r') as f:
+    accounts = json.load(f)
+accounts[key] = encoded
+with open(path, 'w') as f:
+    json.dump(accounts, f, indent=2)
+    f.write('\n')
+" 2>/dev/null || echo -e "   ${YELLOW}⚠️  Could not save display info${NC}"
     fi
 
     chmod 600 "$ACCOUNTS_FILE"
@@ -1303,11 +1302,21 @@ switch_account() {
 
         # Restore oauthAccount to ~/.claude.json for correct display name & org
         local oauth_key="${account_name}__oauth"
-        local encoded_oauth
-        encoded_oauth=$(grep -o "\"$oauth_key\": *\"[^\"]*\"" "$ACCOUNTS_FILE" 2>/dev/null | cut -d'"' -f4)
-        if [[ -n "$encoded_oauth" ]]; then
-            local oauth_data
-            oauth_data=$(echo "$encoded_oauth" | base64_decode)
+        local oauth_data
+        oauth_data=$(CCM_OAUTH_KEY="$oauth_key" CCM_ACCOUNTS_FILE="$ACCOUNTS_FILE" python3 -c "
+import json, os, base64
+key = os.environ['CCM_OAUTH_KEY']
+path = os.environ['CCM_ACCOUNTS_FILE']
+try:
+    with open(path, 'r') as f:
+        accounts = json.load(f)
+    encoded = accounts.get(key, '')
+    if encoded:
+        print(base64.b64decode(encoded).decode())
+except Exception:
+    pass
+" 2>/dev/null)
+        if [[ -n "$oauth_data" ]]; then
             if write_oauth_account "$oauth_data"; then
                 local display_name
                 display_name=$(echo "$oauth_data" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('displayName') or d.get('emailAddress',''))" 2>/dev/null || echo "")
