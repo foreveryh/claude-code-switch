@@ -1108,6 +1108,47 @@ init_accounts_file() {
     fi
 }
 
+# Read oauthAccount JSON from ~/.claude.json
+read_oauth_account() {
+    local claude_json="$HOME/.claude.json"
+    if [[ -f "$claude_json" ]]; then
+        python3 -c "
+import json, sys
+try:
+    d = json.load(open('$claude_json'))
+    oa = d.get('oauthAccount')
+    if oa:
+        print(json.dumps(oa))
+except Exception:
+    pass
+" 2>/dev/null
+    fi
+}
+
+# Write oauthAccount JSON back into ~/.claude.json
+write_oauth_account() {
+    local oauth_json="$1"
+    local claude_json="$HOME/.claude.json"
+    if [[ -f "$claude_json" && -n "$oauth_json" ]]; then
+        local temp_file
+        temp_file=$(mktemp)
+        echo "$oauth_json" > "$temp_file"
+        python3 -c "
+import json
+with open('$claude_json', 'r') as f:
+    d = json.load(f)
+with open('$temp_file', 'r') as f:
+    d['oauthAccount'] = json.load(f)
+with open('$claude_json', 'w') as f:
+    json.dump(d, f, indent=2)
+" 2>/dev/null
+        local result=$?
+        rm -f "$temp_file"
+        return $result
+    fi
+    return 1
+}
+
 # 保存当前账号
 save_account() {
     # 检查是否需要禁用颜色（用于 eval）
@@ -1177,12 +1218,37 @@ EOF
         fi
     fi
 
+    # Also save oauthAccount from ~/.claude.json (display name, org, email)
+    local oauth_data
+    oauth_data=$(read_oauth_account)
+    if [[ -n "$oauth_data" ]]; then
+        local oauth_key="${account_name}__oauth"
+        local encoded_oauth
+        encoded_oauth=$(echo "$oauth_data" | base64_encode_nolinebreak)
+        CCM_OAUTH_KEY="$oauth_key" CCM_ENCODED_OAUTH="$encoded_oauth" CCM_ACCOUNTS_FILE="$ACCOUNTS_FILE" \
+        python3 -c "
+import json, os
+key = os.environ['CCM_OAUTH_KEY']
+encoded = os.environ['CCM_ENCODED_OAUTH']
+path = os.environ['CCM_ACCOUNTS_FILE']
+with open(path, 'r') as f:
+    accounts = json.load(f)
+accounts[key] = encoded
+with open(path, 'w') as f:
+    json.dump(accounts, f, indent=2)
+    f.write('\n')
+" 2>/dev/null || echo -e "   ${YELLOW}⚠️  Could not save display info${NC}"
+    fi
+
     chmod 600 "$ACCOUNTS_FILE"
 
     # 提取订阅类型用于显示
     local subscription_type=$(echo "$credentials" | grep -o '"subscriptionType":"[^"]*"' | cut -d'"' -f4)
+    local display_name
+    display_name=$(echo "$oauth_data" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('displayName') or d.get('emailAddress',''))" 2>/dev/null || echo "")
     echo -e "${GREEN}✅ $(t 'account_saved'): $account_name${NC}"
     echo -e "   $(t 'subscription_type'): ${subscription_type:-Unknown}"
+    [[ -n "$display_name" ]] && echo -e "   Display name: ${display_name}"
 
     rm -f "$temp_file"
 }
@@ -1219,9 +1285,47 @@ switch_account() {
     # 解码凭证
     local credentials=$(echo "$encoded_creds" | base64_decode)
 
+    # Warn if token is already expired
+    local expires
+    expires=$(echo "$credentials" | grep -o '"expiresAt":[0-9]*' | cut -d':' -f2)
+    if [[ -n "$expires" ]]; then
+        local now_ms
+        now_ms=$(python3 -c "import time; print(int(time.time() * 1000))" 2>/dev/null || echo "0")
+        if [[ "$now_ms" != "0" && "$expires" -lt "$now_ms" ]]; then
+            echo -e "${YELLOW}⚠️  Token for '$account_name' is expired — run 'claude login' after switching.${NC}"
+        fi
+    fi
+
     # 写入 Keychain
     if write_keychain_credentials "$credentials"; then
         echo -e "${GREEN}✅ $(t 'account_switched'): $account_name${NC}"
+
+        # Restore oauthAccount to ~/.claude.json for correct display name & org
+        local oauth_key="${account_name}__oauth"
+        local oauth_data
+        oauth_data=$(CCM_OAUTH_KEY="$oauth_key" CCM_ACCOUNTS_FILE="$ACCOUNTS_FILE" python3 -c "
+import json, os, base64
+key = os.environ['CCM_OAUTH_KEY']
+path = os.environ['CCM_ACCOUNTS_FILE']
+try:
+    with open(path, 'r') as f:
+        accounts = json.load(f)
+    encoded = accounts.get(key, '')
+    if encoded:
+        print(base64.b64decode(encoded).decode())
+except Exception:
+    pass
+" 2>/dev/null)
+        if [[ -n "$oauth_data" ]]; then
+            if write_oauth_account "$oauth_data"; then
+                local display_name
+                display_name=$(echo "$oauth_data" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('displayName') or d.get('emailAddress',''))" 2>/dev/null || echo "")
+                [[ -n "$display_name" ]] && echo -e "   ${GREEN}✓ Display name updated: ${display_name}${NC}"
+            else
+                echo -e "   ${YELLOW}⚠️  Could not update display info in ~/.claude.json${NC}"
+            fi
+        fi
+
         echo -e "${YELLOW}⚠️  $(t 'please_restart_claude_code')${NC}"
     else
         echo -e "${RED}❌ $(t 'failed_to_switch_account')${NC}" >&2
