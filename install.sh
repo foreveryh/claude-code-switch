@@ -445,10 +445,6 @@ install_assets() {
       run_cmd "$data_dir" rm -rf "$data_dir/lang"
       run_cmd "$data_dir" cp -R "$SCRIPT_DIR/lang" "$data_dir/lang"
     fi
-    if [[ -d "$SCRIPT_DIR/prompts" ]]; then
-      run_cmd "$data_dir" rm -rf "$data_dir/prompts"
-      run_cmd "$data_dir" cp -R "$SCRIPT_DIR/prompts" "$data_dir/prompts"
-    fi
   else
     log_info "Installing from GitHub..."
     download_from_github "${GITHUB_RAW}/ccm.sh" "$dest_ccm_sh" || {
@@ -458,8 +454,6 @@ install_assets() {
     run_cmd "$data_dir" mkdir -p "$data_dir/lang"
     download_from_github "${GITHUB_RAW}/lang/zh.json" "$data_dir/lang/zh.json" || true
     download_from_github "${GITHUB_RAW}/lang/en.json" "$data_dir/lang/en.json" || true
-    run_cmd "$data_dir" mkdir -p "$data_dir/prompts"
-    download_from_github "${GITHUB_RAW}/prompts/evo-identity.txt" "$data_dir/prompts/evo-identity.txt" || true
   fi
 
   run_cmd "$data_dir" chmod +x "$dest_ccm_sh"
