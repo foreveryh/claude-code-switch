@@ -307,16 +307,62 @@ is_effectively_set() {
     if [[ -z "$v" ]]; then
         return 1
     fi
+    # P0-4.3: reject clearly short strings (no real key is < 16 chars)
+    if (( ${#v} < 16 )); then
+        return 1
+    fi
     local lower
     lower=$(printf '%s' "$v" | tr '[:upper:]' '[:lower:]')
+    # P0-4.3: extended placeholder patterns (no < > [ ] — invalid in case patterns)
     case "$lower" in
-        *your-*-api-key)
+        *your*api*key*|*your*key*here*|*api_key_here*|*enter*key*|\
+        *insert*key*|*add*key*|*put*key*|*replace*key*|*sample*key*|\
+        *placeholder*|*api-key-here*)
             return 1
             ;;
         *)
             return 0
             ;;
     esac
+}
+
+# P0-4.3: Warn (non-fatal) when an API key does not match its provider's known format.
+# This catches copy-paste errors early without blocking legitimate but undocumented formats.
+validate_api_key_format() {
+    local provider="$1"
+    local key="$2"
+
+    [[ -z "$key" ]] && return 0
+
+    local fmt_ok=true
+    case "$provider" in
+        "anthropic"|"claude")
+            # Official Anthropic keys begin with sk-ant-
+            [[ "$key" =~ ^sk-ant- ]] || fmt_ok=false
+            ;;
+        "deepseek")
+            # DeepSeek keys: sk- followed by 32+ alphanumeric chars
+            [[ "$key" =~ ^sk-[a-zA-Z0-9]{32,}$ ]] || fmt_ok=false
+            ;;
+        "openrouter")
+            # OpenRouter keys: sk-or-v1-
+            [[ "$key" =~ ^sk-or-v1- ]] || fmt_ok=false
+            ;;
+        "kimi")
+            # Moonshot/Kimi keys start with sk-
+            [[ "$key" =~ ^sk- ]] || fmt_ok=false
+            ;;
+        # GLM, Qwen, MiniMax, ARK — formats not publicly documented; skip check
+        *)
+            return 0
+            ;;
+    esac
+
+    if ! $fmt_ok; then
+        echo -e "${YELLOW}⚠️  Warning: the $provider API key format looks unexpected.${NC}" >&2
+        echo -e "${YELLOW}   Authentication may fail — check the key in ~/.ccm_config${NC}" >&2
+    fi
+    return 0
 }
 
 # 安全掩码工具
@@ -720,35 +766,49 @@ user_write_settings() {
 
     # Use Python or jq to merge settings if available, otherwise use simple approach
     if command -v python3 >/dev/null 2>&1; then
-        python3 << PYTHON_EOF
+        # P0-4.4: pass all values via env vars — avoids shell interpolation inside Python
+        # which breaks tokens containing single quotes, backslashes, or newlines.
+        CCM_SETTINGS_PATH="$settings_path" \
+        CCM_PROVIDER="$provider" \
+        CCM_REGION="$region" \
+        CCM_BASE_URL="$config_base_url" \
+        CCM_MODEL="$config_model" \
+        CCM_TOKEN="${config_token:-}" \
+        python3 << 'PYTHON_EOF'
 import json
 import os
 
-settings_path = "$settings_path"
-existing = {}
+settings_path = os.environ['CCM_SETTINGS_PATH']
+provider     = os.environ['CCM_PROVIDER']
+region       = os.environ['CCM_REGION']
+base_url     = os.environ['CCM_BASE_URL']
+model        = os.environ['CCM_MODEL']
+token        = os.environ.get('CCM_TOKEN', '')
 
+existing = {}
 if os.path.exists(settings_path):
     try:
         with open(settings_path, 'r') as f:
             existing = json.load(f)
-    except:
+    except Exception:
         existing = {}
 
 # Preserve non-ccm settings but mark as ccm-managed
 existing['ccmManaged'] = True
-existing['ccmProvider'] = '$provider'
-existing['ccmRegion'] = '$region'
+existing['ccmProvider'] = provider
+existing['ccmRegion']   = region
 
 # Set env
 existing['env'] = {
-    'ANTHROPIC_BASE_URL': '$config_base_url',
-    'ANTHROPIC_MODEL': '$config_model',
-    'ANTHROPIC_DEFAULT_SONNET_MODEL': '$config_model',
-    'ANTHROPIC_DEFAULT_OPUS_MODEL': '$config_model',
-    'ANTHROPIC_DEFAULT_HAIKU_MODEL': '$config_model',
-    'CLAUDE_CODE_SUBAGENT_MODEL': '$config_model'
+    'ANTHROPIC_BASE_URL':               base_url,
+    'ANTHROPIC_MODEL':                  model,
+    'ANTHROPIC_DEFAULT_SONNET_MODEL':   model,
+    'ANTHROPIC_DEFAULT_OPUS_MODEL':     model,
+    'ANTHROPIC_DEFAULT_HAIKU_MODEL':    model,
+    'CLAUDE_CODE_SUBAGENT_MODEL':       model,
 }
-$(if [[ -n "$config_token" ]]; then echo "existing['env']['ANTHROPIC_AUTH_TOKEN'] = '$config_token'"; fi)
+if token:
+    existing['env']['ANTHROPIC_AUTH_TOKEN'] = token
 
 with open(settings_path, 'w') as f:
     json.dump(existing, f, indent=2)
@@ -756,7 +816,12 @@ with open(settings_path, 'w') as f:
 os.chmod(settings_path, 0o600)
 PYTHON_EOF
     else
-        # Fallback: write minimal settings (will lose other settings)
+        # Fallback: write minimal settings (will lose other settings).
+        # JSON-escape the token for the heredoc: escape backslash then double-quote.
+        local escaped_token=""
+        if [[ -n "$config_token" ]]; then
+            escaped_token="$(printf '%s' "$config_token" | sed 's/\\/\\\\/g; s/"/\\"/g')"
+        fi
         cat > "$settings_path" <<EOF
 {
   "ccmManaged": true,
@@ -768,8 +833,7 @@ PYTHON_EOF
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "$config_model",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "$config_model",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "$config_model",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "$config_model"$([[ -n "$config_token" ]] && echo ",
-    \"ANTHROPIC_AUTH_TOKEN\": \"$config_token\"")
+    "CLAUDE_CODE_SUBAGENT_MODEL": "$config_model"$([[ -n "$escaped_token" ]] && printf ',\n    "ANTHROPIC_AUTH_TOKEN": "%s"' "$escaped_token")
   }
 }
 EOF
@@ -802,11 +866,11 @@ user_reset_settings() {
 
     # Remove env section and ccm markers using Python or jq
     if command -v python3 >/dev/null 2>&1; then
-        python3 << PYTHON_EOF
+        CCM_SETTINGS_PATH="$settings_path" python3 << 'PYTHON_EOF'
 import json
 import os
 
-settings_path = "$settings_path"
+settings_path = os.environ['CCM_SETTINGS_PATH']
 
 with open(settings_path, 'r') as f:
     data = json.load(f)
@@ -904,7 +968,7 @@ read_linux_credentials() {
     else
         # 降级方案：使用 Python 或 grep（适用于简单情况）
         if command -v python3 >/dev/null 2>&1; then
-            credentials=$(python3 -c "import json; f=open('$CLAUDE_CREDENTIALS_FILE'); d=json.load(f); print(json.dumps(d.get('claudeAiOauth', {})))" 2>/dev/null)
+            credentials=$(CCM_CREDS_FILE="$CLAUDE_CREDENTIALS_FILE" python3 -c "import json,os; d=json.load(open(os.environ['CCM_CREDS_FILE'])); print(json.dumps(d.get('claudeAiOauth', {})))" 2>/dev/null)
         else
             # 最后降级：简单的 grep（可能不完整）
             credentials=$(cat "$CLAUDE_CREDENTIALS_FILE" | grep -o '"claudeAiOauth":{[^}]*}' | sed 's/"claudeAiOauth"://')
@@ -984,7 +1048,7 @@ write_linux_credentials() {
             existing_content=$(cat "$CLAUDE_CREDENTIALS_FILE")
             # 提取 mcpOAuth 部分（如果存在）- 更好的正则表达式
             if command -v python3 >/dev/null 2>&1; then
-                mcp_oauth=$(python3 -c "import json; f=open('$CLAUDE_CREDENTIALS_FILE'); d=json.load(f); print(json.dumps(d.get('mcpOAuth', {})) if d.get('mcpOAuth') else '')" 2>/dev/null)
+                mcp_oauth=$(CCM_CREDS_FILE="$CLAUDE_CREDENTIALS_FILE" python3 -c "import json,os; d=json.load(open(os.environ['CCM_CREDS_FILE'])); print(json.dumps(d.get('mcpOAuth', {})) if d.get('mcpOAuth') else '')" 2>/dev/null)
             fi
         fi
 
@@ -1265,9 +1329,9 @@ list_accounts() {
             echo -e "   - ${YELLOW}$name${NC} (${subscription:-Unknown}${expires_str:+, expires: $expires_str})$is_current"
         done
     elif command -v python3 >/dev/null 2>&1; then
-        python3 -c "
-import json
-with open('$ACCOUNTS_FILE') as f:
+        CCM_ACCOUNTS_FILE="$ACCOUNTS_FILE" python3 -c "
+import json, os
+with open(os.environ['CCM_ACCOUNTS_FILE']) as f:
     data = json.load(f)
     for name, encoded in data.items():
         print(f'{name}|{encoded}')
@@ -1973,6 +2037,7 @@ emit_openrouter_exports() {
         echo -e "${RED}❌ Please configure OPENROUTER_API_KEY${NC}" >&2
         return 1
     fi
+    validate_api_key_format "openrouter" "$OPENROUTER_API_KEY"
     if [[ -z "$provider" ]]; then
         show_open_help >&2
         return 1
@@ -2076,6 +2141,7 @@ emit_env_exports() {
             ;;
         "deepseek"|"ds")
             if is_effectively_set "$DEEPSEEK_API_KEY"; then
+                validate_api_key_format "deepseek" "$DEEPSEEK_API_KEY"
                 echo "$prelude"
                 echo "export ANTHROPIC_BASE_URL='https://api.deepseek.com/anthropic'"
                 echo "if [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
@@ -2094,6 +2160,7 @@ emit_env_exports() {
                 echo -e "${RED}❌ Please configure KIMI_API_KEY${NC}" >&2
                 return 1
             fi
+            validate_api_key_format "kimi" "$KIMI_API_KEY"
             local region_input="$arg"
             if [[ "$target" == "kimi-cn" ]]; then
                 region_input="china"
@@ -2271,6 +2338,7 @@ emit_env_exports() {
             local default_haiku="${HAIKU_MODEL:-claude-haiku-4-5-20251001}"
             echo "export ANTHROPIC_MODEL='${claude_model}'"
             if is_effectively_set "$CLAUDE_API_KEY"; then
+                validate_api_key_format "anthropic" "$CLAUDE_API_KEY"
                 echo "export ANTHROPIC_AUTH_TOKEN=\"\${CLAUDE_API_KEY}\""
             fi
             emit_default_models "$default_sonnet" "$default_opus" "$default_haiku"
