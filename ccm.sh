@@ -1857,6 +1857,13 @@ show_help() {
     echo "  current-account         - Show current account info"
     echo "  claude:account         - Switch account and use Claude (Sonnet)"
     echo ""
+    echo -e "${YELLOW}Keystore — Encrypted API key storage (WSL/Windows):${NC}"
+    echo "  keystore set <KEY_VAR>  - Store key encrypted with Windows DPAPI"
+    echo "  keystore show <KEY_VAR> - Show stored key (masked)"
+    echo "  keystore list           - List all stored key names"
+    echo "  keystore delete <KEY>   - Remove a stored key"
+    echo "  (run 'ccm keystore' for full help and workflow)"
+    echo ""
     echo -e "${YELLOW}$(t 'tool_options'):${NC}"
     echo "  status, st       - $(t 'show_current_config')"
     echo "  env [model]      - $(t 'output_export_only')"
@@ -2682,6 +2689,27 @@ main() {
                 *)
                     echo -e "${RED}❌ $(t 'unknown_option'): user $user_action${NC}" >&2
                     user_show_usage
+                    return 1
+                    ;;
+            esac
+            ;;
+        "keystore"|"ks")
+            shift
+            local ks_action="${1:-}"
+            if ! detect_wsl; then
+                echo -e "${RED}❌ ccm keystore is only available in WSL (Windows).${NC}" >&2
+                echo -e "${YELLOW}   On macOS, credentials are stored in Keychain automatically.${NC}" >&2
+                return 1
+            fi
+            case "$ks_action" in
+                "set")              keystore_set "${2:-}" ;;
+                "show")             keystore_show "${2:-}" ;;
+                "list")             keystore_list ;;
+                "delete"|"del"|"rm") keystore_delete "${2:-}" ;;
+                ""|"help"|"-h"|"--help") keystore_show_usage ;;
+                *)
+                    echo -e "${RED}❌ Unknown keystore action: $ks_action${NC}" >&2
+                    keystore_show_usage
                     return 1
                     ;;
             esac
