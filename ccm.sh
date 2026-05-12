@@ -173,6 +173,12 @@ CLAUDE_API_KEY=your-claude-api-key
 # OpenRouter
 OPENROUTER_API_KEY=your-openrouter-api-key
 
+# SiliconFlow (硅基流动)
+SILICONFLOW_API_KEY=your-siliconflow-api-key
+
+# Xiaomi MiMo (小米)
+MIMO_API_KEY=your-mimo-api-key
+
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-k2.5
@@ -185,6 +191,8 @@ HAIKU_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.5
 SEED_MODEL=ark-code-latest
 STEPFUN_MODEL=step-3.5-flash
+SILICONFLOW_MODEL=Pro/deepseek-ai/DeepSeek-V3.2
+MIMO_MODEL=mimo-v2-flash
 
 EOF
         echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -283,6 +291,12 @@ CLAUDE_API_KEY=your-claude-api-key
 # OpenRouter
 OPENROUTER_API_KEY=your-openrouter-api-key
 
+# SiliconFlow (硅基流动)
+SILICONFLOW_API_KEY=your-siliconflow-api-key
+
+# Xiaomi MiMo (小米)
+MIMO_API_KEY=your-mimo-api-key
+
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-k2.5
@@ -295,6 +309,8 @@ HAIKU_MODEL=claude-haiku-4-5-20251001
 MINIMAX_MODEL=MiniMax-M2.5
 SEED_MODEL=ark-code-latest
 STEPFUN_MODEL=step-3.5-flash
+SILICONFLOW_MODEL=Pro/deepseek-ai/DeepSeek-V3.2
+MIMO_MODEL=mimo-v2-flash
 
 EOF
     echo -e "${YELLOW}⚠️  $(t 'config_created'): $CONFIG_FILE${NC}" >&2
@@ -548,6 +564,8 @@ project_show_usage() {
     echo "  qwen [global|china]   - Qwen" >&2
     echo "  minimax [global|china] - MiniMax" >&2
     echo "  seed                  - Doubao/Seed" >&2
+    echo "  siliconflow, sf       - SiliconFlow (硅基流动)" >&2
+    echo "  mimo, xiaomi          - Xiaomi MiMo (小米)" >&2
     echo "  claude                - Claude (official)" >&2
     echo "" >&2
     echo "Examples:" >&2
@@ -666,6 +684,24 @@ get_provider_config() {
             config_token_var=""  # Uses Claude Pro subscription
             config_model="${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}"
             config_base_url="https://api.anthropic.com/"
+            ;;
+        "siliconflow"|"sf")
+            if ! is_effectively_set "$SILICONFLOW_API_KEY"; then
+                echo -e "${RED}❌ Please configure SILICONFLOW_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="SILICONFLOW_API_KEY"
+            config_model="${SILICONFLOW_MODEL:-Pro/deepseek-ai/DeepSeek-V3.2}"
+            config_base_url="https://api.siliconflow.cn/"
+            ;;
+        "mimo"|"xiaomi")
+            if ! is_effectively_set "$MIMO_API_KEY"; then
+                echo -e "${RED}❌ Please configure MIMO_API_KEY first${NC}" >&2
+                return 1
+            fi
+            config_token_var="MIMO_API_KEY"
+            config_model="${MIMO_MODEL:-mimo-v2-flash}"
+            config_base_url="https://api.xiaomimimo.com/anthropic"
             ;;
         *)
             echo -e "${RED}❌ Unknown provider: $provider${NC}" >&2
@@ -845,6 +881,8 @@ user_show_usage() {
     echo "  qwen [global|china]   - Qwen" >&2
     echo "  minimax [global|china] - MiniMax" >&2
     echo "  seed                  - Doubao/Seed" >&2
+    echo "  siliconflow, sf       - SiliconFlow (硅基流动)" >&2
+    echo "  mimo, xiaomi          - Xiaomi MiMo (小米)" >&2
     echo "  claude                - Claude (official)" >&2
     echo "" >&2
     echo "Examples:" >&2
@@ -1456,6 +1494,8 @@ show_status() {
                         echo "   Provider: $(t 'openrouter_provider_stepfun')"
                         [[ "$ANTHROPIC_MODEL" == *":free" ]] && echo -e "   ${GREEN}🆓 Free Tier${NC}"
                         ;;
+                    *siliconflow*) echo "   Provider: $(t 'openrouter_provider_siliconflow')" ;;
+                    *mimo*|*xiaomi*) echo "   Provider: $(t 'openrouter_provider_mimo')" ;;
                     *claude*|*anthropic*) echo "   Provider: $(t 'openrouter_provider_claude')" ;;
                     *) echo "   Provider: $(t 'openrouter_provider_unknown') ${ANTHROPIC_MODEL})" ;;
                 esac
@@ -1485,6 +1525,8 @@ show_status() {
     echo "   ARK_API_KEY: $(mask_presence ARK_API_KEY)"
     echo "   QWEN_API_KEY: $(mask_presence QWEN_API_KEY)"
     echo "   STEPFUN_API_KEY: $(mask_presence STEPFUN_API_KEY)"
+    echo "   SILICONFLOW_API_KEY: $(mask_presence SILICONFLOW_API_KEY)"
+    echo "   MIMO_API_KEY: $(mask_presence MIMO_API_KEY)"
     echo "   OPENROUTER_API_KEY: $(mask_presence OPENROUTER_API_KEY)"
     echo ""
 }
@@ -1772,18 +1814,20 @@ show_help() {
     echo "  minimax [global|china]  - env minimax (default: global)"
     echo "  seed [doubao|glm|deepseek|kimi] - env 豆包 Seed-Code"
     echo "  stepfun                 - env StepFun"
+    echo "  siliconflow, sf         - env SiliconFlow (硅基流动)"
+    echo "  mimo, xiaomi            - env Xiaomi MiMo (小米)"
     echo "  claude, sonnet, s       - env claude (official)"
     echo "  open <provider>         - env OpenRouter (run 'ccm open' for help)"
     echo ""
     echo -e "${YELLOW}User-level Settings (highest priority):${NC}"
     echo "  user <provider> [region] - write to ~/.claude/settings.json"
     echo "  user reset               - remove ccm settings, restore env var control"
-    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, stepfun, claude"
+    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, stepfun, siliconflow, mimo, claude"
     echo ""
     echo -e "${YELLOW}Project-level Settings:${NC}"
     echo "  project <provider> [region] - write .claude/settings.local.json (project-only)"
     echo "  project reset              - remove project override"
-    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, claude"
+    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, siliconflow, mimo, claude"
     echo ""
     echo -e "${YELLOW}Claude Pro Account Management:${NC}"
     echo "  save-account <name>     - Save current Claude Pro account"
@@ -1805,6 +1849,8 @@ show_help() {
     echo "  eval \"\$(ccm kimi china)\"              # Kimi CN"
     echo "  eval \"\$(ccm qwen global)\"             # Qwen global (Coding Plan)"
     echo "  eval \"\$(ccm seed kimi)\"               # 豆包 Seed-Code (kimi)"
+    echo "  eval \"\$(ccm siliconflow)\"             # SiliconFlow"
+    echo "  eval \"\$(ccm mimo)\"                    # Xiaomi MiMo"
     echo "  eval \"\$(ccm open kimi)\"               # OpenRouter kimi"
     echo ""
     echo "  ccm user glm global    # Set GLM as default (highest priority)"
@@ -1821,6 +1867,8 @@ show_help() {
     echo "  🎯 MiniMax              - MiniMax-M2.5 (api.minimax.io / api.minimaxi.com)"
     echo "  🐪 Qwen                 - qwen3-max-2026-01-23 / qwen3-coder-plus (Coding Plan)"
     echo "  🇨🇳 GLM                 - glm-5 (api.z.ai / open.bigmodel.cn)"
+    echo "  🔮 SiliconFlow          - Pro/deepseek-ai/DeepSeek-V3.2 (api.siliconflow.cn)"
+    echo "  📱 Xiaomi MiMo          - mimo-v2-flash (api.xiaomimimo.com/anthropic)"
     echo "  🧠 Claude Sonnet 4.5    - claude-sonnet-4-5-20250929"
 }
 
@@ -1838,6 +1886,8 @@ ensure_model_override_defaults() {
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
         "OPUS_MODEL=claude-opus-4-6"
         "HAIKU_MODEL=claude-haiku-4-5-20251001"
+        "SILICONFLOW_MODEL=Pro/deepseek-ai/DeepSeek-V3.2"
+        "MIMO_MODEL=mimo-v2-flash"
     )
     local added_header=0
     for pair in "${pairs[@]}"; do
@@ -1953,7 +2003,7 @@ show_open_help() {
     echo "  ccm open <provider>"
     echo ""
     echo -e "${YELLOW}Supported providers:${NC}"
-    echo "  claude (default), deepseek, kimi, glm, qwen, minimax, stepfun"
+    echo "  claude (default), deepseek, kimi, glm, qwen, minimax, stepfun, siliconflow, mimo"
     echo ""
     echo -e "${YELLOW}Free tier:${NC}"
     echo "  stepfun-free (sf-free) - stepfun/step-3.5-flash:free"
@@ -2037,6 +2087,20 @@ emit_openrouter_exports() {
         "stepfun-free"|"sf-free")
             model="stepfun/step-3.5-flash:free"
             small="stepfun/step-3.5-flash:free"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        "siliconflow")
+            model="siliconflow/Pro/deepseek-ai/DeepSeek-V3.2"
+            small="siliconflow/Pro/deepseek-ai/DeepSeek-V3.2"
+            default_sonnet="$model"
+            default_opus="$model"
+            default_haiku="$model"
+            ;;
+        "mimo"|"xiaomi")
+            model="xiaomi/mimo-v2-flash"
+            small="xiaomi/mimo-v2-flash"
             default_sonnet="$model"
             default_opus="$model"
             default_haiku="$model"
@@ -2259,6 +2323,34 @@ emit_env_exports() {
             emit_default_models "$stepfun_model" "$stepfun_model" "$stepfun_model"
             emit_subagent_model "$stepfun_model"
             ;;
+        "siliconflow"|"sf")
+            if ! is_effectively_set "$SILICONFLOW_API_KEY"; then
+                echo -e "${RED}❌ Please configure SILICONFLOW_API_KEY${NC}" >&2
+                return 1
+            fi
+            echo "$prelude"
+            echo "export ANTHROPIC_BASE_URL='https://api.siliconflow.cn/'"
+            echo "if [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${SILICONFLOW_API_KEY}\""
+            local sf_model="${SILICONFLOW_MODEL:-Pro/deepseek-ai/DeepSeek-V3.2}"
+            echo "export ANTHROPIC_MODEL='${sf_model}'"
+            emit_default_models "$sf_model" "$sf_model" "$sf_model"
+            emit_subagent_model "$sf_model"
+            ;;
+        "mimo"|"xiaomi")
+            if ! is_effectively_set "$MIMO_API_KEY"; then
+                echo -e "${RED}❌ Please configure MIMO_API_KEY${NC}" >&2
+                return 1
+            fi
+            echo "$prelude"
+            echo "export ANTHROPIC_BASE_URL='https://api.xiaomimimo.com/anthropic'"
+            echo "if [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${MIMO_API_KEY}\""
+            local mimo_model="${MIMO_MODEL:-mimo-v2-flash}"
+            echo "export ANTHROPIC_MODEL='${mimo_model}'"
+            emit_default_models "$mimo_model" "$mimo_model" "$mimo_model"
+            emit_subagent_model "$mimo_model"
+            ;;
         "claude"|"sonnet"|"s")
             echo "$prelude"
             # 官方 Anthropic 网关
@@ -2277,7 +2369,7 @@ emit_env_exports() {
             emit_subagent_model "$claude_model"
             ;;
         *)
-            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|stepfun|claude|open]" 1>&2
+            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|stepfun|siliconflow|mimo|claude|open]" 1>&2
             return 1
             ;;
     esac
@@ -2359,6 +2451,12 @@ main() {
         "stepfun")
             emit_env_exports stepfun
             ;;
+        "siliconflow"|"sf")
+            emit_env_exports siliconflow
+            ;;
+        "mimo"|"xiaomi")
+            emit_env_exports mimo
+            ;;
         "claude"|"sonnet"|"s")
             emit_env_exports claude
             ;;
@@ -2373,7 +2471,7 @@ main() {
             shift
             local project_action="${1:-}"
             case "$project_action" in
-                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"claude"|"sonnet"|"s")
+                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"siliconflow"|"sf"|"mimo"|"xiaomi"|"claude"|"sonnet"|"s")
                     project_write_settings "$project_action" "${2:-}"
                     ;;
                 "reset")
@@ -2393,7 +2491,7 @@ main() {
             shift
             local user_action="${1:-}"
             case "$user_action" in
-                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"stepfun"|"claude"|"sonnet"|"s")
+                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"stepfun"|"siliconflow"|"sf"|"mimo"|"xiaomi"|"claude"|"sonnet"|"s")
                     user_write_settings "$user_action" "${2:-}"
                     ;;
                 "reset")

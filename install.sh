@@ -480,8 +480,7 @@ fi
 exec "$CCM_SH" "$@"
 EOF
   else
-    local content
-    content="$(cat <<'EOF'
+    IFS= read -r -d '' content <<'EOF' || true
 #!/usr/bin/env bash
 set -euo pipefail
 CCM_SH="__DATA_DIR__/ccm.sh"
@@ -491,7 +490,6 @@ if [[ ! -f "$CCM_SH" ]]; then
 fi
 exec "$CCM_SH" "$@"
 EOF
-)"
     content="${content//__DATA_DIR__/$data_dir}"
     printf '%s\n' "$content" > "$target"
   fi
@@ -630,8 +628,7 @@ else
 fi
 EOF
   else
-    local content
-    content="$(cat <<'EOF'
+    IFS= read -r -d '' content <<'EOF' || true
 #!/usr/bin/env bash
 set -euo pipefail
 CCM="__DATA_DIR__/ccm.sh"
@@ -751,7 +748,6 @@ else
     exec claude "${claude_args[@]}"
 fi
 EOF
-)"
     content="${content//__DATA_DIR__/$data_dir}"
     printf '%s\n' "$content" > "$target"
   fi

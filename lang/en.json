@@ -112,6 +112,8 @@
   "openrouter_provider_minimax": "MiniMax (via OpenRouter)",
   "openrouter_provider_qwen": "Qwen (via OpenRouter)",
   "openrouter_provider_stepfun": "StepFun (via OpenRouter)",
+  "openrouter_provider_siliconflow": "SiliconFlow (via OpenRouter)",
+  "openrouter_provider_mimo": "Xiaomi MiMo (via OpenRouter)",
   "openrouter_provider_claude": "Claude (via OpenRouter)",
   "openrouter_provider_unknown": "Unknown (model:"
 }
