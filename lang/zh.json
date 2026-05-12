@@ -112,6 +112,8 @@
   "openrouter_provider_minimax": "MiniMax (通过 OpenRouter)",
   "openrouter_provider_qwen": "Qwen (通过 OpenRouter)",
   "openrouter_provider_stepfun": "StepFun (通过 OpenRouter)",
+  "openrouter_provider_siliconflow": "SiliconFlow (通过 OpenRouter)",
+  "openrouter_provider_mimo": "小米 MiMo (通过 OpenRouter)",
   "openrouter_provider_claude": "Claude (通过 OpenRouter)",
   "openrouter_provider_unknown": "未知 (模型:"
 }
