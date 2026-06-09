@@ -175,6 +175,7 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_HAIKU_MODEL=deepseek-chat
 KIMI_MODEL=kimi-k2.5
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
@@ -285,6 +286,7 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_HAIKU_MODEL=deepseek-chat
 KIMI_MODEL=kimi-k2.5
 KIMI_CN_MODEL=kimi-k2.5
 QWEN_MODEL=qwen3-max-2026-01-23
@@ -489,7 +491,9 @@ project_write_settings() {
     local config_base_url="${config%%|*}"
     local rest="${config#*|}"
     local config_model="${rest%%|*}"
-    local config_token_var="${rest##*|}"
+    rest="${rest#*|}"
+    local config_token_var="${rest%%|*}"
+    local config_haiku_model="${rest##*|}"
 
     local config_token=""
     if [[ -n "$config_token_var" ]]; then
@@ -521,7 +525,7 @@ project_write_settings() {
     "ANTHROPIC_MODEL": "${config_model}",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "${config_model}",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "${config_model}",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${config_model}",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${config_haiku_model:-$config_model}",
     "CLAUDE_CODE_SUBAGENT_MODEL": "${config_model}"$([[ -n "$config_token" ]] && echo ",
     \"ANTHROPIC_AUTH_TOKEN\": \"$config_token\"")
   }
@@ -601,6 +605,7 @@ get_provider_config() {
             fi
             config_token_var="DEEPSEEK_API_KEY"
             config_model="${DEEPSEEK_MODEL:-deepseek-chat}"
+            config_haiku_model="${DEEPSEEK_HAIKU_MODEL:-${DEEPSEEK_MODEL:-deepseek-chat}}"
             config_base_url="https://api.deepseek.com/anthropic"
             ;;
         "kimi"|"kimi2")
@@ -673,7 +678,7 @@ get_provider_config() {
             ;;
     esac
 
-    echo "${config_base_url}|${config_model}|${config_token_var}"
+    echo "${config_base_url}|${config_model}|${config_token_var}|${config_haiku_model:-$config_model}"
 }
 
 user_write_settings() {
@@ -697,7 +702,9 @@ user_write_settings() {
     local config_base_url="${config%%|*}"
     local rest="${config#*|}"
     local config_model="${rest%%|*}"
-    local config_token_var="${rest##*|}"
+    rest="${rest#*|}"
+    local config_token_var="${rest%%|*}"
+    local config_haiku_model="${rest##*|}"
 
     local config_token=""
     if [[ -n "$config_token_var" ]]; then
@@ -745,7 +752,7 @@ existing['env'] = {
     'ANTHROPIC_MODEL': '$config_model',
     'ANTHROPIC_DEFAULT_SONNET_MODEL': '$config_model',
     'ANTHROPIC_DEFAULT_OPUS_MODEL': '$config_model',
-    'ANTHROPIC_DEFAULT_HAIKU_MODEL': '$config_model',
+    'ANTHROPIC_DEFAULT_HAIKU_MODEL': '${config_haiku_model:-$config_model}',
     'CLAUDE_CODE_SUBAGENT_MODEL': '$config_model'
 }
 $(if [[ -n "$config_token" ]]; then echo "existing['env']['ANTHROPIC_AUTH_TOKEN'] = '$config_token'"; fi)
@@ -767,7 +774,7 @@ PYTHON_EOF
     "ANTHROPIC_MODEL": "$config_model",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "$config_model",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "$config_model",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "$config_model",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "${config_haiku_model:-$config_model}",
     "CLAUDE_CODE_SUBAGENT_MODEL": "$config_model"$([[ -n "$config_token" ]] && echo ",
     \"ANTHROPIC_AUTH_TOKEN\": \"$config_token\"")
   }
@@ -1513,10 +1520,10 @@ switch_to_deepseek() {
         # 官方 Deepseek 的 Anthropic 兼容端点
         export ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
         export ANTHROPIC_AUTH_TOKEN="$DEEPSEEK_API_KEY"
-        export ANTHROPIC_MODEL="deepseek-chat"
-        export ANTHROPIC_DEFAULT_SONNET_MODEL="deepseek/deepseek-v3.2"
-        export ANTHROPIC_DEFAULT_OPUS_MODEL="deepseek/deepseek-v3.2"
-        export ANTHROPIC_DEFAULT_HAIKU_MODEL="deepseek/deepseek-v3.2"
+        export ANTHROPIC_MODEL="${DEEPSEEK_MODEL:-deepseek-chat}"
+        export ANTHROPIC_DEFAULT_SONNET_MODEL="${DEEPSEEK_MODEL:-deepseek-chat}"
+        export ANTHROPIC_DEFAULT_OPUS_MODEL="${DEEPSEEK_MODEL:-deepseek-chat}"
+        export ANTHROPIC_DEFAULT_HAIKU_MODEL="${DEEPSEEK_HAIKU_MODEL:-${DEEPSEEK_MODEL:-deepseek-chat}}"
         export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
         echo -e "${GREEN}✅ $(t 'switched_to') Deepseek（$(t 'official')）${NC}"
     else
@@ -1827,7 +1834,8 @@ show_help() {
 # 将缺失的模型ID覆盖项追加到配置文件（仅追加缺失项，不覆盖已存在的配置）
 ensure_model_override_defaults() {
     local -a pairs=(
-        "DEEPSEEK_MODEL=deepseek-chat"
+        "DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_HAIKU_MODEL=deepseek-chat"
         "KIMI_MODEL=kimi-k2.5"
         "KIMI_CN_MODEL=kimi-k2.5"
         "MINIMAX_MODEL=MiniMax-M2.5"
@@ -2082,7 +2090,7 @@ emit_env_exports() {
                 echo "export ANTHROPIC_AUTH_TOKEN=\"\${DEEPSEEK_API_KEY}\""
                 local ds_model="${DEEPSEEK_MODEL:-deepseek-chat}"
                 echo "export ANTHROPIC_MODEL='${ds_model}'"
-                emit_default_models "deepseek/deepseek-v3.2" "deepseek/deepseek-v3.2" "deepseek/deepseek-v3.2"
+                emit_default_models "$ds_model" "$ds_model" "${DEEPSEEK_HAIKU_MODEL:-$ds_model}"
                 emit_subagent_model "$ds_model"
             else
                 echo -e "${RED}❌ Please configure DEEPSEEK_API_KEY${NC}" >&2
