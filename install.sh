@@ -245,7 +245,7 @@ ccm() {
 
   # All commands use eval to apply environment variables
   case "\$1" in
-    ""|"help"|"-h"|"--help"|"status"|"st"|"config"|"cfg"|"save-account"|"switch-account"|"list-accounts"|"delete-account"|"current-account"|"debug-keychain"|"project")
+    ""|"help"|"-h"|"--help"|"status"|"st"|"config"|"cfg"|"update-config"|"update"|"save-account"|"switch-account"|"list-accounts"|"delete-account"|"current-account"|"debug-keychain"|"project"|"user")
       # These commands don't need eval, execute directly
       "\$script" "\$@"
       ;;
@@ -275,7 +275,8 @@ ccc() {
     echo "  ccc glm --dangerously-skip-permissions    # Launch GLM with options"
     echo ""
     echo "Available models:"
-    echo "  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax"
+    echo "  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax, stepfun"
+    echo "  Custom:   custom   (CUSTOM_BASE_URL / CUSTOM_API_KEY / CUSTOM_MODEL)"
     echo "  OpenRouter: open <provider>"
     echo "  Account:  <account> | claude:<account>"
     return 1
@@ -303,7 +304,7 @@ ccc() {
   # Helper: known model keyword
   _is_known_model() {
     case "\$1" in
-      deepseek|ds|glm|glm5|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
+      deepseek|ds|glm|glm5|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open|stepfun|custom|endpoint)
         return 0 ;;
       *)
         return 1 ;;
@@ -435,12 +436,16 @@ download_from_github() {
 install_assets() {
   local data_dir="$1"
   local dest_ccm_sh="$data_dir/ccm.sh"
+  local dest_ccc="$data_dir/ccc"
 
   run_cmd "$data_dir" mkdir -p "$data_dir"
 
   if $LOCAL_MODE && [[ -f "$SCRIPT_DIR/ccm.sh" ]]; then
     log_info "Installing from local directory..."
     run_cmd "$data_dir" cp -f "$SCRIPT_DIR/ccm.sh" "$dest_ccm_sh"
+    if [[ -f "$SCRIPT_DIR/ccc" ]]; then
+      run_cmd "$data_dir" cp -f "$SCRIPT_DIR/ccc" "$dest_ccc"
+    fi
     if [[ -d "$SCRIPT_DIR/lang" ]]; then
       run_cmd "$data_dir" rm -rf "$data_dir/lang"
       run_cmd "$data_dir" cp -R "$SCRIPT_DIR/lang" "$data_dir/lang"
@@ -451,12 +456,16 @@ install_assets() {
       log_error "failed to download ccm.sh"
       exit 1
     }
+    download_from_github "${GITHUB_RAW}/ccc" "$dest_ccc" || {
+      log_warn "failed to download ccc (optional)"
+    }
     run_cmd "$data_dir" mkdir -p "$data_dir/lang"
     download_from_github "${GITHUB_RAW}/lang/zh.json" "$data_dir/lang/zh.json" || true
     download_from_github "${GITHUB_RAW}/lang/en.json" "$data_dir/lang/en.json" || true
   fi
 
   run_cmd "$data_dir" chmod +x "$dest_ccm_sh"
+  [[ -f "$dest_ccc" ]] && run_cmd "$data_dir" chmod +x "$dest_ccc"
 }
 
 write_ccm_wrapper() {
@@ -507,253 +516,33 @@ write_ccc_wrapper() {
 
   run_cmd "$bin_dir" mkdir -p "$bin_dir"
 
+  # Ship the real ccc next to ccm.sh; bin/ccc is a thin launcher.
+  # Keeps custom/provider support in one file (repo ccc), not a duplicated heredoc.
+  if [[ ! -f "$data_dir/ccc" ]]; then
+    log_error "ccc missing at $data_dir/ccc (install_assets should have copied it)"
+    exit 1
+  fi
+
   if [[ "$mode" == "project" ]]; then
-    cat > "$target" <<'EOF'
+    cat > "$target" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
-CCM="$SCRIPT_DIR/../ccm.sh"
-
-usage() {
-    cat <<EOF2
-Usage: ccc <model> [region|variant] [claude-options]
-       ccc open <provider> [claude-options]
-       ccc <account> [claude-options]        # Switch account then launch (default model)
-       ccc <model>:<account> [claude-options]
-
-Examples:
-  ccc deepseek                     # Launch Claude Code with DeepSeek
-  ccc open kimi                    # Launch with OpenRouter (kimi)
-  ccc kimi --dangerously-skip-permissions  # Pass options to Claude Code
-  ccc woohelps                     # Switch to 'woohelps' account and launch
-  ccc claude:work                  # Switch to 'work' account and use Claude
-
-Available models:
-  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax
-  OpenRouter: open <provider>
-  Account:  <account> | claude:<account>
-EOF2
-}
-
-if [[ ! -f "$CCM" ]]; then
-    echo "ccc error: cannot find ccm CLI at $CCM" >&2
-    exit 1
-fi
-
-if [[ $# -lt 1 ]]; then
-    usage
-    exit 1
-fi
-
-model=""
-open_provider=""
-region_arg=""
-seed_variant=""
-account=""
-
-if [[ "${1:-}" == "open" ]]; then
-    shift || true
-    if [[ $# -lt 1 ]]; then
-        usage
-        exit 1
-    fi
-    model="open"
-    open_provider="$1"
-    shift || true
-else
-    model="$1"
-    shift || true
-fi
-
-is_known_model() {
-    case "$1" in
-        deepseek|ds|glm|glm5|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
-            return 0 ;;
-        *)
-            return 1 ;;
-    esac
-}
-
-if [[ "$model" != "open" ]] && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
-    account="$model"
-    if ! "$CCM" switch-account "$account"; then
-        echo "❌ Failed to switch account: $account" >&2
-        exit 1
-    fi
-    "$CCM" current-account || true
-    eval "$("$CCM" claude)"
-else
-    if [[ "$model" == "open" ]]; then
-        eval "$("$CCM" open "$open_provider")"
-    else
-        case "$model" in
-            kimi|kimi2|qwen|glm|glm5|minimax|mm)
-                if [[ "${1:-}" =~ ^(global|china|cn)$ ]]; then
-                    region_arg="$1"
-                    shift || true
-                fi
-                ;;
-            seed|doubao)
-                if [[ "${1:-}" =~ ^(doubao|glm|glm5|deepseek|ds|kimi|kimi2)$ ]]; then
-                    seed_variant="$1"
-                    shift || true
-                fi
-                ;;
-        esac
-
-        if [[ -n "$seed_variant" ]]; then
-            eval "$("$CCM" "$model" "$seed_variant")"
-        elif [[ -n "$region_arg" ]]; then
-            eval "$("$CCM" "$model" "$region_arg")"
-        else
-            eval "$("$CCM" "$model")"
-        fi
-    fi
-fi
-
-claude_args=("$@")
-
-echo ""
-echo "🚀 Launching Claude Code..."
-echo "   Model: ${ANTHROPIC_MODEL:-'(unset)'}"
-echo "   Base URL: ${ANTHROPIC_BASE_URL:-'Default (Anthropic)'}"
-
-if ! command -v claude >/dev/null 2>&1; then
-    echo "❌ 'claude' CLI not found. Install it first: npm install -g @anthropic-ai/claude-code" >&2
-    exit 127
-fi
-
-if [[ ${#claude_args[@]} -eq 0 ]]; then
-    exec claude
-else
-    exec claude "${claude_args[@]}"
-fi
+SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]:-\$0}")" && pwd)"
+export CCM_CMD="\$SCRIPT_DIR/../ccm.sh"
+exec "\$SCRIPT_DIR/../ccc" "\$@"
 EOF
   else
-    local content
-    content="$(cat <<'EOF'
+    cat > "$target" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
-CCM="__DATA_DIR__/ccm.sh"
-
-usage() {
-    cat <<EOF2
-Usage: ccc <model> [region|variant] [claude-options]
-       ccc open <provider> [claude-options]
-       ccc <account> [claude-options]        # Switch account then launch (default model)
-       ccc <model>:<account> [claude-options]
-
-Examples:
-  ccc deepseek                     # Launch Claude Code with DeepSeek
-  ccc open kimi                    # Launch with OpenRouter (kimi)
-  ccc kimi --dangerously-skip-permissions  # Pass options to Claude Code
-  ccc woohelps                     # Switch to 'woohelps' account and launch
-  ccc claude:work                  # Switch to 'work' account and use Claude
-
-Available models:
-  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax
-  OpenRouter: open <provider>
-  Account:  <account> | claude:<account>
-EOF2
-}
-
-if [[ ! -f "$CCM" ]]; then
-    echo "ccc error: cannot find ccm CLI at $CCM" >&2
-    exit 1
+export CCM_CMD="${data_dir}/ccm.sh"
+CCC_SH="${data_dir}/ccc"
+if [[ ! -f "\$CCC_SH" ]]; then
+  echo "ccc error: missing \$CCC_SH" >&2
+  exit 1
 fi
-
-if [[ $# -lt 1 ]]; then
-    usage
-    exit 1
-fi
-
-model=""
-open_provider=""
-region_arg=""
-seed_variant=""
-account=""
-
-if [[ "${1:-}" == "open" ]]; then
-    shift || true
-    if [[ $# -lt 1 ]]; then
-        usage
-        exit 1
-    fi
-    model="open"
-    open_provider="$1"
-    shift || true
-else
-    model="$1"
-    shift || true
-fi
-
-is_known_model() {
-    case "$1" in
-        deepseek|ds|glm|glm5|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
-            return 0 ;;
-        *)
-            return 1 ;;
-    esac
-}
-
-if [[ "$model" != "open" ]] && [[ "$model" != *:* ]] && ! is_known_model "$model" && [[ ! "$model" =~ ^- ]]; then
-    account="$model"
-    if ! "$CCM" switch-account "$account"; then
-        echo "❌ Failed to switch account: $account" >&2
-        exit 1
-    fi
-    "$CCM" current-account || true
-    eval "$("$CCM" claude)"
-else
-    if [[ "$model" == "open" ]]; then
-        eval "$("$CCM" open "$open_provider")"
-    else
-        case "$model" in
-            kimi|kimi2|qwen|glm|glm5|minimax|mm)
-                if [[ "${1:-}" =~ ^(global|china|cn)$ ]]; then
-                    region_arg="$1"
-                    shift || true
-                fi
-                ;;
-            seed|doubao)
-                if [[ "${1:-}" =~ ^(doubao|glm|glm5|deepseek|ds|kimi|kimi2)$ ]]; then
-                    seed_variant="$1"
-                    shift || true
-                fi
-                ;;
-        esac
-
-        if [[ -n "$seed_variant" ]]; then
-            eval "$("$CCM" "$model" "$seed_variant")"
-        elif [[ -n "$region_arg" ]]; then
-            eval "$("$CCM" "$model" "$region_arg")"
-        else
-            eval "$("$CCM" "$model")"
-        fi
-    fi
-fi
-
-claude_args=("$@")
-
-echo ""
-echo "🚀 Launching Claude Code..."
-echo "   Model: ${ANTHROPIC_MODEL:-'(unset)'}"
-echo "   Base URL: ${ANTHROPIC_BASE_URL:-'Default (Anthropic)'}"
-
-if ! command -v claude >/dev/null 2>&1; then
-    echo "❌ 'claude' CLI not found. Install it first: npm install -g @anthropic-ai/claude-code" >&2
-    exit 127
-fi
-
-if [[ ${#claude_args[@]} -eq 0 ]]; then
-    exec claude
-else
-    exec claude "${claude_args[@]}"
-fi
+exec "\$CCC_SH" "\$@"
 EOF
-)"
-    content="${content//__DATA_DIR__/$data_dir}"
-    printf '%s\n' "$content" > "$target"
   fi
 
   run_cmd "$bin_dir" chmod +x "$target"
