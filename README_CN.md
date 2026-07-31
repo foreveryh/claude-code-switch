@@ -4,7 +4,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/issues)
 
-一条命令切换 Claude Code 的 AI 提供商。
+一条命令切换 Claude Code 的 AI 提供商，现已支持自定义 Anthropic 兼容 URL 端点。
 
 [English](README.md)
 

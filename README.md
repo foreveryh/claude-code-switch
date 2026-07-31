@@ -4,7 +4,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/foreveryh/claude-code-switch.svg)](https://github.com/foreveryh/claude-code-switch/issues)
 
-Switch Claude Code between AI providers with one command.
+Switch Claude Code between AI providers with one command — including custom Anthropic-compatible URL endpoints.
 
 [中文文档](README_CN.md)
 
