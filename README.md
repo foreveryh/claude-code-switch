@@ -95,6 +95,11 @@ MINIMAX_API_KEY=...
 ARK_API_KEY=...           # For Doubao/Seed
 OPENROUTER_API_KEY=...    # For OpenRouter
 CLAUDE_API_KEY=...        # Optional, for Claude API (vs subscription)
+
+# Custom Anthropic-compatible endpoint
+CUSTOM_BASE_URL=https://your-gateway.example/anthropic
+CUSTOM_API_KEY=...
+CUSTOM_MODEL=your-model-id
 ```
 
 ### 2. Verify Setup
@@ -116,6 +121,7 @@ ccm kimi china        # Kimi China
 ccm qwen global       # Qwen global
 ccm minimax           # MiniMax
 ccm seed              # Doubao/Seed
+ccm custom            # Custom endpoint from ~/.ccm_config
 ccm claude            # Claude official
 ```
 
@@ -123,6 +129,7 @@ ccm claude            # Claude official
 ```bash
 ccc glm global        # Switch to GLM global, then launch
 ccc glm china         # Switch to GLM China, then launch
+ccc custom            # Custom endpoint, then launch
 ccc open glm          # Via OpenRouter
 ```
 
@@ -163,10 +170,31 @@ ccc                    # Show ccc usage (no args)
 | | | china | `api.minimaxi.com/anthropic` |
 | Seed/Doubao | `ccm seed [variant]` | - | `ark.cn-beijing.volces.com/api/coding` |
 | Claude | `ccm claude` | - | `api.anthropic.com` |
+| **Custom** | `ccm custom` | - | from `CUSTOM_BASE_URL` in `~/.ccm_config` |
 
-> **GLM Coding Plan**: [bigmodel.cn/glm-coding](https://www.bigmodel.cn/glm-coding?ic=5XMIOZPPXB)
->
-> **Doubao Coding Plan**: [volcengine.com](https://volcengine.com/L/rLv5d5OWXgg/) (Invite code: `ZP5PZMEY`)
+### Custom Anthropic-compatible endpoint
+
+Point Claude Code at any gateway that speaks the Anthropic Messages API:
+
+```bash
+# In ~/.ccm_config (ccm config)
+CUSTOM_BASE_URL=https://your-gateway.example/anthropic
+CUSTOM_API_KEY=sk-...
+CUSTOM_MODEL=your-model-id
+# Optional — default to CUSTOM_MODEL:
+# CUSTOM_SONNET_MODEL=
+# CUSTOM_OPUS_MODEL=
+# CUSTOM_HAIKU_MODEL=
+# CUSTOM_SUBAGENT_MODEL=
+
+ccm custom              # switch current shell
+ccc custom              # switch + launch
+ccc custom --resume     # resume a session on the custom endpoint
+ccm user custom         # persist in ~/.claude/settings.json
+ccm project custom      # this project only
+```
+
+> Base URL should be the Anthropic-compatible root (Claude Code appends `/v1/messages`).
 
 ### Seed Variants
 ```bash
@@ -296,6 +324,11 @@ SEED_MODEL=ark-code-latest
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
 OPUS_MODEL=claude-opus-4-6
 HAIKU_MODEL=claude-haiku-4-5-20251001
+
+# Custom endpoint
+CUSTOM_BASE_URL=https://your-gateway.example/anthropic
+CUSTOM_API_KEY=sk-...
+CUSTOM_MODEL=your-model-id
 ```
 
 ---

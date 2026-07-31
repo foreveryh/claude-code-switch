@@ -173,6 +173,16 @@ CLAUDE_API_KEY=your-claude-api-key
 # OpenRouter
 OPENROUTER_API_KEY=your-openrouter-api-key
 
+# Custom Anthropic-compatible endpoint (ccm custom / ccc custom)
+CUSTOM_BASE_URL=https://your-custom-endpoint.example/anthropic
+CUSTOM_API_KEY=your-custom-api-key
+CUSTOM_MODEL=your-custom-model-id
+# Optional (default to CUSTOM_MODEL if unset)
+# CUSTOM_SONNET_MODEL=
+# CUSTOM_OPUS_MODEL=
+# CUSTOM_HAIKU_MODEL=
+# CUSTOM_SUBAGENT_MODEL=
+
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-k2.5
@@ -229,7 +239,8 @@ EOF
             local lower_value
             lower_value=$(printf '%s' "$value" | tr '[:upper:]' '[:lower:]')
             local is_config_placeholder=false
-            if [[ "$lower_value" == *"your"* && "$lower_value" == *"api"* && "$lower_value" == *"key"* ]]; then
+            if [[ "$lower_value" == *"your"* && "$lower_value" == *"api"* && "$lower_value" == *"key"* ]] || \
+               [[ "$lower_value" == *"your-custom"* ]]; then
                 is_config_placeholder=true
             fi
             # 配置文件总是覆盖，除非配置值是占位符
@@ -283,6 +294,16 @@ CLAUDE_API_KEY=your-claude-api-key
 # OpenRouter
 OPENROUTER_API_KEY=your-openrouter-api-key
 
+# Custom Anthropic-compatible endpoint (ccm custom / ccc custom)
+CUSTOM_BASE_URL=https://your-custom-endpoint.example/anthropic
+CUSTOM_API_KEY=your-custom-api-key
+CUSTOM_MODEL=your-custom-model-id
+# Optional (default to CUSTOM_MODEL if unset)
+# CUSTOM_SONNET_MODEL=
+# CUSTOM_OPUS_MODEL=
+# CUSTOM_HAIKU_MODEL=
+# CUSTOM_SUBAGENT_MODEL=
+
 # —— 可选：模型ID覆盖（不设置则使用下方默认）——
 DEEPSEEK_MODEL=deepseek-chat
 KIMI_MODEL=kimi-k2.5
@@ -310,13 +331,36 @@ is_effectively_set() {
     local lower
     lower=$(printf '%s' "$v" | tr '[:upper:]' '[:lower:]')
     case "$lower" in
-        *your-*-api-key)
+        *your-*-api-key|*your-custom*)
             return 1
             ;;
         *)
             return 0
             ;;
     esac
+}
+
+# Custom endpoint requires BASE_URL + API_KEY + MODEL
+require_custom_config() {
+    local missing=0
+    if ! is_effectively_set "${CUSTOM_BASE_URL:-}"; then
+        echo -e "${RED}❌ Please configure CUSTOM_BASE_URL first${NC}" >&2
+        missing=1
+    fi
+    if ! is_effectively_set "${CUSTOM_API_KEY:-}"; then
+        echo -e "${RED}❌ Please configure CUSTOM_API_KEY first${NC}" >&2
+        missing=1
+    fi
+    if ! is_effectively_set "${CUSTOM_MODEL:-}"; then
+        echo -e "${RED}❌ Please configure CUSTOM_MODEL first${NC}" >&2
+        missing=1
+    fi
+    if [[ $missing -ne 0 ]]; then
+        echo -e "${YELLOW}💡 Edit ~/.ccm_config (or run 'ccm config') and set:${NC}" >&2
+        echo -e "${YELLOW}   CUSTOM_BASE_URL / CUSTOM_API_KEY / CUSTOM_MODEL${NC}" >&2
+        return 1
+    fi
+    return 0
 }
 
 # 安全掩码工具
@@ -548,11 +592,13 @@ project_show_usage() {
     echo "  qwen [global|china]   - Qwen" >&2
     echo "  minimax [global|china] - MiniMax" >&2
     echo "  seed                  - Doubao/Seed" >&2
+    echo "  custom                - Custom Anthropic-compatible endpoint" >&2
     echo "  claude                - Claude (official)" >&2
     echo "" >&2
     echo "Examples:" >&2
     echo "  ccm project glm global   # Use GLM for this project" >&2
     echo "  ccm project seed         # Use Seed for this project" >&2
+    echo "  ccm project custom       # Use custom endpoint for this project" >&2
     echo "  ccm project reset        # Remove project override" >&2
 }
 
@@ -661,6 +707,12 @@ get_provider_config() {
             config_token_var="STEPFUN_API_KEY"
             config_model="${STEPFUN_MODEL:-step-3.5-flash}"
             config_base_url="https://api.stepfun.ai/v1/anthropic"
+            ;;
+        "custom"|"endpoint")
+            require_custom_config || return 1
+            config_token_var="CUSTOM_API_KEY"
+            config_model="${CUSTOM_MODEL}"
+            config_base_url="${CUSTOM_BASE_URL}"
             ;;
         "claude"|"sonnet"|"s")
             config_token_var=""  # Uses Claude Pro subscription
@@ -845,11 +897,14 @@ user_show_usage() {
     echo "  qwen [global|china]   - Qwen" >&2
     echo "  minimax [global|china] - MiniMax" >&2
     echo "  seed                  - Doubao/Seed" >&2
+    echo "  stepfun               - StepFun" >&2
+    echo "  custom                - Custom Anthropic-compatible endpoint" >&2
     echo "  claude                - Claude (official)" >&2
     echo "" >&2
     echo "Examples:" >&2
     echo "  ccm user glm global   # Use GLM globally" >&2
     echo "  ccm user deepseek     # Use DeepSeek globally" >&2
+    echo "  ccm user custom       # Use custom endpoint globally" >&2
     echo "  ccm user reset        # Remove, use env vars instead" >&2
 }
 
@@ -1486,6 +1541,9 @@ show_status() {
     echo "   QWEN_API_KEY: $(mask_presence QWEN_API_KEY)"
     echo "   STEPFUN_API_KEY: $(mask_presence STEPFUN_API_KEY)"
     echo "   OPENROUTER_API_KEY: $(mask_presence OPENROUTER_API_KEY)"
+    echo "   CUSTOM_BASE_URL: $(mask_presence CUSTOM_BASE_URL)"
+    echo "   CUSTOM_API_KEY: $(mask_presence CUSTOM_API_KEY)"
+    echo "   CUSTOM_MODEL: ${CUSTOM_MODEL:-'(not set)'}"
     echo ""
 }
 
@@ -1772,18 +1830,19 @@ show_help() {
     echo "  minimax [global|china]  - env minimax (default: global)"
     echo "  seed [doubao|glm|deepseek|kimi] - env 豆包 Seed-Code"
     echo "  stepfun                 - env StepFun"
+    echo "  custom                  - env custom Anthropic-compatible endpoint"
     echo "  claude, sonnet, s       - env claude (official)"
     echo "  open <provider>         - env OpenRouter (run 'ccm open' for help)"
     echo ""
     echo -e "${YELLOW}User-level Settings (highest priority):${NC}"
     echo "  user <provider> [region] - write to ~/.claude/settings.json"
     echo "  user reset               - remove ccm settings, restore env var control"
-    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, stepfun, claude"
+    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, stepfun, custom, claude"
     echo ""
     echo -e "${YELLOW}Project-level Settings:${NC}"
     echo "  project <provider> [region] - write .claude/settings.local.json (project-only)"
     echo "  project reset              - remove project override"
-    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, claude"
+    echo "  Providers: glm, deepseek, kimi, qwen, minimax, seed, custom, claude"
     echo ""
     echo -e "${YELLOW}Claude Pro Account Management:${NC}"
     echo "  save-account <name>     - Save current Claude Pro account"
@@ -1806,8 +1865,10 @@ show_help() {
     echo "  eval \"\$(ccm qwen global)\"             # Qwen global (Coding Plan)"
     echo "  eval \"\$(ccm seed kimi)\"               # 豆包 Seed-Code (kimi)"
     echo "  eval \"\$(ccm open kimi)\"               # OpenRouter kimi"
+    echo "  eval \"\$(ccm custom)\"                  # Custom endpoint from ~/.ccm_config"
     echo ""
     echo "  ccm user glm global    # Set GLM as default (highest priority)"
+    echo "  ccm user custom        # Set custom endpoint as default"
     echo "  ccm user reset         # Restore env var control"
     echo "  $(basename "$0") status                      # Check current status (masked)"
     echo "  $(basename "$0") save-account work           # Save current account as 'work'"
@@ -1821,6 +1882,7 @@ show_help() {
     echo "  🎯 MiniMax              - MiniMax-M2.5 (api.minimax.io / api.minimaxi.com)"
     echo "  🐪 Qwen                 - qwen3-max-2026-01-23 / qwen3-coder-plus (Coding Plan)"
     echo "  🇨🇳 GLM                 - glm-5 (api.z.ai / open.bigmodel.cn)"
+    echo "  🔧 Custom              - CUSTOM_BASE_URL / CUSTOM_API_KEY / CUSTOM_MODEL"
     echo "  🧠 Claude Sonnet 4.5    - claude-sonnet-4-5-20250929"
 }
 
@@ -1838,6 +1900,9 @@ ensure_model_override_defaults() {
         "CLAUDE_MODEL=claude-sonnet-4-5-20250929"
         "OPUS_MODEL=claude-opus-4-6"
         "HAIKU_MODEL=claude-haiku-4-5-20251001"
+        "CUSTOM_BASE_URL=https://your-custom-endpoint.example/anthropic"
+        "CUSTOM_API_KEY=your-custom-api-key"
+        "CUSTOM_MODEL=your-custom-model-id"
     )
     local added_header=0
     for pair in "${pairs[@]}"; do
@@ -2259,6 +2324,29 @@ emit_env_exports() {
             emit_default_models "$stepfun_model" "$stepfun_model" "$stepfun_model"
             emit_subagent_model "$stepfun_model"
             ;;
+        "custom"|"endpoint")
+            require_custom_config || return 1
+            local custom_model="${CUSTOM_MODEL}"
+            local custom_sonnet="${CUSTOM_SONNET_MODEL:-$custom_model}"
+            local custom_opus="${CUSTOM_OPUS_MODEL:-$custom_model}"
+            local custom_haiku="${CUSTOM_HAIKU_MODEL:-$custom_model}"
+            local custom_sub="${CUSTOM_SUBAGENT_MODEL:-$custom_model}"
+            # Escape single quotes in URL/model for safe eval
+            local custom_base_url_q="${CUSTOM_BASE_URL//\'/\'\\\'\'}"
+            local custom_model_q="${custom_model//\'/\'\\\'\'}"
+            local custom_sonnet_q="${custom_sonnet//\'/\'\\\'\'}"
+            local custom_opus_q="${custom_opus//\'/\'\\\'\'}"
+            local custom_haiku_q="${custom_haiku//\'/\'\\\'\'}"
+            local custom_sub_q="${custom_sub//\'/\'\\\'\'}"
+            echo "$prelude"
+            echo "export ANTHROPIC_BASE_URL='${custom_base_url_q}'"
+            echo "if [ -f \"\$HOME/.ccm_config\" ]; then . \"\$HOME/.ccm_config\" >/dev/null 2>&1; fi"
+            echo "export ANTHROPIC_AUTH_TOKEN=\"\${CUSTOM_API_KEY}\""
+            echo "export ANTHROPIC_API_KEY=''"
+            echo "export ANTHROPIC_MODEL='${custom_model_q}'"
+            emit_default_models "$custom_sonnet_q" "$custom_opus_q" "$custom_haiku_q"
+            emit_subagent_model "$custom_sub_q"
+            ;;
         "claude"|"sonnet"|"s")
             echo "$prelude"
             # 官方 Anthropic 网关
@@ -2277,7 +2365,7 @@ emit_env_exports() {
             emit_subagent_model "$claude_model"
             ;;
         *)
-            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|stepfun|claude|open]" 1>&2
+            echo "# $(t 'usage'): $(basename "$0") env [deepseek|kimi|qwen|glm|minimax|seed|stepfun|custom|claude|open]" 1>&2
             return 1
             ;;
     esac
@@ -2359,6 +2447,9 @@ main() {
         "stepfun")
             emit_env_exports stepfun
             ;;
+        "custom"|"endpoint")
+            emit_env_exports custom
+            ;;
         "claude"|"sonnet"|"s")
             emit_env_exports claude
             ;;
@@ -2373,7 +2464,7 @@ main() {
             shift
             local project_action="${1:-}"
             case "$project_action" in
-                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"claude"|"sonnet"|"s")
+                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"custom"|"endpoint"|"claude"|"sonnet"|"s")
                     project_write_settings "$project_action" "${2:-}"
                     ;;
                 "reset")
@@ -2393,7 +2484,7 @@ main() {
             shift
             local user_action="${1:-}"
             case "$user_action" in
-                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"stepfun"|"claude"|"sonnet"|"s")
+                "glm"|"deepseek"|"ds"|"kimi"|"kimi2"|"qwen"|"minimax"|"mm"|"seed"|"doubao"|"stepfun"|"custom"|"endpoint"|"claude"|"sonnet"|"s")
                     user_write_settings "$user_action" "${2:-}"
                     ;;
                 "reset")

@@ -24,7 +24,8 @@ Examples:
   ./ccc claude:work                  # Switch to 'work' account and use Claude
 
 Available models:
-  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax
+  Official: deepseek, glm, kimi, qwen, seed|doubao, claude, minimax, stepfun
+  Custom:   custom   (uses CUSTOM_BASE_URL / CUSTOM_API_KEY / CUSTOM_MODEL)
   OpenRouter: open <provider>
   Account:  <account> | claude:<account>
 EOF
@@ -68,7 +69,7 @@ fi
 # Helper: is known model keyword
 is_known_model() {
     case "$1" in
-        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open)
+        deepseek|ds|glm|glm4|glm4.6|glm4.7|kimi|kimi2|qwen|minimax|mm|seed|doubao|claude|sonnet|s|open|stepfun|custom|endpoint)
             return 0 ;;
         *)
             return 1 ;;
